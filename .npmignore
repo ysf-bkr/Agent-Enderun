@@ -1,0 +1,16 @@
+.git
+.github
+.vscode
+.DS_Store
+node_modules
+packages/
+*.log
+.enderun/logs/*.json
+!.enderun/logs/.gitkeep
+.enderun/atlas/
+.enderun/calendar/
+.enderun/archive/
+.enderun/BRAIN_DASHBOARD.md
+gemini-extension.json
+.env.example
+.socraticodecontextartifacts.json

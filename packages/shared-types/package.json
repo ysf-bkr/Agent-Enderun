@@ -1,0 +1,35 @@
+{
+  "name": "@ai-enderun/shared-types",
+  "version": "0.0.13",
+  "description": "Shared TypeScript types for AI-Enderun Framework. Ensures Contract-First synchronization between agents.",
+  "author": "Yusuf BEKAR <ybekar@msn.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ysf-bkr/AI-Enderun.git"
+  },
+  "homepage": "https://github.com/ysf-bkr/AI-Enderun#readme",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src",
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "shared",
+    "contract-first",
+    "ai-agent",
+    "framework"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
