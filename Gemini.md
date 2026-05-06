@@ -1,4 +1,4 @@
-# AI-Enderun — Supreme Performance AI Orchestration (v0.0.1)
+# AI-Enderun — Supreme Performance AI Orchestration (v0.0.2)
 
 # Place in project root. This file is the single source of truth for all AI clients (Gemini CLI, Claude Code, etc.).
 

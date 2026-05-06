@@ -1,75 +1,57 @@
-# 🧠 ai-enderun-mcp (v0.0.1)
+# 🧠 ai-enderun-mcp (v0.0.2)
 
-**Status:** 🛠️ Intelligence & Discovery Engine (Core)  
-**Protocol:** Model Context Protocol (MCP) v1.0
+**Durum:** 🛠️ Zeka ve Keşif Motoru (Çekirdek)  
+**Protokol:** Model Context Protocol (MCP) v1.0
 
-**ai-enderun-mcp**, AI-Enderun'un "Beyni" ve "Gözü" olarak görev yapar. Bu paket, yapay zeka ajanlarının (Claude, Gemini vb.) yerel kod tabanınıza güvenli ve yapılandırılmış bir şekilde erişmesini sağlayan bir **Model Context Protocol (MCP)** sunucusudur.
-
-[English](#english) | [Türkçe](#türkçe) | [Deutsch](#deutsch)
+**ai-enderun-mcp**, AI-Enderun framework'ünün "Duyuları" ve "Analiz Motoru"dur. Bu paket, yapay zeka ajanlarının (Claude, Gemini, Cursor vb.) kod tabanınıza güvenli, semantik ve yapılandırılmış bir şekilde erişmesini sağlayan bir **Model Context Protocol (MCP)** sunucusudur.
 
 ---
 
-<a name="english"></a>
+## 🛠️ Sunulan Araçlar (Yetenekler)
 
-## 🇬🇧 English: Technical Overview
+Sunucu, yapay zeka ajanlarına aşağıdaki profesyonel araçları sağlar:
 
-### 🛡️ Why MCP?
-Modern AI models often struggle with "Context Drift" or limited awareness of large projects. This MCP server solves this by providing specialized tools that allow the AI to actively query your codebase, map dependencies, and understand the architectural state before making any changes.
+| Araç | Açıklama |
+| :--- | :--- |
+| **`get_framework_status`** | Projenin aktif fazını, anayasa uyumluluğunu ve genel durumunu raporlar. |
+| **`search_codebase`** | Kod tabanında semantik ve regex tabanlı derin aramalar yapar. Mantık ve desen bulmak için idealdir. |
+| **`analyze_dependencies`** | Belirli bir dosya veya klasörün bağımlılıklarını ve import zincirini analiz eder. |
+| **`get_memory_insights`** | `PROJECT_MEMORY.md` ve `BRAIN_DASHBOARD.md` dosyalarını analiz ederek bağlam özetleri sunar. |
+| **`get_project_gaps`** | Proje yapısını `Gemini.md` standartlarına göre tarar ve eksik döküman/dosyaları tespit eder. |
+| **`security_audit_scan`** | Kod tabanını; hardcoded secret'lar, raw SQL kullanımı ve güvensiz async desenleri için tarar. |
 
-### 🛠️ Available Tools (Capabilities)
-The server exposes the following high-level tools to AI agents:
+---
 
-- **`search_codebase`**: Performs semantic and keyword-based searches.
-- **`analyze_dependencies`**: Maps the relationship between files and packages.
-- **`get_framework_status`**: Validates if the current project follows the `Gemini.md` constitution.
-- **`read_memory`**: Directly interface with the `PROJECT_MEMORY.md`.
+## 🚀 Entegrasyon Rehberi
 
-### 🚀 Integration Guide
-Add this configuration to your AI client (e.g., `claude_desktop_config.json`):
+### Claude Desktop (macOS/Windows)
+`~/Library/Application Support/Claude/claude_desktop_config.json` dosyanıza ekleyin:
 
 ```json
-"mcpServers": {
-  "ai-enderun-mcp": {
-    "command": "npx",
-    "args": ["-y", "ai-enderun-mcp"]
+{
+  "mcpServers": {
+    "ai-enderun-mcp": {
+      "command": "node",
+      "args": ["/yol/to/base/packages/framework-mcp/dist/index.js"]
+    }
   }
 }
 ```
 
----
-
-<a name="türkçe"></a>
-
-## 🇹🇷 Türkçe: Teknik Detaylar
-
-### 🛡️ Neden MCP?
-Modern yapay zeka modelleri genellikle büyük projelerde "Bağlam Kayması" (Context Drift) veya sınırlı farkındalık sorunları yaşarlar. Bu MCP sunucusu, yapay zekanın kod tabanınızı aktif olarak sorgulamasına, bağımlılıkları haritalandırmasına ve herhangi bir değişiklik yapmadan önce mimari durumu anlamasına olanak tanıyan özel araçlar sağlayarak bu sorunu çözer.
-
-### 🛠️ Sunulan Araçlar (Yetenekler)
-Sunucu, yapay zeka ajanlarına aşağıdaki üst düzey araçları sağlar:
-
-- **`search_codebase`**: Semantik ve anahtar kelime tabanlı aramalar yapar.
-- **`analyze_dependencies`**: Dosyalar ve paketler arasındaki ilişkiyi haritalandırır.
-- **`get_framework_status`**: Mevcut projenin `Gemini.md` anayasasına uyup uymadığını doğrular.
-- **`read_memory`**: Geçmiş bağlamı almak için doğrudan `PROJECT_MEMORY.md` ile etkileşim kurar.
-
-### 🚀 Entegrasyon Rehberi
-Bu yapılandırmayı AI istemcinize ekleyin (Örn: `claude_desktop_config.json`):
-
-```json
-"mcpServers": {
-  "ai-enderun-mcp": {
-    "command": "npx",
-    "args": ["-y", "ai-enderun-mcp"]
-  }
-}
+### Geliştirme Modu
+Yerel olarak test etmek için:
+```bash
+npm run dev # packages/framework-mcp dizininde
 ```
 
 ---
 
-## 📜 Technical Requirements
-- Node.js 20+
-- MCP SDK (Model Context Protocol)
+## 🛡️ Güvenlik Politikası
+- **Path Escape Prevention:** Araçlar, proje kök dizini dışındaki dosyalara erişimi engeller.
+- **Read-Only Operations:** MCP araçları sadece okuma ve analiz yapar, kod üzerinde değişiklik yapamaz (değişiklikler ajanlar tarafından önerilir).
+- **Audit Logging:** Her MCP çağrısı sistem tarafından loglanır.
 
-## 📜 License
+---
+
+## 📜 Lisans
 MIT - Yusuf BEKAR
