@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "Shared TypeScript types for backend ↔ frontend contract. Owned by @backend, consumed by @frontend.",
   "author": "Yusuf BEKAR <ybekar@msn.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ysf-bkr/AI-Enderun.git"
+  },
+  "homepage": "https://github.com/ysf-bkr/AI-Enderun#readme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
