@@ -1,0 +1,16 @@
+.git
+.github
+.vscode
+.DS_Store
+node_modules
+packages/
+*.log
+.gemini/logs/*.json
+!.gemini/logs/.gitkeep
+.gemini/atlas/
+.gemini/calendar/
+.gemini/archive/
+.gemini/BRAIN_DASHBOARD.md
+gemini-extension.json
+.env.example
+.socraticodecontextartifacts.json

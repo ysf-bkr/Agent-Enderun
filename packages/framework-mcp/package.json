@@ -1,0 +1,38 @@
+{
+  "name": "ai-enderun-mcp",
+  "version": "0.0.1",
+  "description": "Enterprise-grade MCP Server for AI Agent Framework",
+  "author": "Yusuf BEKAR <ybekar@msn.com>",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "framework-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "keywords": [
+    "mcp",
+    "ai-agent",
+    "framework",
+    "codebase-intelligence"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.4",
+    "typescript": "^5.7.3"
+  }
+}

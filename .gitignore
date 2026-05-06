@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+dist
+.next
+out
+.turbo
+.gemini/logs/*.json
+.gemini/PROJECT_MEMORY.lock
+.env
+.env.local
+.env.production

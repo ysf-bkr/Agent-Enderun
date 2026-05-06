@@ -1,0 +1,28 @@
+{
+  "name": "ai-enderun",
+  "version": "0.0.1",
+  "description": "Supreme AI Orchestration Framework — Senior Discipline & Ottoman Wisdom",
+  "author": "Yusuf BEKAR <ybekar@msn.com>",
+  "type": "module",
+  "bin": {
+    "ai-agent-framework": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    ".gemini/agents",
+    ".gemini/docs",
+    ".gemini/templates",
+    ".gemini/PROJECT_MEMORY.md",
+    "Gemini.md",
+    "CLAUDE.md",
+    "CURSOR.md",
+    "CODEX.md",
+    "README.md",
+    "mcp.json",
+    "package.json"
+  ],
+  "scripts": {
+    "mcp:dev": "npx tsx packages/framework-mcp/src/index.ts",
+    "mcp:status": "npx socraticode status"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "commands": {
+    "status": {
+      "agent": "analyst",
+      "description": "PROJECT_MEMORY.md üzerinden aktif fazı, görevleri ve son HISTORY girişlerini gösterir"
+    },
+    "version": {
+      "agent": "manager",
+      "description": "Framework versiyonunu ve aktif Execution Profile'ı gösterir"
+    },
+    "run:agent": {
+      "agent": "manager",
+      "description": "Belirtilen agent'ı belirli bir görev için tetikler",
+      "args": ["<agent-name>", "<task-description>"]
+    },
+    "memory:read": {
+      "agent": "analyst",
+      "description": "PROJECT_MEMORY.md içeriğini özetler: faz, blokaj, son 3 HISTORY girişi, aktif görevler"
+    },
+    "memory:update": {
+      "agent": "analyst",
+      "description": "PROJECT_MEMORY.md MEVCUT DURUM tablosunu günceller",
+      "args": ["<faz>", "<trace-id>", "<blokaj>"]
+    },
+    "contract:verify": {
+      "agent": "analyst",
+      "description": "shared-types hash'ini contract.version.json ile karşılaştırır, uyuşmazlık varsa raporlar"
+    },
+    "contract:list": {
+      "agent": "analyst",
+      "description": ".gemini/docs/api/README.md üzerinden tüm kontratlandırılmış endpoint'leri listeler"
+    },
+    "api:list": {
+      "agent": "analyst",
+      "description": ".gemini/docs/api/ klasöründeki tüm domain dosyalarını ve endpoint sayılarını gösterir"
+    },
+    "trace:new": {
+      "agent": "manager",
+      "description": "Yeni bir Trace ID (UUID v4) üretir ve PROJECT_MEMORY.md AKTİF GÖREVLER'e ekler",
+      "args": ["<task-description>", "<agent-name>", "<priority>"]
+    },
+    "phase:check": {
+      "agent": "analyst",
+      "description": "Mevcut fazın DoD kontrol listesini gösterir ve hangi maddelerin tamamlanmadığını raporlar"
+    }
+  }
+}

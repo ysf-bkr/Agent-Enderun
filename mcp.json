@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "framework-mcp": {
+      "command": "npx",
+      "args": ["tsx", "packages/framework-mcp/src/index.ts"]
+    }
+  }
+}

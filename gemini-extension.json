@@ -1,0 +1,11 @@
+{
+  "name": "ai-agent-framework",
+  "version": "1.0.5",
+  "contextFileName": "Gemini.md",
+  "mcpServers": {
+    "framework-mcp": {
+      "command": "npx",
+      "args": ["tsx", "packages/framework-mcp/src/index.ts"]
+    }
+  }
+}
