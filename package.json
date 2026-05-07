@@ -1,6 +1,6 @@
 {
   "name": "ai-enderun",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Supreme AI Orchestration Framework — Senior Discipline & Ottoman Wisdom",
   "author": "Yusuf BEKAR <ybekar@msn.com>",
   "repository": {
@@ -14,6 +14,7 @@
   },
   "files": [
     "bin",
+    "packages/framework-mcp/src",
     "packages/framework-mcp/dist",
     "packages/framework-mcp/package.json",
     "packages/framework-mcp/README.md",

@@ -1,6 +1,6 @@
 {
   "name": "ai-enderun-shared-types",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Shared TypeScript types for backend ↔ frontend contract. Owned by @backend, consumed by @frontend.",
   "author": "Yusuf BEKAR <ybekar@msn.com>",
   "repository": {
@@ -11,6 +11,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
+    "src",
     "dist",
     "README.md"
   ],

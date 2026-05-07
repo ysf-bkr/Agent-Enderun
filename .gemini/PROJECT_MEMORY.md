@@ -103,3 +103,11 @@ Bu dosya, projenin tek gerçeklik kaynağı (Single Source of Truth) ve kalıcı
 - **Yapılan:** npm yayınlama hatası (0.0.2 zaten mevcut) üzerine tüm paketlerin versiyonu `0.0.3` olarak güncellendi.
 - **Karar:** Yayın hatalarını gidermek için tüm monorepo paketlerinin versiyonları senkronize edildi.
 - **Sonraki Adım:** Yeniden `npm publish` yapılması.
+
+### 2026-05-07 — Eksik Kaynak Dosyaları ve v0.0.4 Yayını
+
+- **Ajan:** @manager
+- **Trace ID:** 18969447-95fb-4a8f-b0af-18336c3f1931
+- **Yapılan:** `pnpm dev` sırasında yaşanan `ERR_MODULE_NOT_FOUND` hatasını gidermek için `src` klasörleri yayın dosyalarına dahil edildi. Tüm paketler v0.0.4'e yükseltildi.
+- **Karar:** Geliştirme modunda kaynak dosyalarına erişim gerekliliği nedeniyle `src` klasörlerinin pakete dahil edilmesine karar verildi.
+- **Sonraki Adım:** Git push ve npm publish.
