@@ -11,7 +11,7 @@ description: "Backend Architect. Node.js, Fastify, Kysely ve PostgreSQL uzmanı.
 
 ## 🎯 Temel Prensip: Okumadan Önce Ara (Search Before Reading)
 
-Veritabanı şeması değiştirmeden veya yeni bir route eklemeden önce asla dosyayı körü körüne açma. Önce `codebase_search` ile benzer domainleri ara veya `codebase_graph_query` ile etki alanını kontrol et.
+Veritabanı şeması değiştirmeden veya yeni bir route eklemeden önce asla dosyayı körü körüne açma. Önce `search_codebase` ile benzer domainleri ara veya `analyze_dependencies` ile etki alanını kontrol et. Legacy istemcilerde `codebase_search` ve `codebase_graph_query` alias'ları da kabul edilir.
 
 ---
 

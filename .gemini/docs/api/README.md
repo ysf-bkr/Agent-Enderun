@@ -1,64 +1,67 @@
-# 📡 API Kontrat Merkezi (API Contract Hub)
+# API Contract Hub
 
-Bu dizin, **AI-Enderun** projesinin tüm ağ iletişim protokollerini ve endpoint dökümantasyonunu içerir. "Sıfır Hata" prensibi gereği, backend ve frontend arasındaki tüm etkileşimler burada önceden tanımlanmalıdır.
+Bu dizin, backend ve frontend arasındaki tüm API anlaşmalarının (endpoint, DTO, response, hata semantiği) tek referans noktasıdır.
 
----
+## Hedef
 
-## 🛡️ Altın Kurallar
+- Kontratsız implementasyonu engellemek
+- Frontend/backend ayrışmasını düşürmek
+- Faz geçişlerinde denetlenebilirlik sağlamak
 
-1. **Kontratsız Kod Yasaktır:** `@backend` bir endpoint yazmadan önce dökümanını hazırlamalı, `@frontend` dökümanı okumadan kod yazmamalıdır.
-2. **SSoT Uyumu:** Tüm dökümanlar `packages/shared-types` içindeki tiplerle %100 uyumlu olmalıdır.
-3. **Traceability:** Her endpoint tanımı, oluşturulduğu görevin `Trace ID`'sini içermelidir.
-4. **Versioning:** Kontratlardaki breaking change'ler mutlaka `@analyst` denetiminden geçmelidir.
+## Zorunlu Kurallar
 
----
+1. Endpoint yazılmadan önce kontrat dokümanı hazırlanır.
+2. Frontend, kontrat dokümanı olmadan entegrasyon yazmaz.
+3. Tip referansları `packages/shared-types` ile uyumlu olmalıdır.
+4. Her endpoint kaydında `Trace ID` bulunmalıdır.
+5. Breaking change durumunda `contract.version.json` ve `PROJECT_MEMORY.md` güncellenmelidir.
 
-## 📋 Endpoint İndeksi
+## Önerilen Dosya Yapısı
 
-| Domain | Durum | Endpoint Sayısı | Sorumlu | Son Güncelleme |
-| :--- | :--- | :--- | :--- | :--- |
-| **Auth** | ⏳ Beklemede | 0 | @backend | — |
-| **User** | ⏳ Beklemede | 0 | @backend | — |
-| **Project** | ⏳ Beklemede | 0 | @backend | — |
-
----
-
-## 📌 Operasyonel Akış
-
-### 🟢 Backend Protokolü
-- Yeni bir endpoint tasarlandığında ilgili `[domain].md` dosyasını oluşturun veya güncelleyin.
-- `shared-types` referanslarını (DTO ve Response tipleri) net bir şekilde belirtin.
-- Hata kodlarını (400, 401, 404 vb.) ve fırlatılma koşullarını dökümante edin.
-
-### 🔵 Frontend Protokolü
-- Geliştirmeye başlamadan önce bu dizini tarayın.
-- Kontrat dökümanı eksikse veya güncel değilse `@backend` ajanına `P1` öncelikli direktif gönderin.
-- Tahmin yürüterek veya mock verilerle (anayasa izni dışında) çalışmayın.
-
----
-
-## 📝 Standart Belgeleme Formatı
-
-Her `[domain].md` dosyası aşağıdaki profesyonel şablonu izlemelidir:
-
-```markdown
-# [Domain] API Kontratı
-
-## Genel Bakış
-[Domain'in amacı ve sorumluluğu]
-
-## Endpoint'ler
-
-### [METHOD] /api/v1/[path]
-- **Açıklama:** [İşlev]
-- **Auth:** [Gerekli/Değil] - [Rol]
-- **Request (DTO):** `shared-types` -> `XxxDTO`
-- **Response (200):** `shared-types` -> `XxxResponse`
-- **Hatalar:** 400 (Validation), 401 (Unauthorized), 404 (Not Found)
-- **Trace ID:** [UUID]
-- **Güncelleme:** YYYY-MM-DD
+```bash
+.gemini/docs/api/
+├── README.md
+├── auth.md
+├── user.md
+└── project.md
 ```
 
----
+## Endpoint Kayıt Şablonu
 
-*Bu döküman @analyst tarafından düzenli olarak denetlenmektedir.*
+```md
+# [Domain] API Contract
+
+## Summary
+- Owner: @backend
+- Trace ID: <uuid-v4>
+- Last Update: YYYY-MM-DD
+
+## Endpoints
+
+### [METHOD] /api/v1/[path]
+- Auth: Required | Optional
+- Request DTO: `packages/shared-types/src/index.ts` -> `XxxRequest`
+- Response DTO: `packages/shared-types/src/index.ts` -> `XxxResponse`
+- Errors:
+  - 400 VALIDATION_ERROR
+  - 401 UNAUTHORIZED
+  - 404 NOT_FOUND
+- Notes: [iş kuralı]
+```
+
+## İnceleme Checklist
+
+- Endpoint path/verb net mi?
+- Request/response tipleri shared-types ile birebir mi?
+- Hata kodları ve hata mesajları tanımlı mı?
+- Auth gereksinimi açık mı?
+- Trace ID mevcut mu?
+
+## Faz Geçişi İçin Minimum Kriter
+
+- PHASE_1 bitişi için: kritik domain kontratları dokümante edilmiş olmalı.
+- PHASE_2 başlangıcı için: frontend tüketeceği endpointleri bu klasörde doğrulamış olmalı.
+
+## Operasyon Notu
+
+Bu klasör, `PROJECT_MEMORY.md` ve agent logları ile birlikte okunmalıdır. API kararları her zaman hafıza kayıtlarıyla ilişkilendirilmelidir.

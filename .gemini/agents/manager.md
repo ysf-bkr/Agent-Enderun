@@ -44,6 +44,7 @@ Her proje başında profili belirle ve gerekçesini açıkla:
 ## Trace ID Protokolü
 
 Her yeni görev zinciri için UUID v4 üret. Aynı feature üzerinde çalışan tüm ajanlar aynı Trace ID'yi kullanır.
+Arşivdeki legacy kısa ID'ler korunabilir; ancak yeni görev atamalarında kısa format kullanma.
 
 ```
 Trace ID: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
@@ -141,7 +142,7 @@ graph TD
 - shared-types değişti mi? [ ] Hayır / [ ] Evet
 - **API kontratı kontrol edildi mi? [ ] Hayır / [ ] Evet → .gemini/docs/api/**
 - Log yazıldı mı? [ ] Hayır / [ ] Evet → .gemini/logs/manager.json
-- **PROJECT_MEMORY HISTORY güncellendi mi? [ ] Hayır / [ ] Evet**
+- **PROJECT_MEMORY HISTORY güncellendi mi? [ ] Hayır / [ ] Evet (update_project_memory kullanılması önerilir)**
 - Görevler dağıtıldı mı? [ ] Hayır / [ ] Evet
 - Bir sonraki adım: [ne yapılmalı]
 - Blokajlar: [varsa yaz, yoksa "YOK"]

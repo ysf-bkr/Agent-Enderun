@@ -1,73 +1,86 @@
-# 📐 ai-enderun-shared-types (v0.0.2)
+# ai-enderun-shared-types (v0.0.2)
 
-**Durum:** 🛠️ Tek Gerçeklik Kaynağı (SSoT)  
-**Felsefe:** Contract-First Disiplini  
-**Rol:** Teknik Anayasa ve Veri Kontratı
+`ai-enderun-shared-types`, AI-Enderun içinde backend/frontend arasında paylaşılan tip sözleşmelerinin merkezi paketidir.
 
-**ai-enderun-shared-types**, projenin tüm veri yapılarını, API kontratlarını ve tip tanımlarını yöneten merkezi katmandır. Backend ve Frontend arasındaki iletişimin "Sıfır Hata" ile yürümesini sağlayan teknik protokoldür.
+## Amaç
 
----
+- ID ve DTO tiplerini tek yerde toplamak
+- Contract-first geliştirmeyi desteklemek
+- Faz geçişlerinde sözleşme doğrulaması yapmak
 
-## 🏗️ Paket Yapısı
+## Güncel Dizin Yapısı
 
 ```bash
 shared-types/
 ├── src/
-│   ├── index.ts        # Ana export noktası (Tüm tipler buradan dağılır)
-│   ├── models/         # Domain modelleri (User, Project vb.)
-│   ├── dtos/           # Request/Response nesneleri
-│   └── branding.ts     # Branded Types (Type-safe ID'ler)
-├── contract.version.json # Kontrat bütünlük hash'i
-└── tsconfig.json       # TS konfigürasyonu
+│   └── index.ts
+├── dist/
+│   ├── index.js
+│   ├── index.d.ts
+│   └── *.map
+├── contract.version.json
+├── package.json
+└── tsconfig.json
 ```
 
----
-
-## 🛡️ Kontrat Güncelleme Protokolü
-
-Yeni bir özellik eklenirken veya mevcut bir yapı değiştirilirken şu adımlar izlenmelidir:
-
-1. **Tipleri Tanımla:** `src/` altında yeni tipleri oluşturun.
-2. **Branded Types Kullan:** ID'ler için her zaman Branded Types kullanın (Örn: `UserID`).
-3. **Export Et:** `index.ts` üzerinden dışa aktarın.
-4. **Hash Güncelle:** `Gemini.md`'de belirtilen komutla `contract.version.json` dosyasındaki hash'i güncelleyin.
-5. **@analyst Onayı:** Değişiklikler `@analyst` ajanı tarafından doğrulanmadan `PHASE_2`'ye geçilemez.
-
----
-
-## 📜 Örnek Kullanım
-
-```typescript
-// Branded Type Örneği
-export type UserID = string & { __brand: "UserID" };
-
-// DTO Örneği
-export interface CreateUserDTO {
-  email: string;
-  fullName: string;
-}
-
-// Response Örneği
-export interface UserResponse {
-  id: UserID;
-  email: string;
-  createdAt: string;
-}
-```
-
----
-
-## 🚀 Kurulum ve Kullanım
-
-Bu paket, monorepo içindeki diğer paketler tarafından tüketilmek üzere tasarlanmıştır:
+## Geliştirme Komutları
 
 ```bash
-# Monorepo içinde kullanım
-npm install @ai-enderun/shared-types
+cd packages/shared-types
+npm install
+npm run build
+npm run typecheck
 ```
 
----
+Not: Bu pakette `tsc` local devDependency olarak kullanılır.
 
-## 📜 Lisans
+## Yayın Davranışı
 
-MIT - Yusuf BEKAR
+Paket yayınına giren dosyalar:
+
+- `dist/`
+- `README.md`
+- `package.json`
+
+Kontrol:
+
+```bash
+npm pack --dry-run
+```
+
+## Kontrat Hash Doğrulama
+
+`contract.version.json` içindeki hash ile kaynak hash'i karşılaştırma:
+
+```bash
+CURRENT_HASH=$(find packages/shared-types/src -name "*.ts" | sort | xargs shasum -a 256 | shasum -a 256 | awk '{print $1}')
+STORED_HASH=$(jq -r '.contract_hash' packages/shared-types/contract.version.json)
+[ "$CURRENT_HASH" = "$STORED_HASH" ] && echo "HASH OK" || echo "HASH MISMATCH"
+```
+
+## Kullanım Örneği
+
+```ts
+import type { ApiResponse, UserID } from "ai-enderun-shared-types";
+
+function asUserId(raw: string): UserID {
+  return raw as UserID;
+}
+
+const response: ApiResponse<{ id: UserID }> = {
+  success: true,
+  data: { id: asUserId("u-123") },
+};
+```
+
+## Değişiklik Protokolü
+
+1. `src/index.ts` güncelle.
+2. `npm run typecheck` çalıştır.
+3. `npm run build` ile `dist` üret.
+4. `contract.version.json` hash güncelle.
+5. `PROJECT_MEMORY.md` ve ilgili log dosyasında değişikliği kaydet.
+
+## Lisans
+
+MIT

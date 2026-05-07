@@ -11,7 +11,7 @@ import fs from "fs";
 const server = new Server(
   {
     name: "ai-agent-framework-mcp",
-    version: "1.0.6",
+    version: "0.0.2",
   },
   {
     capabilities: {
@@ -31,6 +31,17 @@ const SEARCH_CODEBASE_ARGS_SCHEMA = z.object({
     .regex(/^[a-z0-9]+$/i)
     .default("ts"),
 });
+
+const UPDATE_MEMORY_ARGS_SCHEMA = z.object({
+  section: z.enum(["MEVCUT DURUM", "HISTORY", "AKTİF GÖREVLER"]),
+  content: z.string().min(1),
+});
+
+const ANALYZE_DEPENDENCIES_ARGS_SCHEMA = z.object({
+  path: z.string().min(1),
+});
+
+const FRAMEWORK_VERSION = "0.0.2";
 
 function resolveSafePath(projectRoot: string, targetPath: string): string {
   const resolved = path.resolve(projectRoot, targetPath);
@@ -90,6 +101,53 @@ function buildLineMatches(
   return matches;
 }
 
+function collectMarkdownArtifacts(projectRoot: string): string[] {
+  const docsRoot = path.join(projectRoot, ".gemini", "docs");
+  if (!fs.existsSync(docsRoot)) return [];
+
+  return collectFilesRecursively(docsRoot, new Set(["md"])).map((filePath) =>
+    path.relative(projectRoot, filePath),
+  );
+}
+
+function replaceSectionContent(
+  markdown: string,
+  sectionTitle: string,
+  newBody: string,
+): string {
+  const escaped = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const sectionRegex = new RegExp(
+    `## ${escaped}[\\s\\S]*?(?=\\n## |$)`,
+    "m",
+  );
+  if (!sectionRegex.test(markdown)) {
+    throw new Error(`Section not found: ${sectionTitle}`);
+  }
+
+  return markdown.replace(
+    sectionRegex,
+    `## ${sectionTitle}\n\n${newBody.trim()}\n`,
+  );
+}
+
+function prependToSection(
+  markdown: string,
+  sectionTitle: string,
+  contentToPrepend: string,
+): string {
+  const escaped = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const sectionRegex = new RegExp(`(## ${escaped}\\n)([\\s\\S]*?)(?=\\n## |$)`, "m");
+  const match = markdown.match(sectionRegex);
+
+  if (!match) {
+    throw new Error(`Section not found: ${sectionTitle}`);
+  }
+
+  const currentBody = match[2].trimStart();
+  const updatedBody = `${contentToPrepend.trim()}\n\n${currentBody}`.trim();
+  return markdown.replace(sectionRegex, `$1\n${updatedBody}\n`);
+}
+
 /**
  * Tool definitions
  */
@@ -123,9 +181,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: "codebase_search",
+        description:
+          "Compatibility alias for search_codebase. Use when older agent prompts still reference codebase_search.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "Search query or regex pattern",
+            },
+            extension: {
+              type: "string",
+              description: "File extension filter (e.g., ts, md)",
+              default: "ts",
+            },
+          },
+          required: ["query"],
+        },
+      },
+      {
         name: "analyze_dependencies",
         description:
           "Analyze code dependencies for a specific file or folder using import tracking.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            path: {
+              type: "string",
+              description: "Path to analyze (relative to project root)",
+            },
+          },
+          required: ["path"],
+        },
+      },
+      {
+        name: "codebase_graph_query",
+        description:
+          "Compatibility alias for analyze_dependencies. Returns import-level dependency information for a file or folder.",
         inputSchema: {
           type: "object",
           properties: {
@@ -144,9 +237,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: { type: "object", properties: {} },
       },
       {
+        name: "codebase_context",
+        description:
+          "Compatibility helper for non-code context discovery. Lists known markdown artifacts under .gemini/docs and memory files.",
+        inputSchema: { type: "object", properties: {} },
+      },
+      {
+        name: "codebase_context_search",
+        description:
+          "Compatibility alias for search_codebase focused on markdown artifacts. Defaults to md files.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "Search query or regex pattern",
+            },
+            extension: {
+              type: "string",
+              description: "File extension filter (defaults to md)",
+              default: "md",
+            },
+          },
+          required: ["query"],
+        },
+      },
+      {
         name: "get_project_gaps",
         description:
           "Scans the project structure against the defined standards in Gemini.md and identifies missing files, folders, or documentation.",
+        inputSchema: { type: "object", properties: {} },
+      },
+      {
+        name: "codebase_status",
+        description: "Compatibility alias for get_framework_status.",
         inputSchema: { type: "object", properties: {} },
       },
       {
@@ -164,6 +288,26 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: "update_project_memory",
+        description:
+          "Update a specific section of PROJECT_MEMORY.md (MEVCUT DURUM, HISTORY, or AKTİF GÖREVLER) with new content.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            section: {
+              type: "string",
+              enum: ["MEVCUT DURUM", "HISTORY", "AKTİF GÖREVLER"],
+              description: "The section to update.",
+            },
+            content: {
+              type: "string",
+              description: "The new content to append or replace in that section.",
+            },
+          },
+          required: ["section", "content"],
+        },
+      },
     ],
   };
 });
@@ -176,7 +320,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const projectRoot = process.cwd();
 
   switch (name) {
-    case "get_framework_status": {
+    case "get_framework_status":
+    case "codebase_status": {
       try {
         const memoryPath = path.join(
           projectRoot,
@@ -184,13 +329,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "PROJECT_MEMORY.md",
         );
         const memoryContent = fs.readFileSync(memoryPath, "utf-8");
-        const phaseMatch = memoryContent.match(/\| Aktif Faz \| (.+?) \|/);
-        const phase = phaseMatch ? phaseMatch[1].trim() : "UNKNOWN";
+        const statusRowMatch = memoryContent.match(
+          /\| Aktif Faz \| Profile \| Son Güncelleme \| Aktif Trace ID \| Blokaj \|\n\| :-------- \| :------ \| :------------- \| :------------- \| :----- \|\n\| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|/,
+        );
+        const phase = statusRowMatch?.[1]?.trim() ?? "UNKNOWN";
+        const profile = statusRowMatch?.[2]?.trim() ?? "UNKNOWN";
         return {
           content: [
             {
               type: "text",
-              text: `Framework active (v1.0.5). Phase: ${phase}.`,
+              text: `Framework active (v${FRAMEWORK_VERSION}). Phase: ${phase}. Profile: ${profile}.`,
             },
           ],
         };
@@ -243,6 +391,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           pattern: "any",
           message: "Usage of 'any' type detected",
           severity: "MEDIUM",
+        },
+        {
+          pattern: "eval(",
+          message: "Dangerous 'eval()' usage detected",
+          severity: "HIGH",
+        },
+        {
+          pattern: ".innerHTML =",
+          message: "Unsafe innerHTML assignment detected (XSS risk)",
+          severity: "MEDIUM",
+        },
+        {
+          pattern: "dangerouslySetInnerHTML",
+          message: "React dangerouslySetInnerHTML detected",
+          severity: "MEDIUM",
+        },
+        {
+          pattern: "TODO:",
+          message: "Outstanding TODO item found",
+          severity: "LOW",
         },
       ];
 
@@ -313,12 +481,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const activeTasks =
           memory.split("## AKTİF GÖREVLER")[1]?.split("##")[0] ||
           "No active tasks.";
+        const dashboardAgents =
+          dashboard.split("## 📈 Visualizations")[0] || dashboard;
 
         return {
           content: [
             {
               type: "text",
-              text: `### LIVE MEMORY INSIGHTS\n\n**Active Tasks:**\n${activeTasks.trim()}\n\n**Recent History:**\n${history.trim().substring(0, 1000)}...`,
+              text: `### LIVE MEMORY INSIGHTS\n\n**Active Tasks:**\n${activeTasks.trim()}\n\n**Recent History:**\n${history.trim().substring(0, 1000)}...\n\n**Brain Snapshot:**\n${dashboardAgents.trim().substring(0, 500)}...`,
             },
           ],
         };
@@ -331,6 +501,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
     }
 
+    case "codebase_context": {
+      try {
+        const artifacts = collectMarkdownArtifacts(projectRoot);
+        const memoryPath = path.join(
+          projectRoot,
+          ".gemini",
+          "PROJECT_MEMORY.md",
+        );
+        const dashboardPath = path.join(
+          projectRoot,
+          ".gemini",
+          "BRAIN_DASHBOARD.md",
+        );
+
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                "### CONTEXT ARTIFACTS\n\n" +
+                `PROJECT_MEMORY: ${fs.existsSync(memoryPath) ? "present" : "missing"}\n` +
+                `BRAIN_DASHBOARD: ${fs.existsSync(dashboardPath) ? "present" : "missing"}\n` +
+                `Docs:\n${artifacts.length > 0 ? artifacts.join("\n") : "No markdown artifacts found."}`,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [{ type: "text", text: "Context discovery failed." }],
+        };
+      }
+    }
+
     case "get_project_gaps": {
       const missing = [];
       const checkPaths = [
@@ -338,6 +541,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         { path: "packages/shared-types/src/index.ts", type: "file" },
         { path: ".gemini/docs/api/README.md", type: "file" },
         { path: ".env", type: "file" },
+        { path: ".env.development", type: "file" },
+        { path: ".gemini/PROJECT_MEMORY.md", type: "file" },
+        { path: ".gemini/logs/manager.json", type: "file" },
+        { path: ".gemini/logs/analyst.json", type: "file" },
+        { path: ".gemini/logs/backend.json", type: "file" },
+        { path: ".gemini/logs/frontend.json", type: "file" },
+        { path: ".gemini/logs/explorer.json", type: "file" },
       ];
 
       for (const item of checkPaths) {
@@ -360,8 +570,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
 
-    case "search_codebase": {
-      const parsed = SEARCH_CODEBASE_ARGS_SCHEMA.safeParse(args ?? {});
+    case "search_codebase":
+    case "codebase_search":
+    case "codebase_context_search": {
+      const mergedArgs =
+        name === "codebase_context_search"
+          ? { extension: "md", ...(args ?? {}) }
+          : (args ?? {});
+      const parsed = SEARCH_CODEBASE_ARGS_SCHEMA.safeParse(mergedArgs);
       if (!parsed.success) {
         return {
           content: [
@@ -408,10 +624,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
     }
 
-    case "analyze_dependencies": {
-      const targetPath = args?.path as string;
+    case "analyze_dependencies":
+    case "codebase_graph_query": {
+      const parsed = ANALYZE_DEPENDENCIES_ARGS_SCHEMA.safeParse(args ?? {});
+      if (!parsed.success) {
+        return {
+          content: [{ type: "text", text: "Invalid path argument." }],
+        };
+      }
+
+      const targetPath = parsed.data.path;
       try {
-        const fullPath = path.resolve(projectRoot, targetPath);
+        const fullPath = resolveSafePath(projectRoot, targetPath);
         if (!fs.existsSync(fullPath))
           return {
             content: [{ type: "text", text: `Path not found: ${targetPath}` }],
@@ -431,18 +655,90 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           };
         } else {
           const content = fs.readFileSync(fullPath, "utf-8");
-          const imports = content.match(/from\s+['"](.+?)['"]/g) || [];
+          const importRegex = /from\s+['"](.+?)['"]/g;
+          const imports = [];
+          let match;
+          while ((match = importRegex.exec(content)) !== null) {
+            const importPath = match[1];
+            let resolved = "unresolved";
+            
+            // Basic relative path resolution
+            if (importPath.startsWith(".")) {
+              const absImport = path.resolve(path.dirname(fullPath), importPath);
+              const possiblePaths = [absImport, absImport + ".ts", absImport + ".tsx", path.join(absImport, "index.ts")];
+              for (const p of possiblePaths) {
+                if (fs.existsSync(p)) {
+                  resolved = path.relative(projectRoot, p);
+                  break;
+                }
+              }
+            }
+            
+            imports.push(`- ${importPath} (${resolved})`);
+          }
+          
           return {
             content: [
               {
                 type: "text",
-                text: `Dependencies for ${targetPath}:\n${imports.join("\n")}`,
+                text: `Dependencies for ${targetPath}:\n${imports.length > 0 ? imports.join("\n") : "No imports found."}`,
               },
             ],
           };
         }
       } catch (error) {
         return { content: [{ type: "text", text: "Analysis failed." }] };
+      }
+    }
+    case "update_project_memory": {
+      const parsed = UPDATE_MEMORY_ARGS_SCHEMA.safeParse(args ?? {});
+      if (!parsed.success) {
+        return { content: [{ type: "text", text: "Invalid section or content." }] };
+      }
+
+      const { section, content } = parsed.data;
+      const memoryPath = path.join(projectRoot, ".gemini", "PROJECT_MEMORY.md");
+      const lockPath = memoryPath + ".lock";
+
+      try {
+        // Lock protocol (simplified for MCP)
+        if (fs.existsSync(lockPath)) {
+          return { content: [{ type: "text", text: "Memory is locked. Try again later." }] };
+        }
+        fs.writeFileSync(lockPath, "LOCKED");
+
+        let memoryContent = fs.readFileSync(memoryPath, "utf-8");
+        
+        if (section === "HISTORY") {
+          memoryContent = prependToSection(
+            memoryContent,
+            "HISTORY (Kalıcı Hafıza)",
+            content,
+          );
+        } else if (section === "MEVCUT DURUM") {
+          memoryContent = replaceSectionContent(
+            memoryContent,
+            "MEVCUT DURUM",
+            content,
+          );
+        } else if (section === "AKTİF GÖREVLER") {
+          memoryContent = replaceSectionContent(
+            memoryContent,
+            "AKTİF GÖREVLER",
+            content,
+          );
+        }
+
+        fs.writeFileSync(memoryPath, memoryContent);
+        fs.unlinkSync(lockPath);
+
+        return { content: [{ type: "text", text: `Section ${section} updated successfully.` }] };
+      } catch (error) {
+        if (fs.existsSync(lockPath)) fs.unlinkSync(lockPath);
+        const message = error instanceof Error ? error.message : "Unknown error";
+        return {
+          content: [{ type: "text", text: `Memory update failed: ${message}` }],
+        };
       }
     }
 

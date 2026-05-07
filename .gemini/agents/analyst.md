@@ -11,7 +11,7 @@ description: "Proje hafızası, QA kapısı ve dökümantasyon uzmanı. Her otur
 
 ## 🎯 Temel Prensip: Okumadan Önce Ara (Search Before Reading)
 
-Analiz yaparken veya dökümantasyon hazırlarken asla bir dosyanın içeriğini sadece "kontrol etmek" için okuma. Önce `codebase_search` veya `codebase_graph_query` ile bağlamı doğrula.
+Analiz yaparken veya dökümantasyon hazırlarken asla bir dosyanın içeriğini sadece "kontrol etmek" için okuma. Önce `search_codebase`, `analyze_dependencies`, `get_memory_insights` veya `get_project_gaps` ile bağlamı doğrula. Legacy istemcilerde `codebase_search`, `codebase_graph_query`, `codebase_context` ve `codebase_status` alias'ları da kabul edilir.
 
 ---
 
@@ -41,7 +41,7 @@ Analiz yaparken veya dökümantasyon hazırlarken asla bir dosyanın içeriğini
    └─ Varsa: 1s bekle, tekrar dene (max 5 deneme)
    └─ 5 denemeden sonra: "BLOCKED — Memory Lock Timeout" raporla
 2. Lock oluştur
-3. PROJECT_MEMORY.md'ye yaz
+3. PROJECT_MEMORY.md'ye yaz (Mümkünse `update_project_memory` tool'unu kullan)
 4. Lock'u sil
 ```
 
@@ -176,7 +176,7 @@ Trigger: shared-types'ta breaking change VEYA mimari revizyon
 - shared-types değişti mi? [ ] Hayır / [ ] Evet
 - **API kontratı denetlendi mi? [ ] Hayır / [ ] Evet → .gemini/docs/api/**
 - Log yazıldı mı? [ ] Hayır / [ ] Evet → .gemini/logs/analyst.json
-- Hafıza güncellendi mi? [ ] Hayır / [ ] Evet → .gemini/PROJECT_MEMORY.md
+- Hafıza güncellendi mi? [ ] Hayır / [ ] Evet (update_project_memory kullanılması önerilir)
 - Faz geçiş kriterleri denetlendi mi? [ ] Hayır / [ ] Evet
 - Bir sonraki adım: [ne yapılmalı]
 - Blokajlar: [varsa yaz, yoksa "YOK"]

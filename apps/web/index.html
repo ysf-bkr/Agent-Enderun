@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Enderun Frontend Operasyon Testi</title>
+    <style>
+      :root {
+        --bg: radial-gradient(circle at 10% 20%, #f3fff7 0%, #e4f6ff 40%, #fff9ef 100%);
+        --card: #ffffff;
+        --ink: #112233;
+        --muted: #4f6678;
+        --line: #d6e5ef;
+        --accent: #00754a;
+        --accent-2: #0f5ab8;
+        --error: #b42318;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Avenir Next", "Nunito", "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .panel {
+        width: min(760px, 100%);
+        background: color-mix(in srgb, var(--card) 90%, #f9fffd 10%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: clamp(18px, 3vw, 28px);
+        box-shadow: 0 20px 45px rgba(18, 47, 69, 0.12);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(1.4rem, 2.5vw, 2rem);
+      }
+
+      p {
+        margin: 0 0 16px;
+        color: var(--muted);
+      }
+
+      form {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      input {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 1rem;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button[type="submit"] {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .ghost {
+        background: #ebf3fb;
+        color: var(--accent-2);
+      }
+
+      #status {
+        margin: 14px 0;
+        font-weight: 600;
+      }
+
+      #status[data-type="error"] {
+        color: var(--error);
+      }
+
+      #status[data-type="success"] {
+        color: var(--accent);
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .task-item,
+      .empty {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: #fff;
+      }
+
+      .task-title {
+        font-weight: 600;
+        max-width: calc(100% - 120px);
+        overflow-wrap: anywhere;
+      }
+
+      .empty {
+        color: var(--muted);
+        justify-content: center;
+      }
+
+      @media (max-width: 560px) {
+        form {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="panel">
+      <h1>Frontend Operasyon Kontrol Sayfası</h1>
+      <p>Bu sayfa üzerinden görev ekleme ve düzenleme akışını canlı test edebilirsin.</p>
+
+      <form id="task-form">
+        <input id="task-title" type="text" placeholder="Görev başlığı" autocomplete="off" />
+        <button type="submit">Ekle</button>
+      </form>
+
+      <div id="status" data-type="info"></div>
+      <ul id="task-list"></ul>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

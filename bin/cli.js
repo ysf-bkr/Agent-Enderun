@@ -25,6 +25,58 @@ function generateUUID() {
   return crypto.randomUUID();
 }
 
+function sleep(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function acquireMemoryLock(lockPath, maxRetries = 5) {
+  for (let attempt = 0; attempt < maxRetries; attempt += 1) {
+    try {
+      const fd = fs.openSync(lockPath, "wx");
+      fs.closeSync(fd);
+      return true;
+    } catch (error) {
+      if (error?.code !== "EEXIST") throw error;
+      if (attempt < maxRetries - 1) sleep(1000);
+    }
+  }
+  return false;
+}
+
+function releaseMemoryLock(lockPath) {
+  if (fs.existsSync(lockPath)) fs.unlinkSync(lockPath);
+}
+
+function insertTaskRow(memoryContent, row) {
+  const sectionHeader = "## AKTİF GÖREVLER";
+  const tableDivider = "| :------- | :---- | :--- | :------ | :---- |";
+  const sectionIndex = memoryContent.indexOf(sectionHeader);
+  if (sectionIndex === -1) return null;
+  const dividerIndex = memoryContent.indexOf(tableDivider, sectionIndex);
+  if (dividerIndex === -1) return null;
+  const dividerLineEnd = memoryContent.indexOf("\n", dividerIndex);
+  if (dividerLineEnd === -1) return null;
+
+  return (
+    memoryContent.slice(0, dividerLineEnd + 1) +
+    `${row}\n` +
+    memoryContent.slice(dividerLineEnd + 1)
+  );
+}
+
+function sanitizeTableCell(value) {
+  return String(value).replace(/\|/g, "\\|").replace(/\r?\n/g, " ").trim();
+}
+
+function normalizeAgentName(agent) {
+  return String(agent || "manager").replace(/^@+/, "").trim() || "manager";
+}
+
+function normalizePriority(priority) {
+  const normalized = String(priority || "P2").toUpperCase().trim();
+  return /^P[0-3]$/.test(normalized) ? normalized : "P2";
+}
+
 // --- KOMUTLAR ---
 
 /**
@@ -38,7 +90,13 @@ async function initCommand(selectedAdapter) {
     codex: ["CODEX.md"],
   };
 
-  const CORE_FILES = [".gemini", "mcp.json", ".env.example", ".socraticodecontextartifacts.json"];
+  const CORE_FILES = [
+    ".gemini",
+    "mcp.json",
+    ".env.example",
+    "packages/framework-mcp",
+    "packages/shared-types",
+  ];
 
   console.log("🚀 AI Agent Framework kuruluyor...");
   
@@ -68,8 +126,12 @@ async function initCommand(selectedAdapter) {
 }
 
 function copyDir(src, dest) {
+  const SKIP_NAMES = new Set(["node_modules", ".git", ".DS_Store"]);
+
   fs.mkdirSync(dest, { recursive: true });
   fs.readdirSync(src, { withFileTypes: true }).forEach(entry => {
+    if (SKIP_NAMES.has(entry.name)) return;
+
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     entry.isDirectory() ? copyDir(srcPath, destPath) : fs.copyFileSync(srcPath, destPath);
@@ -87,13 +149,15 @@ function statusCommand() {
   }
 
   const content = fs.readFileSync(memoryPath, "utf8");
-  const statusMatch = content.match(/\| Aktif Faz \| Son Güncelleme \| Aktif Trace ID \|\n\| :-------- \| :------------- \| :------------- \|\n\| (.*?) \| (.*?) \| (.*?) \|/);
+  const statusMatch = content.match(/\| Aktif Faz \| Profile \| Son Güncelleme \| Aktif Trace ID \| Blokaj \|\n\| :-------- \| :------ \| :------------- \| :------------- \| :----- \|\n\| (.*?) \| (.*?) \| (.*?) \| (.*?) \| (.*?) \|/);
   
   console.log("\n📊 --- PROJE DURUMU ---");
   if (statusMatch) {
     console.log(`🔹 Faz: ${statusMatch[1].trim()}`);
-    console.log(`📅 Güncelleme: ${statusMatch[2].trim()}`);
-    console.log(`🆔 Trace ID: ${statusMatch[3].trim()}`);
+    console.log(`🧭 Profile: ${statusMatch[2].trim()}`);
+    console.log(`📅 Güncelleme: ${statusMatch[3].trim()}`);
+    console.log(`🆔 Trace ID: ${statusMatch[4].trim()}`);
+    console.log(`⛔ Blokaj: ${statusMatch[5].trim()}`);
   }
 
   const tasksSection = content.match(/## AKTİF GÖREVLER\n\n([\s\S]*?)\n\n##/);
@@ -108,23 +172,39 @@ function statusCommand() {
 /**
  * Yeni bir Trace ID üretir ve hafızaya ekler
  */
-function traceNewCommand(description, agent = "manager") {
+function traceNewCommand(description, agent = "manager", priority = "P2") {
   const memoryPath = getMemoryPath();
   if (!fs.existsSync(memoryPath)) {
     console.error("❌ Hata: PROJECT_MEMORY.md bulunamadı.");
     return;
   }
 
-  const traceId = `TRACE-${generateUUID().slice(0, 8).toUpperCase()}`;
-  const date = new Date().toISOString().split('T')[0];
-  const newTask = `- [ ] [${traceId}] ${description} (@${agent})`;
+  const traceId = generateUUID();
+  const safeDescription = sanitizeTableCell(description);
+  const safeAgent = normalizeAgentName(agent);
+  const safePriority = normalizePriority(priority);
+  const newTask = `| ${traceId} | ${safeDescription} | @${safeAgent} | ${safePriority} | IN_PROGRESS |`;
+  const lockPath = `${memoryPath}.lock`;
 
-  let content = fs.readFileSync(memoryPath, "utf8");
-  content = content.replace("## AKTİF GÖREVLER\n\n", `## AKTİF GÖREVLER\n\n${newTask}\n`);
-  
-  fs.writeFileSync(memoryPath, content);
-  console.log(`\n✅ Yeni Trace ID oluşturuldu: ${traceId}`);
-  console.log(`📝 Görev listesine eklendi: ${description}\n`);
+  if (!acquireMemoryLock(lockPath)) {
+    console.error("❌ Hata: Bellek kilidi zaman aşımına uğradı (5 deneme).");
+    return;
+  }
+
+  try {
+    const content = fs.readFileSync(memoryPath, "utf8");
+    const updated = insertTaskRow(content, newTask);
+    if (!updated) {
+      console.error("❌ Hata: AKTİF GÖREVLER tablosu bulunamadı, görev eklenemedi.");
+      return;
+    }
+
+    fs.writeFileSync(memoryPath, updated);
+    console.log(`\n✅ Yeni Trace ID oluşturuldu: ${traceId}`);
+    console.log(`📝 Görev listesine eklendi: ${description}\n`);
+  } finally {
+    releaseMemoryLock(lockPath);
+  }
 }
 
 // --- ANA DISPATCHER ---
@@ -141,9 +221,9 @@ async function main() {
       break;
     case "trace:new":
       if (!args[0]) {
-        console.error("❌ Kullanım: ai-agent-framework trace:new <açıklama> [agent]");
+        console.error("❌ Kullanım: ai-agent-framework trace:new <açıklama> [agent] [priority]");
       } else {
-        traceNewCommand(args[0], args[1]);
+        traceNewCommand(args[0], args[1], args[2]);
       }
       break;
     case "version":
@@ -162,7 +242,7 @@ Kullanılabilir Komutlar:
   version           Versiyon bilgisini gösterir
 
 Örnek:
-  ai-agent-framework trace:new "Auth modülü tasarımı" backend
+  ai-agent-framework trace:new "Auth modülü tasarımı" backend P1
       `);
       break;
   }

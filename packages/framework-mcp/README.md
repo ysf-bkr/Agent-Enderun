@@ -1,57 +1,134 @@
-# 🧠 ai-enderun-mcp (v0.0.2)
+# ai-enderun-mcp (v0.0.2)
 
-**Durum:** 🛠️ Zeka ve Keşif Motoru (Çekirdek)  
-**Protokol:** Model Context Protocol (MCP) v1.0
+`ai-enderun-mcp`, AI-Enderun ajanlarının projeyi güvenli biçimde taraması, sorgulaması ve hafıza görünürlüğü kazanması için kullanılan MCP sunucusudur.
 
-**ai-enderun-mcp**, AI-Enderun framework'ünün "Duyuları" ve "Analiz Motoru"dur. Bu paket, yapay zeka ajanlarının (Claude, Gemini, Cursor vb.) kod tabanınıza güvenli, semantik ve yapılandırılmış bir şekilde erişmesini sağlayan bir **Model Context Protocol (MCP)** sunucusudur.
+## Paket Özeti
 
----
+- Paket adı: `ai-enderun-mcp`
+- Çalışma şekli: `stdio` transport
+- Giriş noktası: `dist/index.js`
+- Protokol: Model Context Protocol (MCP)
 
-## 🛠️ Sunulan Araçlar (Yetenekler)
+## Kurulum ve Build
 
-Sunucu, yapay zeka ajanlarına aşağıdaki profesyonel araçları sağlar:
+```bash
+cd packages/framework-mcp
+npm install
+npm run build
+```
 
-| Araç | Açıklama |
-| :--- | :--- |
-| **`get_framework_status`** | Projenin aktif fazını, anayasa uyumluluğunu ve genel durumunu raporlar. |
-| **`search_codebase`** | Kod tabanında semantik ve regex tabanlı derin aramalar yapar. Mantık ve desen bulmak için idealdir. |
-| **`analyze_dependencies`** | Belirli bir dosya veya klasörün bağımlılıklarını ve import zincirini analiz eder. |
-| **`get_memory_insights`** | `PROJECT_MEMORY.md` ve `BRAIN_DASHBOARD.md` dosyalarını analiz ederek bağlam özetleri sunar. |
-| **`get_project_gaps`** | Proje yapısını `Gemini.md` standartlarına göre tarar ve eksik döküman/dosyaları tespit eder. |
-| **`security_audit_scan`** | Kod tabanını; hardcoded secret'lar, raw SQL kullanımı ve güvensiz async desenleri için tarar. |
+Geliştirme modu:
 
----
+```bash
+npm run dev
+```
 
-## 🚀 Entegrasyon Rehberi
+Üretim modu:
 
-### Claude Desktop (macOS/Windows)
-`~/Library/Application Support/Claude/claude_desktop_config.json` dosyanıza ekleyin:
+```bash
+npm start
+```
+
+## MCP İstemci Konfigürasyonu
+
+Örnek:
 
 ```json
 {
   "mcpServers": {
-    "ai-enderun-mcp": {
+    "framework-mcp": {
       "command": "node",
-      "args": ["/yol/to/base/packages/framework-mcp/dist/index.js"]
+      "args": ["/abs/path/to/packages/framework-mcp/dist/index.js"]
     }
   }
 }
 ```
 
-### Geliştirme Modu
-Yerel olarak test etmek için:
-```bash
-npm run dev # packages/framework-mcp dizininde
+## Tool Kataloğu
+
+### Ana tool'lar
+
+- `get_framework_status`
+- `search_codebase`
+- `analyze_dependencies`
+- `get_memory_insights`
+- `get_project_gaps`
+- `security_audit_scan`
+- `update_project_memory`
+
+### Uyumluluk alias'ları
+
+- `codebase_status` -> `get_framework_status`
+- `codebase_search` -> `search_codebase`
+- `codebase_graph_query` -> `analyze_dependencies`
+- `codebase_context` -> context artifact listing
+- `codebase_context_search` -> markdown odaklı arama
+
+## Güvenlik ve Yazma Kapsamı
+
+- Path escape engeli var (`resolveSafePath`): proje kökü dışı erişim reddedilir.
+- Kod dosyaları üzerinde yazma yoktur.
+- Sadece kontrollü hafıza güncellemesi desteklenir:
+  - `update_project_memory` -> `MEVCUT DURUM`, `HISTORY`, `AKTİF GÖREVLER`
+- Hafıza güncellemesinde lock dosyası kullanılır (`PROJECT_MEMORY.md.lock`).
+
+## Pratik Örnekler
+
+### Kod arama
+
+```json
+{
+  "name": "search_codebase",
+  "arguments": {
+    "query": "trace:new",
+    "extension": "js"
+  }
+}
 ```
 
----
+### Bağımlılık analizi
 
-## 🛡️ Güvenlik Politikası
-- **Path Escape Prevention:** Araçlar, proje kök dizini dışındaki dosyalara erişimi engeller.
-- **Read-Only Operations:** MCP araçları sadece okuma ve analiz yapar, kod üzerinde değişiklik yapamaz (değişiklikler ajanlar tarafından önerilir).
-- **Audit Logging:** Her MCP çağrısı sistem tarafından loglanır.
+```json
+{
+  "name": "analyze_dependencies",
+  "arguments": {
+    "path": "bin/cli.js"
+  }
+}
+```
 
----
+### Hafıza içgörüsü
 
-## 📜 Lisans
-MIT - Yusuf BEKAR
+```json
+{
+  "name": "get_memory_insights",
+  "arguments": {}
+}
+```
+
+## Yayın İçeriği
+
+Paket sadece aşağıdakileri yayınlar:
+
+- `dist/`
+- `README.md`
+- `package.json`
+
+Kontrol:
+
+```bash
+npm pack --dry-run
+```
+
+## Sorun Giderme
+
+- `Tool not found`:
+  - İstemci eski cache tutuyor olabilir; MCP sunucusunu yeniden başlatın.
+- `Memory is locked`:
+  - Aynı anda başka işlem yazıyor olabilir, kısa süre sonra tekrar deneyin.
+- `Path escapes project root`:
+  - `path` argümanını proje köküne göre relatif verin.
+
+## Lisans
+
+MIT

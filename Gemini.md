@@ -32,7 +32,7 @@ Each "agent" in this project is an independent AI conversation (Claude/GPT).
    - `MEVCUT DURUM` → Hangi fazdayız? Aktif Trace ID var mı?
    - `KRİTİK KARARLAR` tablosu → Daha önce ne kararlaştırıldı?
    - `AKTİF GÖREVLER` tablosu → Bana atanmış görev var mı?
-   - `DOSYA DURUMU` tablosu → Eksik/broken dosyalar neler?
+   - `PROJE TANIMI` ve `DOD DURUMU` bölümleri → Mimari çerçeve ve faz kalitesi net mi?
    - `HISTORY` bölümü → Son 3 girişi oku, önceki çalışmaları anla.
 
 - [ ] Check `.gemini/docs/` Folder: Verify if `tech-stack.md` and `project-docs.md` exist.
@@ -67,6 +67,7 @@ If `tech-stack.md` is missing or empty, do not write code until the following is
 
 - **Memory Initialization:** All agents reference `.gemini/PROJECT_MEMORY.md` at the start of any task.
 - **Kalıcı Hafıza Protokolü:** Every agent MUST append a summary to the **HISTORY** section of `PROJECT_MEMORY.md`.
+- **Canonical Memory Shape:** `PROJECT_MEMORY.md` şu ana bölümleri korur: `MEVCUT DURUM`, `PROJE TANIMI`, `DOD DURUMU`, `KRİTİK KARARLAR`, `TESLİM EDİLENLER`, `AKTİF GÖREVLER`, `HISTORY`.
 - **HISTORY Entry Format (Zorunlu):**
 
   ```markdown
@@ -80,6 +81,7 @@ If `tech-stack.md` is missing or empty, do not write code until the following is
   ```
 
 - **MEVCUT DURUM Güncellemesi:** Her oturum sonunda `MEVCUT DURUM` tablosundaki `Aktif Faz`, `Son Güncelleme` ve `Aktif Trace ID` alanlarını güncelle.
+- **Trace ID Rule:** Yeni görev zincirlerinde UUID v4 kullanılır. Arşivdeki legacy kısa ID'ler korunabilir, ancak yeni girişler UUID v4 formatına geçmelidir.
 - **Memory Lock Rule:** To prevent concurrent writes, agents check for `.gemini/PROJECT_MEMORY.lock`.
   - If exists: Wait 1s, retry. (Max 5 retries).
   - After 5 retries: Report `BLOCKED — Memory Lock Timeout`.
@@ -111,7 +113,7 @@ If `tech-stack.md` is missing or empty, do not write code until the following is
   - **Exception 1:** External 3rd party services (Stripe etc.) → `ADAPTER_PATTERN` + `SANDBOX_MODE`.
   - **Exception 2:** Unit Tests → Mocks allowed for external dependencies.
 - **Branded Types Law:** Tüm ID'ler Branded Types (`packages/shared-types`) olmalıdır.
-- **Search Before Reading:** Hiçbir ajan bir dosyayı körü körüne okumamalıdır; önce `framework-mcp` (veya sarmaladığı `codebase_search`) araçlarıyla bağlamı taramalıdır.
+- **Search Before Reading:** Hiçbir ajan bir dosyayı körü körüne okumamalıdır; önce `search_codebase`, `analyze_dependencies`, `get_memory_insights` ve `get_project_gaps` ile bağlamı taramalıdır. Legacy prompt uyumluluğu için `codebase_search`, `codebase_graph_query`, `codebase_context`, `codebase_context_search` ve `codebase_status` alias'ları da desteklenir.
 - **Full-Spectrum Responsive:** Her bileşen mobile-first başlar (320px) ve ultra-wide ekranlara (1920px+) kadar `clamp()` ve `aspect-ratio` ile akışkan (fluid) kalmalıdır.
 - **Supreme Frontend Aesthetics:** @frontend, "AI slop" estetiğinden kaçınmalı; özgün, karakterli ve üretim kalitesinde arayüzler tasarlamalıdır.
 - **Audit Logging:** Tüm kritik işlemler loglanmalıdır.
@@ -231,7 +233,7 @@ STORED_HASH=$(jq -r '.contract_hash' packages/shared-types/contract.version.json
 
 ## MANDATORY LOG SCHEMA (JSON)
 
-All agents MUST log to `.gemini/logs/[agent].json` using `write_file` tool.
+All agents MUST log to `.gemini/logs/[agent].json` using the available file-writing capability of the active client.
 _Logs are stored as a **JSON Array**. Every turn appends a new object to the array._
 
 ```json

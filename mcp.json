@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "framework-mcp": {
-      "command": "npx",
-      "args": ["tsx", "packages/framework-mcp/src/index.ts"]
+      "command": "node",
+      "args": ["packages/framework-mcp/dist/index.js"]
     }
   }
 }

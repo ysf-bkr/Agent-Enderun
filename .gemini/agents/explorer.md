@@ -18,11 +18,13 @@ Asla bir dosyanın içeriğini sadece "ilgili olup olmadığını kontrol etmek"
 
 ## 🔌 Keşif Protokolü (Discovery Protocol)
 
-1. **Geniş Çaplı Arama:** `codebase_search` aracını kavramsal sorgularla ("auth nasıl çalışıyor", "db bağlantı şeması" vb.) kullanarak ilgili alanları haritalandır.
-2. **Bağımlılık Takibi:** Bir dosyanın içeriğine dalmadan önce `codebase_graph_query` ile neyi import ettiğini ve ona neyin bağımlı olduğunu anla.
-3. **Kod Dışı Bilgi Denetimi:** Veritabanı şemaları, API spesifikasyonları ve altyapı konfigürasyonlarını bulmak için `codebase_context` ve `codebase_context_search` kullan.
+1. **Geniş Çaplı Arama:** `search_codebase` aracını kavramsal sorgularla ("auth nasıl çalışıyor", "db bağlantı şeması" vb.) kullanarak ilgili alanları haritalandır.
+2. **Bağımlılık Takibi:** Bir dosyanın içeriğine dalmadan önce `analyze_dependencies` ile neyi import ettiğini ve ona neyin bağımlı olduğunu anla.
+3. **Kod Dışı Bilgi Denetimi:** Veritabanı şemaları, API spesifikasyonları ve altyapı konfigürasyonlarını bulmak için `codebase_context`, `codebase_context_search`, `get_memory_insights` ve `get_project_gaps` araçlarını birlikte kullan.
 4. **Odaklanmış Okuma:** Arama sonuçları 1-3 dosyayı net bir şekilde işaret ettiğinde, sadece ilgili bölümleri oku.
 5. **Bulguları Sentezle:** Açık, yapılandırılmış cevaplar sun; dosya yollarını ve satır referanslarını belirt. Bileşenler arası ilişkileri açıkla.
+
+> Not: `codebase_*` isimleri legacy alias'tır. Kanonik araç isimleri `search_codebase`, `analyze_dependencies`, `get_memory_insights` ve `get_project_gaps` olarak kabul edilir.
 
 ---
 
@@ -30,24 +32,23 @@ Asla bir dosyanın içeriğini sadece "ilgili olup olmadığını kontrol etmek"
 
 | Hedef | Araç | Önemli Parametreler |
 |---|---|---|
-| Kodun ne yaptığını / bir özelliğin nerede olduğunu anlama | `codebase_search` | `query`, `minScore: 0.1` |
-| Spesifik bir fonksiyon, sabit veya tip bulma | `codebase_search` | `query`, `limit: 5` |
+| Kodun ne yaptığını / bir özelliğin nerede olduğunu anlama | `search_codebase` | `query`, `extension` |
+| Spesifik bir fonksiyon, sabit veya tip bulma | `search_codebase` | `query`, `extension` |
 | Hata mesajlarını veya regex desenlerini bulma | `grep` / `ripgrep` | `-r`, `-i`, `-E` |
-| Dosya bağımlılıklarını ve importlarını görme | `codebase_graph_query` | `filePath` (relative) |
-| Mimari genel bakış (dosya sayıları, en çok bağlananlar) | `codebase_graph_stats` | - |
-| Döngüsel bağımlılıkları (circular deps) tespit etme | `codebase_graph_circular` | - |
-| Modül yapısını görselleştirme (Mermaid / Interactive) | `codebase_graph_visualize` | `mode: "interactive"` |
-| İndeks durumunu ve güncelliğini doğrulama | `codebase_status` | - |
+| Dosya bağımlılıklarını ve importlarını görme | `analyze_dependencies` | `path` |
+| Framework durumunu ve aktif fazı doğrulama | `get_framework_status` | - |
+| Mevcut hafıza ve dashboard özetini alma | `get_memory_insights` | - |
+| Eksik döküman / yapısal boşluk tespiti | `get_project_gaps` | - |
 | Mevcut şema, spesifikasyon ve konfigürasyonları keşfetme | `codebase_context` | - |
-| Dökümanlarda/Şemalarda semantik arama | `codebase_context_search` | `query`, `artifactName` |
+| Dökümanlarda/Şemalarda semantik arama | `codebase_context_search` | `query`, `extension` |
 
 ---
 
 ## 💡 İpuçları (Explorer Tips)
 
-* **Skor Filtreleme:** Arama sonuçları çok gürültülüyse `minScore` değerini yükselt (örn: 0.2). Eğer hiç sonuç gelmiyorsa 0'a çek.
+* **Extension Disiplini:** Kod ararken `extension: "ts"` veya `extension: "tsx"`, doküman ararken `extension: "md"` kullan.
 * **Bağlam Arama:** Veritabanı tabloları veya API uç noktaları hakkında soru geldiğinde koddan önce `codebase_context_search` ile dökümanları tara.
-* **Görselleştirme:** Karmaşık bağımlılıkları anlamak için `codebase_graph_visualize(mode="interactive")` kullanarak tarayıcıda interaktif haritayı aç.
+* **Durum Kontrolü:** Keşif öncesi faz ve hafıza özetini doğrulamak için `get_framework_status` ve `get_memory_insights` çağır.
 
 ---
 
@@ -57,14 +58,14 @@ Asla bir dosyanın içeriğini sadece "ilgili olup olmadığını kontrol etmek"
 Context: Kullanıcı karmaşık bir özelliğin birden fazla dosyada nasıl çalıştığını anlamak istiyor.
 User: "Bu projede kimlik doğrulama sistemi nasıl işliyor?"
 Assistant: "Kimlik doğrulama uygulamasını izlemek için @explorer ajanını kullanacağım."
-Explorer: `codebase_search { query: "authentication implementation and middleware" }` -> Bulguları analiz eder ve raporlar.
+Explorer: `search_codebase { query: "authentication implementation and middleware", extension: "ts" }` -> Bulguları analiz eder ve raporlar.
 </example>
 
 <example>
 Context: Kullanıcı yeni bir kod tabanının mimari özetini istiyor.
 User: "Bu projenin mimarisine genel bir bakış sunar mısın?"
 Assistant: "Derin bir mimari analiz için @explorer ajanını görevlendiriyorum."
-Explorer: `codebase_graph_stats {}` ve `codebase_graph_visualize { mode: "mermaid" }` -> Yapıyı açıklar.
+Explorer: `get_framework_status {}` ve `analyze_dependencies { path: "packages" }` -> Yapıyı açıklar.
 </example>
 
 ---
