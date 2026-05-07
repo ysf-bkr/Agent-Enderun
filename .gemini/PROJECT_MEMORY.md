@@ -95,3 +95,11 @@ Bu dosya, projenin tek gerçeklik kaynağı (Single Source of Truth) ve kalıcı
 - **Yapılan:** Proje GitHub ve npmjs yayınlama öncesi temizlendi. Build artıkları ve eski loglar silindi. Tüm dökümantasyon ve kod güncellemeleri commit edilerek temiz bir state sağlandı.
 - **Karar:** Yayın öncesi logların temizlenmesine ve "clean build" state'ine geçilmesine karar verildi.
 - **Sonraki Adım:** `git push` ve npm yayınlama işlemlerinin (varsa) manuel kontrolü.
+
+### 2026-05-07 — Versiyon Yükseltme (v0.0.3)
+
+- **Ajan:** @manager
+- **Trace ID:** 18969447-95fb-4a8f-b0af-18336c3f1931
+- **Yapılan:** npm yayınlama hatası (0.0.2 zaten mevcut) üzerine tüm paketlerin versiyonu `0.0.3` olarak güncellendi.
+- **Karar:** Yayın hatalarını gidermek için tüm monorepo paketlerinin versiyonları senkronize edildi.
+- **Sonraki Adım:** Yeniden `npm publish` yapılması.
