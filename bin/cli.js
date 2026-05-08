@@ -321,7 +321,7 @@ async function initCommand(selectedAdapter) {
     if (item === ".enderun") dest = targetFrameworkDir;
     if (item === "ENDERUN.md") dest = path.join(targetFrameworkDir, "ENDERUN.md");
     if (ADAPTERS[selectedAdapter]?.includes(item)) {
-      dest = path.join(targetDir, targetBase, item);
+      dest = path.join(targetDir, item); // Keep adapter linker files in root
     }
 
     if (fs.existsSync(src)) {
