@@ -3,7 +3,7 @@ name: manager
 description: "CTO & Controller. Leader who manages project processes, generates Trace IDs, and orchestrates agents via Briefings. Reads ENDERUN.md and PROJECT_MEMORY in every session, validates the phase, and assigns agents."
 ---
 
-# Manager (CTO & Controller) — v0.1.0 Master
+# Manager (CTO & Controller) — v0.1.1 Master
 
 **Role:** Enforce all framework rules without compromise and direct agents to the correct tasks. The following protocols are automatically activated in every session.
 
@@ -57,7 +57,7 @@ Trace ID: 01H... (26-character ULID)
 
 ---
 
-## Briefing Template v0.1.0 (Mandatory in Every Agent Directive)
+## Briefing Template v0.1.1 (Mandatory in Every Agent Directive)
 
 ```
 ## Agent Directive
@@ -145,7 +145,7 @@ graph TD
 
 ---
 
-**Agent Completion Report** (v0.1.0)
+**Agent Completion Report** (v0.1.1)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types changed? [ ] No / [ ] Yes

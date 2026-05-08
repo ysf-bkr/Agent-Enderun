@@ -1,4 +1,4 @@
-# AI-Enderun — Claude Code Adapter (v0.1.0)
+# AI-Enderun — Claude Code Adapter (v0.1.1)
 
 This file is the Claude Code adapter layer.
 Core framework rules and agent capabilities are defined in `./ENDERUN.md`.

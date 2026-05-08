@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.1.0";
+const FRAMEWORK_VERSION = "0.1.1";
 
 // --- HELPER FUNCTIONS ---
 
@@ -126,7 +126,7 @@ function mergePackageJson(targetPath, sourcePath) {
 
   // Ensure basic fields
   if (!targetPkg.name) targetPkg.name = path.basename(process.cwd());
-  if (!targetPkg.version) targetPkg.version = "0.1.0";
+  if (!targetPkg.version) targetPkg.version = "0.1.1";
   if (!targetPkg.type) targetPkg.type = "module";
 
   // Add metadata
@@ -310,12 +310,18 @@ async function initCommand(selectedAdapter) {
       if (fs.lstatSync(src).isDirectory()) {
         // When copying framework dir, skip logs and project-specific state
         const skipFiles = (item === ".enderun") ? ["logs", "PROJECT_MEMORY.md", "BRAIN_DASHBOARD.md", "PROJECT_MEMORY.lock"] : [];
-        copyDir(src, dest, new Set(skipFiles));
+        const isDocs = item === "docs";
+        copyDir(src, dest, new Set(skipFiles), isDocs);
       } else {
         // Special files handling
         if (item === "package.json") continue;
         if (item === "ENDERUN.md" && fs.existsSync(dest)) {
           console.log(`ℹ️  Skipping ENDERUN.md (already exists in ${targetBase}).`);
+          continue;
+        }
+        
+        if (fs.existsSync(dest)) {
+          console.log(`ℹ️  Skipping existing file: ${item}`);
           continue;
         }
         
@@ -429,17 +435,29 @@ function checkCommand() {
   }
 }
 
-function copyDir(src, dest, skipSet = new Set()) {
+function copyDir(src, dest, skipSet = new Set(), nonDestructive = false) {
   const DEFAULT_SKIP = new Set(["node_modules", ".git", ".DS_Store"]);
   const actualSkip = new Set([...DEFAULT_SKIP, ...skipSet]);
 
-  fs.mkdirSync(dest, { recursive: true });
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+
   fs.readdirSync(src, { withFileTypes: true }).forEach(entry => {
     if (actualSkip.has(entry.name)) return;
 
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
-    entry.isDirectory() ? copyDir(srcPath, destPath, skipSet) : fs.copyFileSync(srcPath, destPath);
+
+    if (entry.isDirectory()) {
+      copyDir(srcPath, destPath, skipSet, nonDestructive);
+    } else {
+      if (nonDestructive && fs.existsSync(destPath)) {
+        // Skip existing files in non-destructive mode
+        return;
+      }
+      fs.copyFileSync(srcPath, destPath);
+    }
   });
 }
 
