@@ -126,7 +126,7 @@ function mergePackageJson(targetPath, sourcePath) {
 
   // Ensure basic fields
   if (!targetPkg.name) targetPkg.name = path.basename(process.cwd());
-  if (!targetPkg.version) targetPkg.version = "0.0.12";
+  if (!targetPkg.version) targetPkg.version = "0.0.13";
   if (!targetPkg.type) targetPkg.type = "module";
 
   // Add metadata
@@ -616,6 +616,87 @@ function verifyContractCommand() {
   }
 }
 
+function logAgentActionCommand(data) {
+  const frameworkDir = getFrameworkDir();
+  const logsDir = path.join(targetDir, frameworkDir, "logs");
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+
+  const agent = normalizeAgentName(data.agent);
+  const logPath = path.join(logsDir, `${agent}.json`);
+  let logs = [];
+
+  if (fs.existsSync(logPath)) {
+    try {
+      logs = JSON.parse(fs.readFileSync(logPath, "utf8"));
+      if (!Array.isArray(logs)) logs = [];
+    } catch {
+      logs = [];
+    }
+  }
+
+  const newEntry = {
+    timestamp: new Date().toISOString(),
+    ...data,
+  };
+
+  logs.push(newEntry);
+  fs.writeFileSync(logPath, JSON.stringify(logs, null, 2));
+  console.log(`✅ Logged action to ${frameworkDir}/logs/${agent}.json`);
+}
+
+function updateProjectMemoryCommand(section, content) {
+  const memoryPath = getMemoryPath();
+  if (!fs.existsSync(memoryPath)) {
+    console.error("❌ Error: PROJECT_MEMORY.md not found.");
+    return;
+  }
+
+  const lockPath = `${memoryPath}.lock`;
+  if (!acquireMemoryLock(lockPath)) {
+    console.error("❌ Error: Memory lock timeout.");
+    return;
+  }
+
+  try {
+    let memoryContent = fs.readFileSync(memoryPath, "utf8");
+
+    if (section === "HISTORY") {
+      const headers = ["## HISTORY (Persistent Memory)", "## HISTORY"];
+      let sectionIndex = -1;
+      let headerUsed = "";
+      for (const h of headers) {
+        sectionIndex = memoryContent.indexOf(h);
+        if (sectionIndex !== -1) {
+          headerUsed = h;
+          break;
+        }
+      }
+      
+      if (sectionIndex === -1) {
+        console.error("❌ Error: HISTORY section not found.");
+        return;
+      }
+      const headerEnd = memoryContent.indexOf("\n", sectionIndex) + 1;
+      memoryContent = memoryContent.slice(0, headerEnd) + "\n" + content.trim() + "\n" + memoryContent.slice(headerEnd);
+    } else {
+      const escaped = section.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const sectionRegex = new RegExp(`## ${escaped}[\\s\\S]*?(?=\\n## |$)`, "m");
+      if (!sectionRegex.test(memoryContent)) {
+        console.error(`❌ Error: Section not found: ${section}`);
+        return;
+      }
+      memoryContent = memoryContent.replace(sectionRegex, `## ${section}\n\n${content.trim()}\n`);
+    }
+
+    fs.writeFileSync(memoryPath, memoryContent);
+    console.log(`✅ Section ${section} updated in PROJECT_MEMORY.md`);
+  } finally {
+    releaseMemoryLock(lockPath);
+  }
+}
+
 // --- MAIN DISPATCHER ---
 
 async function main() {
@@ -638,6 +719,46 @@ async function main() {
     case "verify-contract":
       verifyContractCommand();
       break;
+    case "log_agent_action": {
+      // Handle both structured JSON and positional args
+      let data = {};
+      try {
+        if (args[0] && args[0].startsWith("{")) {
+          data = JSON.parse(args.join(" "));
+        } else {
+          data = {
+            agent: args[0],
+            action: args[1],
+            requestId: args[2],
+            status: args[3] || "SUCCESS",
+            summary: args[4] || "",
+          };
+        }
+      } catch (e) {
+        console.error("❌ Error parsing arguments for log_agent_action");
+        process.exit(1);
+      }
+      logAgentActionCommand(data);
+      break;
+    }
+    case "update_project_memory": {
+      let section, content;
+      try {
+        if (args[0] && args[0].startsWith("{")) {
+          const data = JSON.parse(args.join(" "));
+          section = data.section;
+          content = data.content;
+        } else {
+          section = args[0];
+          content = args.slice(1).join(" ");
+        }
+      } catch (e) {
+        console.error("❌ Error parsing arguments for update_project_memory");
+        process.exit(1);
+      }
+      updateProjectMemoryCommand(section, content);
+      break;
+    }
     case "check":
       checkCommand();
       break;

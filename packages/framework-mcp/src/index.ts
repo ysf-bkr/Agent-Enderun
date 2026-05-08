@@ -13,7 +13,7 @@ import { Project, SyntaxKind } from "ts-morph";
 const server = new Server(
   {
     name: "ai-enderun-mcp",
-    version: "0.0.12",
+    version: "0.0.13",
   },
   {
     capabilities: {
@@ -53,7 +53,7 @@ const LOG_AGENT_ACTION_ARGS_SCHEMA = z.object({
   details: z.record(z.any()).default({}),
 });
 
-const FRAMEWORK_VERSION = "0.0.12";
+const FRAMEWORK_VERSION = "0.0.13";
 
 function getFrameworkDir(projectRoot: string): string {
   const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
@@ -889,11 +889,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         let memoryContent = fs.readFileSync(memoryPath, "utf-8");
 
         if (section === "HISTORY") {
-          memoryContent = prependToSection(
-            memoryContent,
-            "HISTORY (Persistent Memory)",
-            content,
-          );
+          let updated = false;
+          const headers = ["HISTORY (Persistent Memory)", "HISTORY"];
+          for (const h of headers) {
+            try {
+              memoryContent = prependToSection(
+                memoryContent,
+                h,
+                content,
+              );
+              updated = true;
+              break;
+            } catch (e) {
+              // try next header
+            }
+          }
+          if (!updated) throw new Error("HISTORY section not found.");
         } else if (section === "CURRENT STATUS") {
           memoryContent = replaceSectionContent(
             memoryContent,
