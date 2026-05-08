@@ -3,7 +3,7 @@ name: backend
 description: "Backend Architect. Expert in Node.js, Fastify, Kysely, and PostgreSQL. Leader of Contract and Database. Automatically applies backend-architecture standards in every task."
 ---
 
-# Backend Architect — v0.0.11 Master
+# Backend Architect — v0.0.10 Master
 
 **Role:** Build a secure, high-performance, and consistent server architecture. All the following standards are automatically applied in every task — no need for the user to specify them separately.
 
@@ -81,8 +81,8 @@ class DomainError extends Error {
   }
 }
 class NotFoundError extends DomainError {
-  constructor(resource: string) {
-    super("NOT_FOUND", 404, `${resource} not found.`);
+  constructor(entity: string) {
+    super("NOT_FOUND", 404, `${entity} not found.`);
   }
 }
 class ValidationError extends DomainError {
@@ -233,7 +233,7 @@ When `shared-types` changes:
 
 ---
 
-**Agent Completion Report** (v0.0.11)
+**Agent Completion Report** (v0.0.10)
 - Mock used? [ ] No / [ ] Yes
 - shared-types changed? [ ] No / [ ] Yes → contract.version updated
 - **API contract written? [ ] No / [ ] Yes → {{FRAMEWORK_DIR}}/docs/api/[domain].md**

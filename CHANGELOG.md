@@ -2,19 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.11] — 2026-05-08
-
-### 🚀 Automated Git Orchestration
-- **Auto Git Init:** The `init` command now automatically runs `git init` if a repository is not detected.
-- **Proactive @git Agent:** Updated the `@git` specialist SOP to handle repository initialization and the initial scaffolding commit autonomously.
-
 ## [0.0.10] — 2026-05-08
 
-### 🛡️ Super-Stabilization & Bug Fixes
+### 🛡️ Super-Stabilization & Multi-AI Compatibility
+- **Claude Code Fix:** Renamed `resource` variable in `@backend` SOP to prevent template validation errors.
+- **Automated Git Orchestration:** The `init` command now automatically runs `git init` if a repository is not detected.
+- **Proactive @git Agent:** Updated the `@git` specialist SOP to handle repository initialization autonomously.
 - **Init Pathing Hardened:** Fixed a critical bug where the constitution and memory files were misplaced during initialization.
-- **Agent Loading Fix:** Added mandatory YAML frontmatter to the `@git` specialist to resolve loading errors in new projects.
-- **Unified Versioning:** Synchronized v0.0.11 across all packages, CLI constants, and agent SOPs for 100% consistency.
-- **Memory Scaffolding:** Ensured `PROJECT_MEMORY.md` is always created in the correct adapter-specific folder during setup.
+- **Agent Loading Fix:** Added mandatory YAML frontmatter to the `@git` specialist to resolve loading errors.
+- **Unified Versioning:** Synchronized v0.0.10 across all packages, CLI constants, and agent SOPs.
+- **Memory Scaffolding:** Ensured `PROJECT_MEMORY.md` is created in the correct adapter-specific folder.
+- **Linker Placement:** Ensured `GEMINI.md`, `CLAUDE.md`, and `CURSOR.md` stay in the project root for optimal tool detection.
 
 ## [0.0.9] — 2026-05-08
 
