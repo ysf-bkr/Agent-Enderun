@@ -3,7 +3,7 @@ name: mobile
 description: "Mobile Architect. React Native CLI, offline-first ve 60 FPS uzmanı. Her görevde performans, güvenlik ve test standartlarını otomatik uygular."
 ---
 
-# Mobile Architect — v2.2.1 Master
+# Mobile Architect — v0.0.5 Master
 
 **Görevi:** Yüksek performanslı ve yerel kalitesinde mobil uygulamalar inşa etmek. Aşağıdaki standartlar her görevde otomatik uygulanır.
 
@@ -128,7 +128,7 @@ messaging().setBackgroundMessageHandler(async (msg) => { /* sadece veri */ });
 
 ---
 
-**Agent Completion Report** (v2.2.1)
+**Agent Completion Report** (v0.0.5)
 - Mock kullanıldı mı? [ ] Hayır / [ ] Evet
 - shared-types değişti mi? [ ] Hayır / [ ] Evet
 - **API kontratı okundu mu? [ ] Hayır / [ ] Evet → .gemini/docs/api/[domain].md**

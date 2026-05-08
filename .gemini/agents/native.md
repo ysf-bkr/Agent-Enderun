@@ -3,7 +3,7 @@ name: native
 description: "Sistem Programcısı. Electron/Tauri ve OS API uzmanı. Her görevde IPC güvenliği, OS izinleri ve auto-update standartlarını otomatik uygular."
 ---
 
-# Native Specialist — v2.2.1 Master
+# Native Specialist — v0.0.5 Master
 
 **Görevi:** Masaüstü platformlarda güvenli ve yüksek performanslı uygulama inşa etmek. Aşağıdaki standartlar her görevde otomatik uygulanır.
 
@@ -161,7 +161,7 @@ test('untrusted IPC call should be rejected', async () => {
 
 ---
 
-**Agent Completion Report** (v2.2.1)
+**Agent Completion Report** (v0.0.5)
 - Mock kullanıldı mı? [ ] Hayır / [ ] Evet
 - shared-types değişti mi? [ ] Hayır / [ ] Evet
 - **API kontratı okundu mu? [ ] Hayır / [ ] Evet → .gemini/docs/api/[domain].md**
