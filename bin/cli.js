@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.0.8";
+const FRAMEWORK_VERSION = "0.0.9";
 
 // --- HELPER FUNCTIONS ---
 
@@ -20,8 +20,19 @@ function getPackageVersion() {
   return pkg.version;
 }
 
+function getFrameworkDir() {
+  const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
+  for (const adp of adapters) {
+    const fullPath = path.join(targetDir, adp);
+    if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
+      return adp;
+    }
+  }
+  return ".enderun";
+}
+
 function getMemoryPath() {
-  return path.join(targetDir, ".enderun", "PROJECT_MEMORY.md");
+  return path.join(targetDir, getFrameworkDir(), "PROJECT_MEMORY.md");
 }
 
 function generateULID(seedTime = Date.now()) {
@@ -238,20 +249,21 @@ async function initCommand(selectedAdapter) {
     codex: ["CODEX.md"],
   };
 
+  const targetBase = selectedAdapter ? `.${selectedAdapter}` : ".enderun";
+
   const CORE_FILES = [
     ".enderun",
     "docs",
     "mcp.json",
     "ENDERUN.md",
-    "README.md",
     "packages/framework-mcp",
     "packages/shared-types",
   ];
 
   const DIRS_TO_CREATE = [
-    ".enderun/agents",
-    ".enderun/docs/api",
-    ".enderun/logs",
+    `${targetBase}/agents`,
+    `${targetBase}/docs/api`,
+    `${targetBase}/logs`,
     "apps/web",
     "apps/backend",
     "docs",
@@ -284,23 +296,31 @@ async function initCommand(selectedAdapter) {
 
   for (const item of filesToProcess) {
     const src = path.join(sourceDir, item);
-    const dest = path.join(targetDir, item);
+    let dest = path.join(targetDir, item);
+    
+    // Remap core framework files to targetBase
+    if (item === ".enderun") dest = path.join(targetDir, targetBase);
+    if (item === "ENDERUN.md") dest = path.join(targetDir, targetBase, "ENDERUN.md");
+    if (ADAPTERS[selectedAdapter]?.includes(item)) {
+      dest = path.join(targetDir, targetBase, item);
+    }
+
     if (fs.existsSync(src)) {
       if (fs.lstatSync(src).isDirectory()) {
-        // When copying .enderun, skip logs and project-specific state
-        const skipFiles = item === ".enderun" ? ["logs", "PROJECT_MEMORY.md", "BRAIN_DASHBOARD.md", "PROJECT_MEMORY.lock"] : [];
+        // When copying framework dir, skip logs and project-specific state
+        const skipFiles = (item === ".enderun") ? ["logs", "PROJECT_MEMORY.md", "BRAIN_DASHBOARD.md", "PROJECT_MEMORY.lock"] : [];
         copyDir(src, dest, new Set(skipFiles));
       } else {
         // Special files handling
         if (item === "package.json") continue;
         if (item === "ENDERUN.md" && fs.existsSync(dest)) {
-          console.log(`ℹ️  Skipping ENDERUN.md (already exists).`);
+          console.log(`ℹ️  Skipping ENDERUN.md (already exists in ${targetBase}).`);
           continue;
         }
         
         fs.copyFileSync(src, dest);
       }
-      console.log(`✅ ${item} processed.`);
+      console.log(`✅ ${item} processed -> ${path.relative(targetDir, dest)}`);
     }
   }
 
@@ -315,19 +335,21 @@ async function initCommand(selectedAdapter) {
 
   if (selectedAdapter === "gemini" || !selectedAdapter) {
     try {
+      const targetBase = selectedAdapter ? `.${selectedAdapter}` : ".enderun";
       const geminiAgentsDir = path.join(targetDir, ".gemini", "agents");
-      const enderunAgentsDir = path.relative(path.join(targetDir, ".gemini"), path.join(targetDir, ".enderun", "agents"));
+      const frameworkAgentsDir = path.join(targetDir, targetBase, "agents");
       
       if (!fs.existsSync(path.join(targetDir, ".gemini"))) {
         fs.mkdirSync(path.join(targetDir, ".gemini"), { recursive: true });
       }
       
-      if (!fs.existsSync(geminiAgentsDir)) {
-        fs.symlinkSync(enderunAgentsDir, geminiAgentsDir, "dir");
-        console.log("🔗 Gemini: Created symlink from .gemini/agents to .enderun/agents");
+      if (targetBase !== ".gemini" && !fs.existsSync(geminiAgentsDir)) {
+        const relativePath = path.relative(path.join(targetDir, ".gemini"), frameworkAgentsDir);
+        fs.symlinkSync(relativePath, geminiAgentsDir, "dir");
+        console.log("🔗 Gemini: Created symlink from .gemini/agents to " + targetBase + "/agents");
       }
     } catch (err) {
-      console.warn("⚠️  Gemini: Could not create symlink (might need admin rights or already exists).");
+      console.warn("⚠️  Gemini: Could not create symlink.");
     }
   }
 
@@ -424,8 +446,9 @@ function copyDir(src, dest, skipSet = new Set()) {
  */
 function statusCommand() {
   const memoryPath = getMemoryPath();
+  const frameworkDir = getFrameworkDir();
   if (!fs.existsSync(memoryPath)) {
-    console.error("❌ Error: .enderun/PROJECT_MEMORY.md not found. Please run 'init' first.");
+    console.error(`❌ Error: ${frameworkDir}/PROJECT_MEMORY.md not found. Please run 'init' first.`);
     return;
   }
 

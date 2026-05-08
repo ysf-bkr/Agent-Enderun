@@ -1,5 +1,5 @@
 /**
- * Shared Types — AI-Enderun v0.0.8
+ * Shared Types — AI-Enderun v0.0.9
  * Bu paketteki tüm tipler backend ve frontend arasındaki kontratı tanımlar.
  * Sadece @backend düzenler, @frontend okur/import eder.
  */

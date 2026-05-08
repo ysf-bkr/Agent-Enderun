@@ -64,10 +64,19 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 | 01KR460M3N1B5V9X2D4Z8L7K1R | Tech-Stack.md Relocation (Root docs/ Fix) | @manager | P1 | COMPLETED |
 | 01KR463F8N1V7W2Z9M3D4G7H5K | Version Bump to v0.0.7 & Health Check | @manager | P1 | COMPLETED |
 | 01KR4666M2X9R1T4V8D7Z2L5K1 | @manager SOP Hardening (MCP Health Check) | @manager | P1 | COMPLETED |
+| 01KR469B7N1V2W8Z3M4D9G1H5L | Build Automation & v0.0.8 Release | @manager | P1 | COMPLETED |
 | 01KR444BM94P5W3ERVJ3YJ9T01 | Agent Report Version Synchronization (v0.0.6) | @manager | P1 | COMPLETED |
 | 01KR442W6MP3GXHF7TD32GJG1V | Agent SOP Hardening & Continuity Alignment | @manager | P1 | COMPLETED |
 
 ## HISTORY (Persistent Memory)
+
+### 2026-05-08 — Build Automation & v0.0.8 Release
+
+- **Agent:** @manager
+- **Trace ID:** 01KR469B7N1V2W8Z3M4D9G1H5L
+- **Action:** Released `v0.0.8`. Updated `init` command to automatically inject `enderun:build` script into target `package.json`. Refined `check` command instructions to point users to the new automated build script.
+- **Decision:** Minimized manual user intervention by automating the recursive build process for framework sub-packages.
+- **Next Step:** Advise user to update to v0.0.8 in their project.
 
 ### 2026-05-08 — @manager SOP Hardening (MCP Health Check)
 

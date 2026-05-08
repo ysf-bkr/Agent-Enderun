@@ -1,4 +1,4 @@
-# AI-Enderun v0.0.8
+# AI-Enderun v0.0.9
 
 English | [Turkce](#turkce)
 
@@ -124,7 +124,7 @@ ai-enderun verify-contract   # Kontrat uyumunu kontrol eder
 4.  **Görevi Başlatın:** İlk görev zincirini (ULID) oluşturun: `ai-enderun trace:new "Proje iskeletini oluştur"`
 5.  **Ajanlarla Çalışın:** Yapay zeka yardımcınızla konuşun. Artık projenizdeki `ENDERUN.md` anayasasını ve `.enderun/agents/` içindeki uzman rollerini tanıyarak disiplinli bir şekilde çalışacaktır.
 
-### v0.0.8 Yenilikleri
+### v0.0.9 Yenilikleri
 
 - **Akilli Kurulum:** Gemini icin otomatik symlink, Claude icin otomatik MCP kurulum yardimcisi.
 - **Süreklilik İlkesi:** Ajanlarin mevcut kod yazim tarzina ve mimari kararlara sadik kalma zorunlulugu.

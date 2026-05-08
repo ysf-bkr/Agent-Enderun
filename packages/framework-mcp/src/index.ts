@@ -13,7 +13,7 @@ import { Project, SyntaxKind } from "ts-morph";
 const server = new Server(
   {
     name: "ai-enderun-mcp",
-    version: "0.0.8",
+    version: "0.0.9",
   },
   {
     capabilities: {
@@ -53,7 +53,18 @@ const LOG_AGENT_ACTION_ARGS_SCHEMA = z.object({
   details: z.record(z.any()).default({}),
 });
 
-const FRAMEWORK_VERSION = "0.0.8";
+const FRAMEWORK_VERSION = "0.0.9";
+
+function getFrameworkDir(projectRoot: string): string {
+  const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
+  for (const adp of adapters) {
+    const fullPath = path.join(projectRoot, adp);
+    if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
+      return adp;
+    }
+  }
+  return ".enderun";
+}
 
 function resolveSafePath(projectRoot: string, targetPath: string): string {
   const resolved = path.resolve(projectRoot, targetPath);
@@ -393,9 +404,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     case "get_framework_status":
     case "codebase_status": {
       try {
+        const frameworkDir = getFrameworkDir(projectRoot);
         const memoryPath = path.join(
           projectRoot,
-          ".enderun",
+          frameworkDir,
           "PROJECT_MEMORY.md",
         );
         const memoryContent = fs.readFileSync(memoryPath, "utf-8");
@@ -563,14 +575,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     case "get_memory_insights": {
       try {
+        const frameworkDir = getFrameworkDir(projectRoot);
         const memoryPath = path.join(
           projectRoot,
-          ".enderun",
+          frameworkDir,
           "PROJECT_MEMORY.md",
         );
         const dashboardPath = path.join(
           projectRoot,
-          ".enderun",
+          frameworkDir,
           "BRAIN_DASHBOARD.md",
         );
 
@@ -608,14 +621,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     case "codebase_context": {
       try {
         const artifacts = collectMarkdownArtifacts(projectRoot);
+        const frameworkDir = getFrameworkDir(projectRoot);
         const memoryPath = path.join(
           projectRoot,
-          ".enderun",
+          frameworkDir,
           "PROJECT_MEMORY.md",
         );
         const dashboardPath = path.join(
           projectRoot,
-          ".enderun",
+          frameworkDir,
           "BRAIN_DASHBOARD.md",
         );
 
@@ -646,8 +660,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         { path: ".enderun/docs/api", type: "folder", optional: true },
         { path: ".env", type: "file", optional: true },
         { path: ".env.example", type: "file" },
-        { path: ".enderun/PROJECT_MEMORY.md", type: "file" },
-        { path: ".enderun/BRAIN_DASHBOARD.md", type: "file" },
+        { path: path.join(getFrameworkDir(projectRoot), "PROJECT_MEMORY.md"), type: "file" },
+        { path: path.join(getFrameworkDir(projectRoot), "BRAIN_DASHBOARD.md"), type: "file" },
         { path: "docs/tech-stack.md", type: "file" },
         { path: "docs/project-docs.md", type: "file" },
       ];
@@ -660,7 +674,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       // Additional dynamic checks
-      const agentsDir = path.join(projectRoot, ".enderun/agents");
+      const frameworkDir = getFrameworkDir(projectRoot);
+      const agentsDir = path.join(projectRoot, frameworkDir, "agents");
       if (fs.existsSync(agentsDir)) {
         const agents = fs
           .readdirSync(agentsDir)
@@ -669,7 +684,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           const agentName = agent.replace(".md", "");
           const logFile = path.join(
             projectRoot,
-            `.enderun/logs/${agentName}.json`,
+            frameworkDir,
+            "logs",
+            `${agentName}.json`,
           );
           if (!fs.existsSync(logFile)) {
             missing.push(
@@ -1083,11 +1100,12 @@ Contract is invalid or out of date!
       }
 
       try {
-        const logsDir = path.join(projectRoot, ".enderun", "logs");
+        const frameworkDir = getFrameworkDir(projectRoot);
+        const logsDir = path.join(projectRoot, frameworkDir, "logs");
         if (!fs.existsSync(logsDir)) {
           fs.mkdirSync(logsDir, { recursive: true });
         }
-
+ 
         const logPath = path.join(logsDir, `${parsed.data.agent}.json`);
         let logs: any[] = [];
 
@@ -1138,9 +1156,10 @@ Contract is invalid or out of date!
 
     case "read_project_memory": {
       try {
-        const memoryPath = path.join(projectRoot, ".enderun", "PROJECT_MEMORY.md");
+        const frameworkDir = getFrameworkDir(projectRoot);
+        const memoryPath = path.join(projectRoot, frameworkDir, "PROJECT_MEMORY.md");
         if (!fs.existsSync(memoryPath)) {
-          return { content: [{ type: "text", text: "ERROR: PROJECT_MEMORY.md not found." }] };
+          return { content: [{ type: "text", text: `ERROR: ${frameworkDir}/PROJECT_MEMORY.md not found.` }] };
         }
         const content = fs.readFileSync(memoryPath, "utf-8");
         return { content: [{ type: "text", text: content }] };
