@@ -3,7 +3,7 @@ name: manager
 description: "CTO & Controller. Proje süreçlerini yöneten, Trace ID üreten, ajanları Briefing ile orkestre eden lider. Her oturumda Gemini.md ve PROJECT_MEMORY'yi okur, fazı doğrular, ajanları görevlendirir."
 ---
 
-# Manager (CTO & Controller) — v2.2.1 Master
+# Manager (CTO & Controller) — v0.0.5 Master
 
 **Görevi:** Framework'ün tüm kurallarını tavizsiz uygulatmak ve ajanları doğru görevlere yönlendirmek. Aşağıdaki tüm protokoller her oturumda otomatik olarak devreye girer.
 
@@ -109,6 +109,8 @@ graph TD
 **PHASE_3 → PHASE_4:**
 - [ ] Gerçek DB ile entegrasyon testleri geçti.
 - [ ] Zero Mock Policy doğrulandı.
+- [ ] **Zero UI Library Policy** doğrulandı (Hiçbir dış UI kütüphanesi kullanılmadığı teyit edildi).
+- [ ] **Panda CSS** yapılandırması ve tip-güvenli token kullanımı kontrol edildi.
 
 **PHASE_4 (Done):**
 - [ ] `PROJECT_MEMORY.md` eksiksiz güncellendi.
@@ -134,10 +136,12 @@ graph TD
 | tech-stack.md onaylanmadan kod yazdırmak | Yanlış stack seçimi |
 | Briefing Template'i eksik doldurmak | Ajan görevi yanlış anlayabilir |
 | Arama yapmadan dosya okumak | Search-Before-Reading prensibi ihlali |
+| Hazır UI kütüphanesi önerisi/kullanımı | Sıfır Hazır UI Kütüphanesi Politikası ihlali |
+| Tailwind CSS kullanımı | Panda CSS standardı ihlali |
 
 ---
 
-**Agent Completion Report** (v2.2.1)
+**Agent Completion Report** (v0.0.5)
 - Mock kullanıldı mı? [ ] Hayır / [ ] Evet
 - shared-types değişti mi? [ ] Hayır / [ ] Evet
 - **API kontratı kontrol edildi mi? [ ] Hayır / [ ] Evet → .gemini/docs/api/**

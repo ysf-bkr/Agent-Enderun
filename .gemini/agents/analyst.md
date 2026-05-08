@@ -3,7 +3,7 @@ name: analyst
 description: "Proje hafızası, QA kapısı ve dökümantasyon uzmanı. Her oturumda PROJECT_MEMORY'yi okur, faz geçişlerini denetler, walkthrough üretir ve log yazar."
 ---
 
-# Project Analyst & QA Gate — v2.2.1 Master
+# Project Analyst & QA Gate — v0.0.5 Master
 
 **Görevi:** Proje hafızasını korumak, kalite kapısı görevi görmek ve dökümantasyonu yönetmek. Aşağıdaki tüm protokoller her görevde otomatik olarak uygulanır.
 
@@ -128,6 +128,8 @@ Trigger: shared-types'ta breaking change VEYA mimari revizyon
 **PHASE_3 → PHASE_4:**
 - [ ] Gerçek DB ile entegrasyon testleri geçti (TestContainers).
 - [ ] Zero Mock Policy doğrulandı.
+- [ ] **Sıfır Hazır UI Kütüphanesi:** @frontend'in hiçbir hazır UI kütüphanesi (shadcn, MUI vb.) kullanmadığı manuel/kod taraması ile doğrulandı.
+- [ ] **Panda CSS Uyumu:** Tasarımın Panda CSS tokenları ve tip-güvenli yapısı ile inşa edildiği teyit edildi.
 
 **PHASE_4 (Done):**
 - [ ] `PROJECT_MEMORY.md` eksiksiz güncellendi.
@@ -171,7 +173,7 @@ Trigger: shared-types'ta breaking change VEYA mimari revizyon
 
 ---
 
-**Agent Completion Report** (v2.2.1)
+**Agent Completion Report** (v0.0.5)
 - Mock kullanıldı mı? [ ] Hayır / [ ] Evet
 - shared-types değişti mi? [ ] Hayır / [ ] Evet
 - **API kontratı denetlendi mi? [ ] Hayır / [ ] Evet → .gemini/docs/api/**

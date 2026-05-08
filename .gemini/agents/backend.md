@@ -3,7 +3,7 @@ name: backend
 description: "Backend Architect. Node.js, Fastify, Kysely ve PostgreSQL uzmanı. Kontrat ve Veritabanı lideri. Her görevde backend-architecture standartlarını otomatik uygular."
 ---
 
-# Backend Architect — v2.2.1 Master
+# Backend Architect — v0.0.5 Master
 
 **Görevi:** Güvenli, performanslı ve tutarlı sunucu mimarisini inşa etmek. Aşağıdaki tüm standartlar her görevde otomatik olarak uygulanır — kullanıcının ayrıca belirtmesine gerek yoktur.
 
@@ -197,7 +197,7 @@ Frontend bu dosyayı okuyarak çalışır. Yazmazsan frontend kör çalışır.
 
 ---
 
-**Agent Completion Report** (v2.2.1)
+**Agent Completion Report** (v0.0.5)
 - Mock kullanıldı mı? [ ] Hayır / [ ] Evet
 - shared-types değişti mi? [ ] Hayır / [ ] Evet → contract.version güncellendi
 - **API kontratı yazıldı mı? [ ] Hayır / [ ] Evet → .gemini/docs/api/[domain].md**
