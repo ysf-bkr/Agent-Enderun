@@ -1,4 +1,4 @@
-# AI-Enderun (v0.0.10 Master)
+# AI-Enderun (v0.0.11 Master)
 
 [English](#english) | [Türkçe](#türkçe)
 
@@ -8,7 +8,7 @@
 
 AI-Enderun is a **Supreme Performance AI Orchestration Framework** designed to transform AI assistants into disciplined, specialized, and highly efficient engineering collaborators. It bridges the gap between raw AI capabilities and enterprise-grade engineering standards through a **Constitutional System**, **Persistent Project Memory**, and a **Multi-Agent Orchestration Layer**.
 
-Starting from **v0.0.10 Master**, the framework implements a **"Clean Root" Policy**, relocating all AI-specific logic, memory, and specialized instructions into hidden, adapter-specific directories (e.g., `.gemini/`, `.claude/`), preserving your project root for pure production code and requirements.
+Starting from **v0.0.11 Master**, the framework implements a **"Clean Root" Policy**, relocating all AI-specific logic, memory, and specialized instructions into hidden, adapter-specific directories (e.g., `.gemini/`, `.claude/`), preserving your project root for pure production code and requirements.
 
 ## 🎖️ Core Pillars
 
@@ -68,7 +68,7 @@ The **AI-Enderun MCP Server** exposes specialized tools to your AI assistant:
 
 AI-Enderun, yapay zeka yardımcılarını disiplinli, uzmanlaşmış ve yüksek verimli mühendislik ekip arkadaşlarına dönüştürmek için tasarlanmış **Üstün Performanslı AI Orkestrasyon Çerçevesidir**. Ham yapay zeka yetenekleri ile kurumsal düzeydeki mühendislik standartları arasındaki köprüyü; **Anayasal Sistem**, **Kalıcı Proje Hafızası** ve **Çoklu Ajan Orkestrasyon Katmanı** aracılığıyla kurar.
 
-**v0.0.10 Master** sürümünden itibaren, framework **"Temiz Kök Dizin" (Clean Root)** politikasını uygular; tüm AI mantığını, hafızasını ve uzman talimatlarını adaptöre özel gizli dizinlere (örn: `.gemini/`, `.claude/`) taşıyarak proje kök dizininizi sadece üretim kodu ve gereksinimler için korur.
+**v0.0.11 Master** sürümünden itibaren, framework **"Temiz Kök Dizin" (Clean Root)** politikasını uygular; tüm AI mantığını, hafızasını ve uzman talimatlarını adaptöre özel gizli dizinlere (örn: `.gemini/`, `.claude/`) taşıyarak proje kök dizininizi sadece üretim kodu ve gereksinimler için korur.
 
 ## 🎖️ Temel Sütunlar
 

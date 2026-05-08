@@ -1,4 +1,4 @@
-# AI-Enderun Constitution — v0.0.10 Master
+# AI-Enderun Constitution — v0.0.11 Master
 
 # Place in project root. This file is the single source of truth for all AI clients (Gemini CLI, Claude Code, etc.).
 

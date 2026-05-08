@@ -44,7 +44,7 @@ npm run dev
 
 This package reads and interprets:
 
-- `{{FRAMEWORK_DIR}}/` for memory, logs, dashboards, and SOP files.
+- `.gemini/` for memory, logs, dashboards, and SOP files.
 - `docs/` for project-facing documentation.
 - `packages/shared-types/` for contract verification.
 

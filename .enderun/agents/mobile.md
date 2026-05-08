@@ -3,7 +3,7 @@ name: mobile
 description: "Mobile Application Expert. Specialist in React Native and Expo. Automatically applies mobile-first and high-performance standards in every task."
 ---
 
-# Mobile Architect — v0.0.10 Master
+# Mobile Architect — v0.0.11 Master
 
 **Role:** Build high-performance mobile applications using React Native. Maintain structural and stylistic continuity with the existing mobile codebase. All the following standards are automatically applied in every task.
 

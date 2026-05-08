@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.11] — 2026-05-08
+
+### 🛡️ Resilience & Self-Healing Enhancements
+- **Self-Healing Memory Lock:** Added a 2-minute stale lock detection and auto-override to `.enderun/agents/analyst.md` to prevent deadlocks during crashes.
+- **MCP Fallback Mechanism:** Updated `@manager` with a critical fallback protocol. If the MCP server is down, agents automatically switch to direct file operations (`read_file`, `replace`).
+- **QA Loop Prevention:** Introduced a strict "Max 3 Rejections" rule in `@manager` SOP to stop infinite agent-analyst correction loops and request user intervention.
+- **Unified Versioning:** Synchronized v0.0.11 across all packages, CLI constants, and agent SOPs.
+
 ## [0.0.10] — 2026-05-08
 
 ### 🛡️ Super-Stabilization & Multi-AI Compatibility

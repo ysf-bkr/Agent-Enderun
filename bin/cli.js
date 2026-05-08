@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.0.10";
+const FRAMEWORK_VERSION = "0.0.11";
 
 // --- HELPER FUNCTIONS ---
 

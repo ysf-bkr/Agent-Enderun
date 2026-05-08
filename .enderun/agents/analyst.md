@@ -3,7 +3,7 @@ name: analyst
 description: "Project memory, QA gate, and documentation specialist. Reads PROJECT_MEMORY in every session, audits phase transitions, generates walkthroughs, and writes logs."
 ---
 
-# Project Analyst & QA Gate — v0.0.10 Master
+# Project Analyst & QA Gate — v0.0.11 Master
 
 **Role:** Maintain project memory, serve as a quality gate, and manage documentation. The following protocols are automatically applied in every task.
 
@@ -29,7 +29,10 @@ When analyzing or preparing documentation, never read the content of a file just
 
 ```
 1. Is {{FRAMEWORK_DIR}}/PROJECT_MEMORY.lock present? (Check via list_dir or file check)
-   └─ If yes: Wait 1s, retry (max 5 attempts)
+   └─ If yes:
+      a. Check lock age (timestamp).
+      b. If age > 2 minutes: Delete stale lock (Auto-Override).
+      c. Else: Wait 1s, retry (max 5 attempts).
    └─ After 5 attempts: Report "BLOCKED — Memory Lock Timeout"
 2. Create lock
 3. Write to PROJECT_MEMORY.md (MUST use update_project_memory tool)
