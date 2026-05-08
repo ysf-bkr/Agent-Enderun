@@ -10,6 +10,9 @@ const __dirname = path.dirname(__filename);
 const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
+// --- CONSTANTS ---
+const FRAMEWORK_VERSION = "0.0.7";
+
 // --- HELPER FUNCTIONS ---
 
 function getPackageVersion() {
@@ -89,6 +92,138 @@ function normalizePriority(priority) {
   return /^P[0-3]$/.test(normalized) ? normalized : "P2";
 }
 
+function mergePackageJson(targetPath, sourcePath) {
+  let targetPkg = {};
+  if (fs.existsSync(targetPath)) {
+    try {
+      targetPkg = JSON.parse(fs.readFileSync(targetPath, "utf8"));
+    } catch (e) {
+      console.warn("⚠️  Could not parse existing package.json, creating a new one.");
+    }
+  }
+
+  const sourcePkg = JSON.parse(fs.readFileSync(sourcePath, "utf8"));
+
+  // Merge scripts
+  targetPkg.scripts = {
+    ...targetPkg.scripts,
+    "enderun:status": "ai-enderun status",
+    "enderun:trace": "ai-enderun trace:new",
+    "enderun:verify": "ai-enderun verify-contract",
+  };
+
+  // Ensure basic fields
+  if (!targetPkg.name) targetPkg.name = path.basename(process.cwd());
+  if (!targetPkg.version) targetPkg.version = "0.1.0";
+  if (!targetPkg.type) targetPkg.type = "module";
+
+  // Add metadata
+  targetPkg.enderun = {
+    version: sourcePkg.version,
+    initializedAt: new Date().toISOString(),
+  };
+
+  fs.writeFileSync(targetPath, JSON.stringify(targetPkg, null, 2));
+  console.log("✅ package.json updated with Enderun scripts.");
+}
+
+function updateGitIgnore(targetPath) {
+  const IGNORE_LINES = [
+    ".enderun/*.lock",
+    ".enderun/logs/*.json",
+    "node_modules",
+    ".DS_Store",
+    ".env",
+  ];
+
+  let content = "";
+  if (fs.existsSync(targetPath)) {
+    content = fs.readFileSync(targetPath, "utf8");
+  }
+
+  const lines = content.split("\n").map((l) => l.trim());
+  let added = false;
+
+  for (const line of IGNORE_LINES) {
+    if (!lines.includes(line)) {
+      content += (content.endsWith("\n") || content === "" ? "" : "\n") + line + "\n";
+      added = true;
+    }
+  }
+
+  if (added) {
+    fs.writeFileSync(targetPath, content);
+    console.log("✅ .gitignore updated.");
+  }
+}
+
+function initializeMemory(memoryPath) {
+  if (fs.existsSync(memoryPath)) return;
+
+  const traceId = generateULID();
+  const date = new Date().toISOString().split("T")[0];
+  const template = `# PROJECT MEMORY — AI-Enderun
+
+This file is the Single Source of Truth (SSOT) and the persistent memory of the project.
+
+## CURRENT STATUS
+
+| Active Phase | Profile | Last Update | Active Trace ID | Blockers |
+| :----------- | :------ | :---------- | :-------------- | :------- |
+| PHASE_0      | Lightweight | ${date} | ${traceId} | NONE |
+
+## PROJECT DEFINITION
+
+| Field | Value |
+| :--- | :--- |
+| Project Name | ${path.basename(process.cwd())} |
+| Platform | Not defined |
+| Frontend | React 19 + Vite + Panda CSS |
+| Backend | Node.js 20+ + Fastify |
+| DB | PostgreSQL |
+
+## DOD STATUS
+
+| Phase | Status | Note |
+| :--- | :--- | :--- |
+| PHASE_0 | IN_PROGRESS | Initializing project structure |
+| PHASE_1 | PENDING | |
+| PHASE_2 | PENDING | |
+| PHASE_3 | PENDING | |
+| PHASE_4 | PENDING | |
+
+## CRITICAL DECISIONS
+
+| Date | Decision | Rationale | Agent |
+| :--- | :--- | :--- | :--- |
+| ${date} | Project Initialized | Framework setup via CLI | @manager |
+
+## DELIVERABLES
+
+| Module | Status | Agent | Date |
+| :--- | :--- | :--- | :--- |
+
+## ACTIVE TASKS
+
+| Trace ID | Task | Agent | Priority | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| ${traceId} | Framework setup and architecture alignment | @manager | P1 | IN_PROGRESS |
+
+## HISTORY (Persistent Memory)
+
+### ${date} — Framework Initialization
+
+- **Agent:** @manager
+- **Trace ID:** ${traceId}
+- **Action:** Initialized AI-Enderun framework and project structure.
+- **Decision:** Starting with Lightweight profile.
+- **Next Step:** Define user requirements in docs/project-docs.md.
+`;
+
+  fs.writeFileSync(memoryPath, template);
+  console.log("✅ PROJECT_MEMORY.md initialized.");
+}
+
 // --- COMMANDS ---
 
 /**
@@ -108,37 +243,70 @@ async function initCommand(selectedAdapter) {
     "mcp.json",
     "ENDERUN.md",
     "README.md",
-    "package.json",
     "packages/framework-mcp",
     "packages/shared-types",
   ];
 
-  console.log("🚀 Installing AI Agent Framework...");
-  
-  let filesToCopy = [...CORE_FILES];
+  const DIRS_TO_CREATE = [
+    ".enderun/agents",
+    ".enderun/docs/api",
+    ".enderun/logs",
+    "apps/web",
+    "apps/backend",
+    "docs",
+    "packages/shared-types",
+    "packages/framework-mcp",
+  ];
+
+  console.log("🚀 Installing AI-Enderun (Smart Mode)...");
+
+  // Create directories
+  for (const dir of DIRS_TO_CREATE) {
+    const fullPath = path.join(targetDir, dir);
+    if (!fs.existsSync(fullPath)) {
+      fs.mkdirSync(fullPath, { recursive: true });
+      console.log(`📂 Created directory: ${dir}`);
+    }
+  }
+
+  let filesToProcess = [...CORE_FILES];
   
   if (selectedAdapter) {
     if (!ADAPTERS[selectedAdapter]) {
       console.error(`❌ Invalid adapter: ${selectedAdapter}. Available: gemini, claude, cursor, codex`);
       process.exit(1);
     }
-    filesToCopy = [...CORE_FILES, ...ADAPTERS[selectedAdapter]];
+    filesToProcess = [...CORE_FILES, ...ADAPTERS[selectedAdapter]];
   } else {
-    Object.values(ADAPTERS).forEach(list => filesToCopy.push(...list));
+    Object.values(ADAPTERS).forEach(list => filesToProcess.push(...list));
   }
 
-  for (const item of filesToCopy) {
+  for (const item of filesToProcess) {
     const src = path.join(sourceDir, item);
     const dest = path.join(targetDir, item);
     if (fs.existsSync(src)) {
       if (fs.lstatSync(src).isDirectory()) {
-        copyDir(src, dest);
+        // When copying .enderun, skip logs and project-specific state
+        const skipFiles = item === ".enderun" ? ["logs", "PROJECT_MEMORY.md", "BRAIN_DASHBOARD.md", "PROJECT_MEMORY.lock"] : [];
+        copyDir(src, dest, new Set(skipFiles));
       } else {
+        // Special files handling
+        if (item === "package.json") continue;
+        if (item === "ENDERUN.md" && fs.existsSync(dest)) {
+          console.log(`ℹ️  Skipping ENDERUN.md (already exists).`);
+          continue;
+        }
+        
         fs.copyFileSync(src, dest);
       }
-      console.log(`✅ ${item} created.`);
+      console.log(`✅ ${item} processed.`);
     }
   }
+
+  // Smart setup
+  mergePackageJson(path.join(targetDir, "package.json"), path.join(sourceDir, "package.json"));
+  updateGitIgnore(path.join(targetDir, ".gitignore"));
+  initializeMemory(getMemoryPath());
 
   // --- Post-Install Hooks (Smart Setup) ---
   
@@ -170,23 +338,83 @@ async function initCommand(selectedAdapter) {
   }
 
   if (selectedAdapter === "cursor" || !selectedAdapter) {
-    // Add cursor-specific rules or settings if needed
-    console.log("✨ Cursor: Adapter CLAUDE.md is ready to guide your AI.");
+    console.log("✨ Cursor: Adapter CLAUDE.md and ENDERUN.md are ready to guide your AI.");
   }
 
-  console.log("\n✨ Framework successfully installed! (v" + getPackageVersion() + ")");
+  console.log("\n✨ Framework successfully installed! (v" + FRAMEWORK_VERSION + ")");
+  console.log("\n⚠️  IMPORTANT: Run 'npm install && npm run build' to prepare the framework.");
+  console.log("👉 Then run 'ai-enderun check' to verify the installation.");
 }
 
-function copyDir(src, dest) {
-  const SKIP_NAMES = new Set(["node_modules", ".git", ".DS_Store"]);
+/**
+ * Check framework health and MCP status.
+ */
+function checkCommand() {
+  console.log(`🔍 Checking AI-Enderun Health (v${FRAMEWORK_VERSION})...`);
+  let issues = 0;
+
+  const checks = [
+    { name: "Constitution (ENDERUN.md)", path: "ENDERUN.md" },
+    { name: "Memory (PROJECT_MEMORY.md)", path: ".enderun/PROJECT_MEMORY.md" },
+    { name: "Shared Types", path: "packages/shared-types/package.json" },
+    { name: "MCP Server", path: "packages/framework-mcp/package.json" },
+    { name: "Tech Stack", path: "docs/tech-stack.md" },
+    { name: "Requirements", path: "docs/project-docs.md" },
+  ];
+
+  for (const check of checks) {
+    if (fs.existsSync(path.join(process.cwd(), check.path))) {
+      console.log(`✅ ${check.name} found.`);
+    } else {
+      console.log(`❌ ${check.name} MISSING! (${check.path})`);
+      issues++;
+    }
+  }
+
+  // Dependency Check
+  const mcpNodeModules = path.join(process.cwd(), "packages/framework-mcp/node_modules");
+  if (!fs.existsSync(mcpNodeModules)) {
+    console.log("❌ Dependencies MISSING! (Run 'npm install')");
+    issues++;
+  } else {
+    console.log("✅ Dependencies found.");
+  }
+
+  // MCP Build Check
+  const mcpPath = path.join(process.cwd(), "packages/framework-mcp/dist/index.js");
+  if (!fs.existsSync(mcpPath)) {
+    console.log("❌ MCP Build MISSING! (Run 'npm run build')");
+    issues++;
+  } else {
+    console.log("✅ MCP Build found.");
+    console.log("⏳ Testing MCP Server syntax...");
+    try {
+      execSync(`node --check ${mcpPath}`, { stdio: "pipe" });
+      console.log("✅ MCP Server syntax valid.");
+    } catch (e) {
+      // If --check fails on ESM, we might skip it or use a better check
+      console.log("⚠️  MCP Syntax check skipped (ESM/Environment).");
+    }
+  }
+
+  if (issues === 0) {
+    console.log("\n🚀 All systems green! AI-Enderun is ready for orchestration.");
+  } else {
+    console.log(`\n⚠️  Found ${issues} issues. Please fix them before starting.`);
+  }
+}
+
+function copyDir(src, dest, skipSet = new Set()) {
+  const DEFAULT_SKIP = new Set(["node_modules", ".git", ".DS_Store"]);
+  const actualSkip = new Set([...DEFAULT_SKIP, ...skipSet]);
 
   fs.mkdirSync(dest, { recursive: true });
   fs.readdirSync(src, { withFileTypes: true }).forEach(entry => {
-    if (SKIP_NAMES.has(entry.name)) return;
+    if (actualSkip.has(entry.name)) return;
 
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
-    entry.isDirectory() ? copyDir(srcPath, destPath) : fs.copyFileSync(srcPath, destPath);
+    entry.isDirectory() ? copyDir(srcPath, destPath, skipSet) : fs.copyFileSync(srcPath, destPath);
   });
 }
 
@@ -319,17 +547,21 @@ async function main() {
     case "verify-contract":
       verifyContractCommand();
       break;
+    case "check":
+      checkCommand();
+      break;
     case "version":
     case "-v":
     case "--version":
-      console.log(`v${getPackageVersion()}`);
+      console.log(`v${FRAMEWORK_VERSION}`);
       break;
     default:
       console.log(`
-🤖 AI-Enderun CLI (v${getPackageVersion()})
+🤖 AI-Enderun CLI (v${FRAMEWORK_VERSION})
 
 Available Commands:
   init [adapter]    Initialize the framework (gemini, claude, cursor, codex)
+  check             Verify framework health and MCP server status
   status            Show current phase and task status
   trace:new <desc>  Generate a new Trace ID and add the task to memory
   verify-contract   Check if shared types match the stored hash

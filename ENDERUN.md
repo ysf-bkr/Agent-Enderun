@@ -1,4 +1,4 @@
-# AI-Enderun — Supreme Performance AI Orchestration (v0.0.6)
+# AI-Enderun — Supreme Performance AI Orchestration (v0.0.7)
 
 # Place in project root. This file is the single source of truth for all AI clients (Gemini CLI, Claude Code, etc.).
 
@@ -34,7 +34,7 @@ This project is an "Agent Development School" designed to maximize the professio
    - `PROJECT DEFINITION` and `DOD STATUS` sections → Is the architectural framework and phase quality clear?
    - `HISTORY` section → Read the last 3 entries to understand previous work.
 
-3. **Check `.enderun/docs/` Folder:** Verify if `tech-stack.md` and `project-docs.md` exist.
+3. **Check Documentation:** Verify if root `docs/tech-stack.md` and root `docs/project-docs.md` exist.
 
 4. **Default Stack:**
    - **Frontend:** React 19 + Vite (SPA) + Zustand + Panda CSS.
@@ -121,6 +121,7 @@ Trace ID: 01H... (26-character ULID)
   - **Exception 2:** Unit Tests → Mocks allowed for external dependencies.
 - **Branded Types Law:** All IDs must be Branded Types (`packages/shared-types`).
 - **Search Before Reading:** No agent should read a file blindly; first scan the context with `search_codebase`, `analyze_dependencies`, `get_memory_insights`, and `get_project_gaps`. Legacy prompt compatibility aliases like `codebase_search`, `codebase_graph_query`, `codebase_context`, `codebase_context_search`, and `codebase_status` are also supported.
+- **Robust Access Law:** Agents MUST use MCP tools for system time (`get_system_time`) and memory reading (`read_project_memory`). Using Shell `date` or direct `ReadFile` on `.enderun/PROJECT_MEMORY.md` is strictly forbidden to ensure cross-platform stability.
 - **Procedural Continuity:** Agents MUST maintain consistency with existing code patterns. Before editing any file, analyze its current style, library usage, and architectural approach. Finish a task using the same standards it was started with. If a pattern change is required, it must be approved by @manager and recorded in `CRITICAL DECISIONS`.
 - **Full-Spectrum Responsive:** Every component starts mobile-first (320px) and must remain fluid using `clamp()` and `aspect-ratio` up to ultra-wide screens (1920px+).
 - **Supreme Frontend Aesthetics:** @frontend must avoid "AI slop" aesthetics; design original, characterful, and production-quality interfaces. **Zero UI Library Policy:** Agents never use ready-made component libraries like `shadcn/ui`, `MUI`, or `Chakra UI`. All UI components (Button, Modal, Input, etc.) must be built from scratch using Panda CSS, unique to the project.
@@ -288,7 +289,7 @@ _Logs are stored as a **JSON Array**. Every turn appends a new object to the arr
 
 ---
 
-**Agent Completion Report** (v1.0.6)
+**Agent Completion Report** (v1.0.7)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types changed? [ ] No / [ ] Yes

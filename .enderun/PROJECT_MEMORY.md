@@ -15,7 +15,7 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 | Project Name | AI-Enderun |
 | Platform | Agent skill sandbox / orchestration framework |
 | Frontend | React 19 + Vite + Zustand + Panda CSS |
-| Backend | Node.js 20+ + Fastify |
+| Backend | Node.js 20+ + Fastify + Kysely |
 | DB | PostgreSQL |
 | Auth | Not yet defined |
 | Deploy | Not yet defined |
@@ -57,10 +57,73 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 | Trace ID | Task | Agent | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | 01KR44729Z08BQQ4FCDAVNC148 | Documentation Overhaul & Agent Evangelism | @manager | P1 | COMPLETED |
+| 01KR45N4S0XW6F7G6T1W8F9D2V | Smart Init System Implementation | @manager | P1 | COMPLETED |
+| 01KR45Q8N1V7Z7H9R2M3W9X4Y1 | Robust Access Law & Tool Failure Resolution | @manager | P1 | COMPLETED |
+| 01KR45W2Z91Y5K8M2T3V4X9N7R | Documentation Path Alignment (Root docs/ Fix) | @manager | P1 | COMPLETED |
+| 01KR45Y0M2X3V1B7D9N4Z2K8L5 | README Quick Start Guide Addition | @manager | P2 | COMPLETED |
+| 01KR460M3N1B5V9X2D4Z8L7K1R | Tech-Stack.md Relocation (Root docs/ Fix) | @manager | P1 | COMPLETED |
+| 01KR463F8N1V7W2Z9M3D4G7H5K | Version Bump to v0.0.7 & Health Check | @manager | P1 | COMPLETED |
+| 01KR4666M2X9R1T4V8D7Z2L5K1 | @manager SOP Hardening (MCP Health Check) | @manager | P1 | COMPLETED |
 | 01KR444BM94P5W3ERVJ3YJ9T01 | Agent Report Version Synchronization (v0.0.6) | @manager | P1 | COMPLETED |
 | 01KR442W6MP3GXHF7TD32GJG1V | Agent SOP Hardening & Continuity Alignment | @manager | P1 | COMPLETED |
 
 ## HISTORY (Persistent Memory)
+
+### 2026-05-08 — @manager SOP Hardening (MCP Health Check)
+
+- **Agent:** @manager
+- **Trace ID:** 01KR4666M2X9R1T4V8D7Z2L5K1
+- **Action:** Hardened the `@manager` SOP by adding a mandatory MCP health check to the startup protocol. The manager must now verify connectivity at the beginning of every session and warn the user if tools are unresponsive.
+- **Decision:** Shifted some health monitoring responsibility to the agent level to ensure the orchestration environment is always valid during active sessions.
+- **Next Step:** Observe agent behavior during startup and verify they correctly report MCP issues.
+
+### 2026-05-08 — Version Bump to v0.0.7 & Health Check
+
+- **Agent:** @manager
+- **Trace ID:** 01KR463F8N1V7W2Z9M3D4G7H5K
+- **Action:** Bumped framework version to `v0.0.7`. Implemented `ai-enderun check` command to verify framework health, directory existence, and MCP server readiness. Added automated warnings for missing dependencies and builds during `init`.
+- **Decision:** Prioritized user experience by providing a verification tool to ensure the complex multi-component framework is correctly set up before starting orchestration.
+- **Next Step:** Encourage users to run `ai-enderun check` as part of their initial setup.
+
+### 2026-05-08 — Tech-Stack.md Relocation (Root docs/ Fix)
+
+- **Agent:** @manager
+- **Trace ID:** 01KR460M3N1B5V9X2D4Z8L7K1R
+- **Action:** Relocated `tech-stack.md` from `.enderun/docs/` to the root `docs/` directory. Updated `ENDERUN.md`, `README.md`, Agent SOPs, and MCP gap detection logic to reflect this change.
+- **Decision:** Centralized all project-specific "What" and "How" documentation in the root `docs/` folder to improve visibility and clarify the separation between project requirements and framework internals.
+- **Next Step:** Verify that agents are correctly auditing both requirements and tech stack from the root `docs/` folder.
+
+### 2026-05-08 — README Quick Start Guide Addition
+
+- **Agent:** @manager
+- **Trace ID:** 01KR45Y0M2X3V1B7D9N4Z2K8L5
+- **Action:** Added a bilingual "Getting Started / Başlangıç Rehberi" section to the root `README.md`. Outlined the 5 critical steps for users to take after framework initialization to begin their orchestration journey.
+- **Decision:** Improved user onboarding by providing clear, actionable post-install instructions directly in the main project entry point.
+- **Next Step:** Maintain documentation clarity as new features are added.
+
+### 2026-05-08 — Documentation Path Alignment (Root docs/ Fix)
+
+- **Agent:** @manager
+- **Trace ID:** 01KR45W2Z91Y5K8M2T3V4X9N7R
+- **Action:** Corrected outdated path references in `ENDERUN.md` and `framework-mcp`. Ensured that agents look for project requirements in root `docs/` and technical API contracts in `.enderun/docs/api`.
+- **Decision:** Fully aligned all framework logic with the decoupled documentation model to eliminate agent confusion.
+- **Next Step:** Verify that agents are now correctly identifying project requirements in the root `docs/` folder.
+
+### 2026-05-08 — Robust Access Law & Tool Failure Resolution
+
+- **Agent:** @manager
+- **Trace ID:** 01KR45Q8N1V7Z7H9R2M3W9X4Y1
+- **Action:** Resolved agent failures regarding `Shell date` and direct `ReadFile` of `.enderun/PROJECT_MEMORY.md`. Implemented `get_system_time` and `read_project_memory` MCP tools. Established the "Robust Access Law" in `ENDERUN.md` and updated all Agent SOPs to mandate these tools.
+- **Decision:** Mandated MCP tools for sensitive operations to bypass shell environment inconsistencies and restricted file access in certain agent environments.
+- **Next Step:** Monitor agent stability and ensure all clients correctly utilize the new tools.
+
+### 2026-05-08 — Smart Init System Implementation
+
+- **Agent:** @manager
+- **Trace ID:** 01KR45N4S0XW6F7G6T1W8F9D2V
+- **Action:** Upgraded the `ai-enderun init` command to a "Smart Init" system. Refactored `bin/cli.js` to support `package.json` merging, `.gitignore` updates, and automated `PROJECT_MEMORY.md` initialization. Excluded project-specific state files from the initial framework copy.
+- **Decision:** Shifted from simple file copying to a non-destructive, project-aware initialization process to improve user experience and framework adoption.
+- **Next Step:** Monitor user feedback and refine adapter-specific smart setup logic.
 
 ### 2026-05-08 — Documentation Overhaul & Agent Evangelism
 

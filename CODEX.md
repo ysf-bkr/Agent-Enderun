@@ -1,4 +1,4 @@
-# AI-Enderun — Codex Adapter (v0.0.6)
+# AI-Enderun — Codex Adapter (v0.0.7)
 
 This file is the Codex adapter layer.
 Core framework rules and agent capabilities are defined in `./ENDERUN.md`.

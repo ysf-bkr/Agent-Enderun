@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.6] — 2026-05-08
+## [0.0.7] — 2026-05-08
 
 ### 🚀 Major Structural & Disciplinary Enhancements
 
@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 - **Memory Hardening & Continuity:** Established the **Procedural Continuity** principle. All agent SOPs updated to mandate consistency with existing code patterns and stylistic standards.
 - **Smart Init System:** Upgraded CLI `init` command with post-install hooks. Automatically creates `.gemini/agents` symlinks and provides Claude Code MCP setup guidance.
 - **Trace ID Standardization:** Completed the project-wide transition to 26-character **ULID** for all tasks and historical records.
-- **Agent SOP v0.0.6:** Synchronized all 7 agent files (@manager, @analyst, @backend, @frontend, @explorer, @mobile, @native) with the latest framework version and continuity rules.
+- **Agent SOP v0.0.7:** Synchronized all 7 agent files (@manager, @analyst, @backend, @frontend, @explorer, @mobile, @native) with the latest framework version and continuity rules.
 
 ### 🚀 Major MCP Framework Enhancements
 

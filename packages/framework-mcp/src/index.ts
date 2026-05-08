@@ -13,7 +13,7 @@ import { Project, SyntaxKind } from "ts-morph";
 const server = new Server(
   {
     name: "ai-enderun-mcp",
-    version: "0.0.6",
+    version: "0.0.7",
   },
   {
     capabilities: {
@@ -53,7 +53,7 @@ const LOG_AGENT_ACTION_ARGS_SCHEMA = z.object({
   details: z.record(z.any()).default({}),
 });
 
-const FRAMEWORK_VERSION = "0.0.6";
+const FRAMEWORK_VERSION = "0.0.7";
 
 function resolveSafePath(projectRoot: string, targetPath: string): string {
   const resolved = path.resolve(projectRoot, targetPath);
@@ -368,6 +368,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["agent", "action", "requestId", "status", "summary"],
         },
       },
+      {
+        name: "get_system_time",
+        description: "Get the current system time in ISO-8601 format (UTC). Use this instead of Shell 'date' commands.",
+        inputSchema: { type: "object", properties: {} },
+      },
+      {
+        name: "read_project_memory",
+        description: "Read the entire content of .enderun/PROJECT_MEMORY.md safely. Use this instead of direct ReadFile tools to ensure framework compatibility.",
+        inputSchema: { type: "object", properties: {} },
+      },
     ],
   };
 });
@@ -633,11 +643,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const checkPaths = [
         { path: "apps", type: "folder", optional: true },
         { path: "packages/shared-types/src", type: "folder" },
-        { path: "docs/api", type: "folder", optional: true },
+        { path: ".enderun/docs/api", type: "folder", optional: true },
         { path: ".env", type: "file", optional: true },
         { path: ".env.example", type: "file" },
         { path: ".enderun/PROJECT_MEMORY.md", type: "file" },
         { path: ".enderun/BRAIN_DASHBOARD.md", type: "file" },
+        { path: "docs/tech-stack.md", type: "file" },
+        { path: "docs/project-docs.md", type: "file" },
       ];
 
       for (const item of checkPaths) {
@@ -1115,6 +1127,25 @@ Contract is invalid or out of date!
             },
           ],
         };
+      }
+    }
+
+    case "get_system_time": {
+      return {
+        content: [{ type: "text", text: new Date().toISOString() }],
+      };
+    }
+
+    case "read_project_memory": {
+      try {
+        const memoryPath = path.join(projectRoot, ".enderun", "PROJECT_MEMORY.md");
+        if (!fs.existsSync(memoryPath)) {
+          return { content: [{ type: "text", text: "ERROR: PROJECT_MEMORY.md not found." }] };
+        }
+        const content = fs.readFileSync(memoryPath, "utf-8");
+        return { content: [{ type: "text", text: content }] };
+      } catch (error) {
+        return { content: [{ type: "text", text: "ERROR: Failed to read PROJECT_MEMORY.md" }] };
       }
     }
 

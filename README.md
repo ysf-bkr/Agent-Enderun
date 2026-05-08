@@ -1,4 +1,4 @@
-# AI-Enderun v0.0.6
+# AI-Enderun v0.0.7
 
 English | [Turkce](#turkce)
 
@@ -19,6 +19,14 @@ AI-Enderun provides a structured operating model for AI-driven software delivery
 - `packages/framework-mcp` exposes the MCP server and framework tools.
 - `bin/cli.js` provides the `ai-enderun` CLI.
 
+### 🚀 Getting Started
+
+1.  **Initialize:** Run `npx ai-enderun init gemini` (or `claude`, `cursor`, `codex`).
+2.  **Define Stack:** Fill in your project's technology stack in `docs/tech-stack.md`.
+3.  **Define Requirements:** Place your project goals and user stories in the root `docs/project-docs.md` file.
+4.  **Start Orchestration:** Generate your first Trace ID (ULID): `ai-enderun trace:new "Initial project setup"`
+5.  **Collaborate:** Talk to your AI assistant. It will automatically detect the `ENDERUN.md` constitution and follow the specialized SOPs in `.enderun/agents/`.
+
 ### Directory Model
 
 ```text
@@ -26,14 +34,14 @@ AI-Enderun provides a structured operating model for AI-driven software delivery
 |-- .enderun/
 |   |-- agents/             # Agent SOP (Standard Operating Procedure) files
 |   |-- docs/               # Framework-specific technical documentation
-|   |   |-- tech-stack.md
 |   |   |-- ARCHITECTURE.md
 |   |   `-- api/            # API Contracts (OpenAPI/Shared-types)
 |   |-- logs/               # Structured JSON logs of agent actions
 |   |-- PROJECT_MEMORY.md   # Single Source of Truth for project state
 |   `-- config.json
 |-- docs/                   # User project requirements (The "What" to build)
-|   `-- project-docs.md
+|   |-- project-docs.md
+|   `-- tech-stack.md
 |-- packages/
 |   |-- framework-mcp/      # Core MCP server tools
 |   `-- shared-types/       # Contract-first type definitions
@@ -108,7 +116,15 @@ ai-enderun trace:new <desc>  # Yeni bir gorev zinciri (ULID) baslatir
 ai-enderun verify-contract   # Kontrat uyumunu kontrol eder
 ```
 
-### v0.0.6 Yenilikleri
+### 🚀 Başlangıç Rehberi
+
+1.  **Kurulum:** `npx ai-enderun init gemini` (veya `claude`, `cursor`, `codex`) komutunu çalıştırın.
+2.  **Teknoloji Yığınını Belirleyin:** `docs/tech-stack.md` dosyasını projenize göre doldurun.
+3.  **Gereksinimleri Ekleyin:** Proje hedeflerinizi ve kullanıcı hikayelerinizi kök dizindeki `docs/project-docs.md` dosyasına yerleştirin.
+4.  **Görevi Başlatın:** İlk görev zincirini (ULID) oluşturun: `ai-enderun trace:new "Proje iskeletini oluştur"`
+5.  **Ajanlarla Çalışın:** Yapay zeka yardımcınızla konuşun. Artık projenizdeki `ENDERUN.md` anayasasını ve `.enderun/agents/` içindeki uzman rollerini tanıyarak disiplinli bir şekilde çalışacaktır.
+
+### v0.0.7 Yenilikleri
 
 - **Akilli Kurulum:** Gemini icin otomatik symlink, Claude icin otomatik MCP kurulum yardimcisi.
 - **Süreklilik İlkesi:** Ajanlarin mevcut kod yazim tarzina ve mimari kararlara sadik kalma zorunlulugu.

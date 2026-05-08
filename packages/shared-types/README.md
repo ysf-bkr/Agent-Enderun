@@ -1,4 +1,4 @@
-# AI-Enderun Shared Types v0.0.6
+# AI-Enderun Shared Types v0.0.7
 
 English | [Turkce](#turkce)
 

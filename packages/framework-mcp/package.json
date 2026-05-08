@@ -1,6 +1,6 @@
 {
   "name": "ai-enderun-mcp",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Enterprise-grade MCP Server for AI Agent Framework — Memory, Security & AST Intelligence",
   "author": "Yusuf BEKAR <ybekar@msn.com>",
   "repository": {

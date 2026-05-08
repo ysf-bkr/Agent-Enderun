@@ -1,4 +1,4 @@
-# AI-Enderun — General Agent Adapter (v0.0.6)
+# AI-Enderun — General Agent Adapter (v0.0.7)
 
 This file is the general adapter layer for AI agents (Gemini, GPT-4o, etc.).
 Core framework rules and agent capabilities are defined in `./ENDERUN.md`.

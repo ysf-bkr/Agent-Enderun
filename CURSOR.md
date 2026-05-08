@@ -1,4 +1,4 @@
-# AI-Enderun — Cursor Adapter (v0.0.6)
+# AI-Enderun — Cursor Adapter (v0.0.7)
 
 This file is the Cursor adapter layer.
 Core framework rules and agent capabilities are defined in `./ENDERUN.md`.
