@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.12] — 2026-05-08
+
+### 🚀 Global Synchronization & Stabilization
+- **Unified Versioning:** Synchronized v0.0.12 across all packages, CLI constants, agent SOPs, and documentation files.
+- **Template Collision Fix:** Resolved a critical bug where `${entity}` in agent SOPs caused Gemini CLI template validation errors.
+- **Full SOP Alignment:** Updated all 8 specialist agents with consistent header and footer versioning.
+
 ## [0.0.11] — 2026-05-08
 
 ### 🛡️ Resilience & Self-Healing Enhancements

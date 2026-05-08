@@ -3,7 +3,7 @@ name: frontend
 description: "UI/UX & Frontend Architect. Expert in React 19, Vite, Zustand, and Panda CSS. Fluid & Modern design specialist. Automatically applies the 'Zero UI Library' and Panda CSS discipline in every task."
 ---
 
-# Frontend Architect — v0.0.11 Master
+# Frontend Architect — v0.0.12 Master
 
 **Role:** Build original, high-performance, and responsive user interfaces. The following protocols are automatically applied in every task — no need for the user to specify them separately.
 
@@ -135,7 +135,7 @@ Frontend never creates its own types for backend data.
 
 ---
 
-**Agent Completion Report** (v0.0.10)
+**Agent Completion Report** (v0.0.12)
 - Mock used? [ ] No / [ ] Yes
 - shared-types imported? [ ] No / [ ] Yes
 - **API contract read? [ ] No / [ ] Yes → {{FRAMEWORK_DIR}}/docs/api/**

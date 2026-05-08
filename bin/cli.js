@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.0.11";
+const FRAMEWORK_VERSION = getPackageVersion();
 
 // --- HELPER FUNCTIONS ---
 
@@ -126,7 +126,7 @@ function mergePackageJson(targetPath, sourcePath) {
 
   // Ensure basic fields
   if (!targetPkg.name) targetPkg.name = path.basename(process.cwd());
-  if (!targetPkg.version) targetPkg.version = "0.0.10";
+  if (!targetPkg.version) targetPkg.version = "0.0.12";
   if (!targetPkg.type) targetPkg.type = "module";
 
   // Add metadata

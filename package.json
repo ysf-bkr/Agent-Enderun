@@ -1,6 +1,6 @@
 {
   "name": "ai-enderun",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Supreme AI Orchestration Framework — Senior Discipline & Ottoman Wisdom",
   "author": "Yusuf BEKAR <ybekar@msn.com>",
   "repository": {
@@ -58,7 +58,7 @@
     "typescript": "^5.7.3"
   },
   "enderun": {
-    "version": "0.0.10",
+    "version": "0.0.12",
     "initializedAt": "2026-05-08T17:50:01.387Z"
   }
 }
