@@ -5,7 +5,7 @@
   "author": "Yusuf BEKAR <ybekar@msn.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ysf-bkr/AI-Enderun.git"
+    "url": "git+https://github.com/ysf-bkr/AI-Enderun.git"
   },
   "homepage": "https://github.com/ysf-bkr/AI-Enderun#readme",
   "type": "module",

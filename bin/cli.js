@@ -242,7 +242,7 @@ Kullanılabilir Komutlar:
   version           Versiyon bilgisini gösterir
 
 Örnek:
-  ai-agent-framework trace:new "Auth modülü tasarımı" backend P1
+  ai-enderun trace:new "Auth modülü tasarımı" backend P1
       `);
       break;
   }

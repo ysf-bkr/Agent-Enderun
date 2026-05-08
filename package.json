@@ -5,12 +5,12 @@
   "author": "Yusuf BEKAR <ybekar@msn.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ysf-bkr/AI-Enderun.git"
+    "url": "git+https://github.com/ysf-bkr/AI-Enderun.git"
   },
   "homepage": "https://github.com/ysf-bkr/AI-Enderun#readme",
   "type": "module",
   "bin": {
-    "ai-agent-framework": "bin/cli.js"
+    "ai-enderun": "bin/cli.js"
   },
   "files": [
     "bin",
@@ -39,7 +39,12 @@
     "package.json"
   ],
   "scripts": {
+    "build": "npm run build --prefix packages/shared-types && npm run build --prefix packages/framework-mcp",
     "mcp:dev": "npx tsx packages/framework-mcp/src/index.ts",
     "mcp:status": "npx socraticode status"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4",
+    "typescript": "^5.7.3"
   }
 }

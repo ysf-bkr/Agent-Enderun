@@ -8,7 +8,7 @@ AI-Enderun, çoklu yapay zeka ajanlarını ortak bir anayasa (`Gemini.md`), faz 
 - Kalıcı hafıza ve görev takibi: `PROJECT_MEMORY.md`
 - MCP tabanlı keşif/sorgulama: `packages/framework-mcp`
 - Kontrat odaklı tip paylaşımı: `packages/shared-types`
-- CLI ile hızlı operasyon: `ai-agent-framework`
+- CLI ile hızlı operasyon: `ai-enderun`
 
 ## Hızlı Başlangıç
 
@@ -48,17 +48,16 @@ npx ai-enderun init codex
 ## CLI Komutları
 
 ```bash
-ai-agent-framework status
-ai-agent-framework trace:new "Auth modülü tasarımı" backend P1
-ai-agent-framework init codex
-ai-agent-framework version
+ai-enderun status
+ai-enderun trace:new "Auth modülü tasarımı" backend P1
+ai-enderun init codex
+ai-enderun version
 ```
 
 Komut detayları:
 
 - `status`: aktif faz, profil, trace ID ve aktif görevleri gösterir.
 - `trace:new <desc> [agent] [priority]`: UUID v4 trace üretir, görevi `AKTİF GÖREVLER` tablosuna ekler.
-  - `priority`: `P0`, `P1`, `P2`, `P3` (varsayılan `P2`)
 - `init [adapter]`: framework dosyalarını hedef projeye kopyalar.
 - `version`: framework sürümünü yazdırır.
 
