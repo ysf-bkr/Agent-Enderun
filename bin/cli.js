@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.0.10";
+const FRAMEWORK_VERSION = "0.0.11";
 
 // --- HELPER FUNCTIONS ---
 
@@ -126,7 +126,7 @@ function mergePackageJson(targetPath, sourcePath) {
 
   // Ensure basic fields
   if (!targetPkg.name) targetPkg.name = path.basename(process.cwd());
-  if (!targetPkg.version) targetPkg.version = "0.0.10";
+  if (!targetPkg.version) targetPkg.version = "0.0.11";
   if (!targetPkg.type) targetPkg.type = "module";
 
   // Add metadata
@@ -363,6 +363,17 @@ async function initCommand(selectedAdapter) {
   
   const finalMemoryPath = path.join(targetDir, targetBase, "PROJECT_MEMORY.md");
   initializeMemory(finalMemoryPath, targetBase);
+
+  // Initialize git if missing
+  if (!fs.existsSync(path.join(targetDir, ".git"))) {
+    try {
+      const { execSync } = await import("child_process");
+      execSync("git init", { cwd: targetDir, stdio: "ignore" });
+      console.log("✅ Git repository initialized.");
+    } catch (e) {
+      console.warn("⚠️  Could not initialize git automatically. Please run 'git init' manually.");
+    }
+  }
 
   // --- Post-Install Hooks (Smart Setup) ---
   
