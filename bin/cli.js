@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.0.9";
+const FRAMEWORK_VERSION = "0.1.0";
 
 // --- HELPER FUNCTIONS ---
 
@@ -255,6 +255,7 @@ async function initCommand(selectedAdapter) {
     ".enderun",
     "docs",
     "mcp.json",
+    ".env.example",
     "ENDERUN.md",
     "packages/framework-mcp",
     "packages/shared-types",
@@ -376,9 +377,10 @@ function checkCommand() {
   console.log(`🔍 Checking AI-Enderun Health (v${FRAMEWORK_VERSION})...`);
   let issues = 0;
 
+  const frameworkDir = getFrameworkDir();
   const checks = [
-    { name: "Constitution (ENDERUN.md)", path: "ENDERUN.md" },
-    { name: "Memory (PROJECT_MEMORY.md)", path: ".enderun/PROJECT_MEMORY.md" },
+    { name: "Constitution (ENDERUN.md)", path: path.join(frameworkDir, "ENDERUN.md") },
+    { name: "Memory (PROJECT_MEMORY.md)", path: path.join(frameworkDir, "PROJECT_MEMORY.md") },
     { name: "Shared Types", path: "packages/shared-types/package.json" },
     { name: "MCP Server", path: "packages/framework-mcp/package.json" },
     { name: "Tech Stack", path: "docs/tech-stack.md" },

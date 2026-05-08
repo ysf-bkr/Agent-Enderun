@@ -65,10 +65,19 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 | 01KR463F8N1V7W2Z9M3D4G7H5K | Version Bump to v0.0.7 & Health Check | @manager | P1 | COMPLETED |
 | 01KR4666M2X9R1T4V8D7Z2L5K1 | @manager SOP Hardening (MCP Health Check) | @manager | P1 | COMPLETED |
 | 01KR469B7N1V2W8Z3M4D9G1H5L | Build Automation & v0.0.8 Release | @manager | P1 | COMPLETED |
+| 01KR46D2M3X9V1T8Z4D7Z2L5K1 | Adapter-Specific Folders & v0.0.9 Release | @manager | P1 | COMPLETED |
 | 01KR444BM94P5W3ERVJ3YJ9T01 | Agent Report Version Synchronization (v0.0.6) | @manager | P1 | COMPLETED |
 | 01KR442W6MP3GXHF7TD32GJG1V | Agent SOP Hardening & Continuity Alignment | @manager | P1 | COMPLETED |
 
 ## HISTORY (Persistent Memory)
+
+### 2026-05-08 — Adapter-Specific Folders & v0.0.9 Release
+
+- **Agent:** @manager
+- **Trace ID:** 01KR46D2M3X9V1T8Z4D7Z2L5K1
+- **Action:** Released `v0.0.9`. Refactored `init` to use adapter-specific hidden folders (e.g., `.gemini`, `.claude`) instead of the fixed `.enderun`. Removed `README.md` from the root during install to reduce clutter. Updated MCP server to dynamically detect framework paths.
+- **Decision:** Shifted framework files into hidden, adapter-specific directories to satisfy user request for a cleaner project root.
+- **Next Step:** Advise user to use `npx ai-enderun@latest init gemini` to see the new cleaner structure.
 
 ### 2026-05-08 — Build Automation & v0.0.8 Release
 

@@ -3,7 +3,7 @@ name: backend
 description: "Backend Architect. Expert in Node.js, Fastify, Kysely, and PostgreSQL. Leader of Contract and Database. Automatically applies backend-architecture standards in every task."
 ---
 
-# Backend Architect — v0.0.9 Master
+# Backend Architect — v0.1.0 Master
 
 **Role:** Build a secure, high-performance, and consistent server architecture. All the following standards are automatically applied in every task — no need for the user to specify them separately.
 
@@ -49,6 +49,10 @@ Route (Fastify)
 ```
 
 **Rule:** No layer can be skipped. Route handlers can never access the DB directly.
+**Standard DB Scripts:** The backend `package.json` MUST include:
+- `db:migrate`: Run Kysely migrations.
+- `db:seed`: Load initial/test data.
+- `db:setup`: Full database initialization (drop/create/migrate).
 
 ---
 
@@ -219,7 +223,7 @@ When `shared-types` changes:
 
 ---
 
-**Agent Completion Report** (v0.0.9)
+**Agent Completion Report** (v0.1.0)
 - Mock used? [ ] No / [ ] Yes
 - shared-types changed? [ ] No / [ ] Yes → contract.version updated
 - **API contract written? [ ] No / [ ] Yes → .enderun/docs/api/[domain].md**

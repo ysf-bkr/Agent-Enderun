@@ -13,7 +13,7 @@ import { Project, SyntaxKind } from "ts-morph";
 const server = new Server(
   {
     name: "ai-enderun-mcp",
-    version: "0.0.9",
+    version: "0.1.0",
   },
   {
     capabilities: {
@@ -53,7 +53,7 @@ const LOG_AGENT_ACTION_ARGS_SCHEMA = z.object({
   details: z.record(z.any()).default({}),
 });
 
-const FRAMEWORK_VERSION = "0.0.9";
+const FRAMEWORK_VERSION = "0.1.0";
 
 function getFrameworkDir(projectRoot: string): string {
   const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
