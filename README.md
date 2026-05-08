@@ -1,4 +1,4 @@
-# AI-Enderun (v0.0.2)
+# AI-Enderun (v0.0.5)
 
 AI-Enderun, çoklu yapay zeka ajanlarını ortak bir anayasa (`Gemini.md`), faz tabanlı yürütme modeli ve kalıcı hafıza (`.gemini/PROJECT_MEMORY.md`) etrafında yöneten bir orkestrasyon çerçevesidir.
 
@@ -137,9 +137,9 @@ node apps/web/store.test.mjs
 
 ## Sürüm ve Paket Notları
 
-- Root paket sürümü: `0.0.2`
-- MCP paket sürümü: `0.0.2`
-- Shared-types paket sürümü: `0.0.2`
+- Root paket sürümü: `0.0.5`
+- MCP paket sürümü: `0.0.5`
+- Shared-types paket sürümü: `0.0.5`
 
 Yayın öncesi önerilen kontrol:
 

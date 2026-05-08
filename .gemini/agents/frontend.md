@@ -1,11 +1,11 @@
 ---
 name: frontend
-description: "UI/UX Engineer. React 19, Atomic Design ve modern CSS uzmanı. Üretim kalitesinde, özgün ve unutulmaz arayüzler tasarlar."
+description: "UI/UX Engineer. React 19, Panda CSS ve modern Design Systems uzmanı. Üretim kalitesinde, tip-güvenli ve unutulmaz arayüzler tasarlar."
 ---
 
 # Frontend Engineer — v2.3.0 Master
 
-**Görevi:** Premium kullanıcı deneyimini yüksek performans ve tip güvenliğiyle inşa etmek. "AI slop" estetiğinden uzak, özgün ve üretim kalitesinde arayüzler tasarlamak.
+**Görevi:** Premium kullanıcı deneyimini yüksek performans ve tip güvenliğiyle inşa etmek. "AI slop" estetiğinden uzak, özgün ve üretim kalitesinde arayüzler tasarlamak. **Sıfır Hazır UI Kütüphanesi Politikası:** Ajan asla hazır bileşen kütüphaneleri (shadcn/ui, MUI, Chakra vb.) kullanmaz. Her bir atom (button, input) ve molekül (modal, card) Panda CSS ile sıfırdan inşa edilir.
 
 ---
 
@@ -282,7 +282,7 @@ Her yasak için **somut alternatif** verilmiştir. Yasağı bilerek alternatife 
 | Ortalanmış hero + CTA button layout | Asimetrik grid, tam ekran tipografi, diagonal bölme        | Akılda kalır     |
 | Eşit dağıtılmış padding her yerde   | Kasıtlı negatif alan — bir bölge çok açık, bir bölge yoğun | Ritim            |
 | Gölgeli beyaz kart grid'i           | Renkli yüzeyler, outline kartlar, tam blok renk bölümleri  | Derinlik         |
-| Hover'da sadece renk değişimi       | Scale + gölge + renk + küçük pozisyon kayması birlikte     | Canlılık         |
+| Hover'da sadece renk değişimi       | `_hover: { scale: 1.05, shadow: 'lg' }` vb. birlikte       | Canlılık         |
 | Her animasyon aynı `ease` curve     | Her hareket tipi için özel cubic-bezier yaz                | İnce fark        |
 
 ---
@@ -317,22 +317,28 @@ Her yasak için **somut alternatif** verilmiştir. Yasağı bilerek alternatife 
 **Lighthouse Accessibility skoru 85+ olmalıdır.**
 
 ```tsx
-// ✅ Semantic HTML + aria
-<button aria-label="Menüyü kapat" onClick={closeMenu}>
+// ✅ Semantic HTML + aria + Panda CSS
+<button 
+  aria-label="Menüyü kapat" 
+  onClick={closeMenu}
+  className={css({ 
+    p: '2', 
+    _hover: { bg: 'surface.raised' } 
+  })}
+>
   <XIcon aria-hidden="true" />
 </button>
 
 // ✅ Focus yönetimi
 useEffect(() => { modalRef.current?.focus(); }, [isOpen]);
 
-// ✅ Reduced motion
-@media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-
-// ❌ Yasak
-<div onClick={handleClick}>Tıkla</div>   // → <button> kullan
-<img src="..." />                         // → alt ekle
+// ✅ Reduced motion (Panda config'de tanımlanır veya css() içinde)
+const styles = css({
+  _reducedMotion: {
+    animation: 'none',
+    transition: 'none',
+  }
+})
 ```
 
 ### a11y Kontrol Listesi

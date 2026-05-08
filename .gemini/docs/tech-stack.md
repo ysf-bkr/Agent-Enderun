@@ -5,7 +5,7 @@
 - **Frontend:** React 19 + Vite (SPA)
 - **Icons:** Lucide Icons (`lucide-react`)
 - **State Management:** Zustand
-- **Styling:** Tailwind CSS + "Supreme Frontend Aesthetics" Guidelines
+- **Styling:** Panda CSS (Type-safe & Zero-runtime CSS-in-JS)
 
 ## Design System (Adaptive Palette)
 

@@ -1,4 +1,4 @@
-# AI-Enderun — Supreme Performance AI Orchestration (v0.0.2)
+# AI-Enderun — Supreme Performance AI Orchestration (v0.0.5)
 
 # Place in project root. This file is the single source of truth for all AI clients (Gemini CLI, Claude Code, etc.).
 
@@ -38,7 +38,7 @@ Each "agent" in this project is an independent AI conversation (Claude/GPT).
 - [ ] Check `.gemini/docs/` Folder: Verify if `tech-stack.md` and `project-docs.md` exist.
 
 4. **Default Stack:**
-   - **Frontend:** React 19 + Vite (SPA) + Zustand + Tailwind.
+   - **Frontend:** React 19 + Vite (SPA) + Zustand + Panda CSS.
    - **Backend:** Node.js 20+ + Fastify + Kysely + PostgreSQL.
 5. **OTURUM SONU ZORUNLULUĞU:** Her yanıt sonunda `.gemini/PROJECT_MEMORY.md` → `HISTORY` bölümüne özet ekle ve ilgili log dosyasına kayıt yaz. Bu adım atlanamaz.
 
@@ -115,7 +115,7 @@ If `tech-stack.md` is missing or empty, do not write code until the following is
 - **Branded Types Law:** Tüm ID'ler Branded Types (`packages/shared-types`) olmalıdır.
 - **Search Before Reading:** Hiçbir ajan bir dosyayı körü körüne okumamalıdır; önce `search_codebase`, `analyze_dependencies`, `get_memory_insights` ve `get_project_gaps` ile bağlamı taramalıdır. Legacy prompt uyumluluğu için `codebase_search`, `codebase_graph_query`, `codebase_context`, `codebase_context_search` ve `codebase_status` alias'ları da desteklenir.
 - **Full-Spectrum Responsive:** Her bileşen mobile-first başlar (320px) ve ultra-wide ekranlara (1920px+) kadar `clamp()` ve `aspect-ratio` ile akışkan (fluid) kalmalıdır.
-- **Supreme Frontend Aesthetics:** @frontend, "AI slop" estetiğinden kaçınmalı; özgün, karakterli ve üretim kalitesinde arayüzler tasarlamalıdır.
+- **Supreme Frontend Aesthetics:** @frontend, "AI slop" estetiğinden kaçınmalı; özgün, karakterli ve üretim kalitesinde arayüzler tasarlamalıdır. **Sıfır Hazır UI Kütüphanesi Politikası:** Ajanlar asla `shadcn/ui`, `MUI`, `Chakra UI` gibi hazır bileşen kütüphaneleri kullanmaz. Tüm UI bileşenleri (Button, Modal, Input vb.) Panda CSS ile sıfırdan ve projeye özgün olarak inşa edilmelidir.
 - **Audit Logging:** Tüm kritik işlemler loglanmalıdır.
 
 ---
