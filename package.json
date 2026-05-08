@@ -1,6 +1,6 @@
 {
   "name": "ai-enderun",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Supreme AI Orchestration Framework — Senior Discipline & Ottoman Wisdom",
   "author": "Yusuf BEKAR <ybekar@msn.com>",
   "repository": {
@@ -9,39 +9,45 @@
   },
   "homepage": "https://github.com/ysf-bkr/AI-Enderun#readme",
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "ai",
+    "agent",
+    "framework",
+    "mcp",
+    "orchestration",
+    "discipline",
+    "autonomous",
+    "typescript"
+  ],
   "bin": {
     "ai-enderun": "bin/cli.js"
   },
   "files": [
     "bin",
-    "packages/framework-mcp/src",
+    "docs",
+    ".enderun/docs",
     "packages/framework-mcp/dist",
-    "packages/framework-mcp/package.json",
-    "packages/framework-mcp/README.md",
-    "packages/framework-mcp/tsconfig.json",
-    "packages/shared-types/src",
     "packages/shared-types/dist",
-    "packages/shared-types/contract.version.json",
-    "packages/shared-types/package.json",
-    "packages/shared-types/README.md",
-    "packages/shared-types/tsconfig.json",
-    ".gemini/agents",
-    ".gemini/docs",
-    ".gemini/templates",
-    ".gemini/PROJECT_MEMORY.md",
-    ".env.example",
-    "Gemini.md",
+    ".enderun/agents",
+    ".enderun/PROJECT_MEMORY.md",
+    "ENDERUN.md",
+    "GEMINI.md",
     "CLAUDE.md",
     "CURSOR.md",
     "CODEX.md",
     "README.md",
-    "mcp.json",
     "package.json"
   ],
   "scripts": {
     "build": "npm run build --prefix packages/shared-types && npm run build --prefix packages/framework-mcp",
+    "dev": "npm run mcp:dev",
     "mcp:dev": "npx tsx packages/framework-mcp/src/index.ts",
-    "mcp:status": "npx socraticode status"
+    "mcp:status": "npx socraticode status",
+    "verify-contract": "node -e \"const fs=require('fs');const path=require('path');const crypto=require('crypto');const dir='packages/shared-types/src';const contract='packages/shared-types/contract.version.json';const walk=(d)=>fs.readdirSync(d,{withFileTypes:true}).flatMap((e)=>{const p=path.join(d,e.name);return e.isDirectory()?walk(p):(p.endsWith('.ts')?[p]:[])});const files=walk(dir).sort();const h=crypto.createHash('sha256');for(const f of files)h.update(fs.readFileSync(f));const current=h.digest('hex');const stored=JSON.parse(fs.readFileSync(contract,'utf8')).contract_hash;if(current!==stored){console.error('HASH MISMATCH');process.exit(1)}console.log('Contract hash verified');\"",
+    "prepublishOnly": "npm run build",
+    "version": "npm run build && git add .",
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
     "tsx": "^4.19.4",

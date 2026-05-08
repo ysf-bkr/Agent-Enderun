@@ -7,11 +7,13 @@ import {
 import { z } from "zod";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
+import { Project, SyntaxKind } from "ts-morph";
 
 const server = new Server(
   {
     name: "ai-enderun-mcp",
-    version: "0.0.5",
+    version: "0.0.6",
   },
   {
     capabilities: {
@@ -33,7 +35,7 @@ const SEARCH_CODEBASE_ARGS_SCHEMA = z.object({
 });
 
 const UPDATE_MEMORY_ARGS_SCHEMA = z.object({
-  section: z.enum(["MEVCUT DURUM", "HISTORY", "AKTİF GÖREVLER"]),
+  section: z.enum(["CURRENT STATUS", "HISTORY", "ACTIVE TASKS"]),
   content: z.string().min(1),
 });
 
@@ -41,7 +43,17 @@ const ANALYZE_DEPENDENCIES_ARGS_SCHEMA = z.object({
   path: z.string().min(1),
 });
 
-const FRAMEWORK_VERSION = "0.0.2";
+const LOG_AGENT_ACTION_ARGS_SCHEMA = z.object({
+  agent: z.string().min(1),
+  action: z.string().min(1),
+  requestId: z.string().min(1),
+  files: z.array(z.string()).default([]),
+  status: z.enum(["SUCCESS", "FAILURE"]),
+  summary: z.string().min(1),
+  details: z.record(z.any()).default({}),
+});
+
+const FRAMEWORK_VERSION = "0.0.6";
 
 function resolveSafePath(projectRoot: string, targetPath: string): string {
   const resolved = path.resolve(projectRoot, targetPath);
@@ -102,7 +114,7 @@ function buildLineMatches(
 }
 
 function collectMarkdownArtifacts(projectRoot: string): string[] {
-  const docsRoot = path.join(projectRoot, ".gemini", "docs");
+  const docsRoot = path.join(projectRoot, "docs");
   if (!fs.existsSync(docsRoot)) return [];
 
   return collectFilesRecursively(docsRoot, new Set(["md"])).map((filePath) =>
@@ -116,10 +128,7 @@ function replaceSectionContent(
   newBody: string,
 ): string {
   const escaped = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const sectionRegex = new RegExp(
-    `## ${escaped}[\\s\\S]*?(?=\\n## |$)`,
-    "m",
-  );
+  const sectionRegex = new RegExp(`## ${escaped}[\\s\\S]*?(?=\\n## |$)`, "m");
   if (!sectionRegex.test(markdown)) {
     throw new Error(`Section not found: ${sectionTitle}`);
   }
@@ -136,7 +145,10 @@ function prependToSection(
   contentToPrepend: string,
 ): string {
   const escaped = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const sectionRegex = new RegExp(`(## ${escaped}\\n)([\\s\\S]*?)(?=\\n## |$)`, "m");
+  const sectionRegex = new RegExp(
+    `(## ${escaped}\\n)([\\s\\S]*?)(?=\\n## |$)`,
+    "m",
+  );
   const match = markdown.match(sectionRegex);
 
   if (!match) {
@@ -239,7 +251,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "codebase_context",
         description:
-          "Compatibility helper for non-code context discovery. Lists known markdown artifacts under .gemini/docs and memory files.",
+          "Compatibility helper for non-code context discovery. Lists known markdown artifacts under docs/ and memory files.",
         inputSchema: { type: "object", properties: {} },
       },
       {
@@ -265,7 +277,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "get_project_gaps",
         description:
-          "Scans the project structure against the defined standards in Gemini.md and identifies missing files, folders, or documentation.",
+          "Scans the project structure against the defined standards in ENDERUN.md and identifies missing files, folders, or documentation.",
         inputSchema: { type: "object", properties: {} },
       },
       {
@@ -297,15 +309,63 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             section: {
               type: "string",
-              enum: ["MEVCUT DURUM", "HISTORY", "AKTİF GÖREVLER"],
+              enum: ["CURRENT STATUS", "HISTORY", "ACTIVE TASKS"],
               description: "The section to update.",
             },
             content: {
               type: "string",
-              description: "The new content to append or replace in that section.",
+              description:
+                "The new content to append or replace in that section.",
             },
           },
           required: ["section", "content"],
+        },
+      },
+      {
+        name: "verify_api_contract",
+        description:
+          "Verify if the shared-types match the stored contract hash in contract.version.json.",
+        inputSchema: { type: "object", properties: {} },
+      },
+      {
+        name: "update_contract_hash",
+        description:
+          "Generate a new hash for shared-types and update contract.version.json.",
+        inputSchema: { type: "object", properties: {} },
+      },
+      {
+        name: "log_agent_action",
+        description:
+          "Safely append a structured log entry to the agent's log file.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            agent: {
+              type: "string",
+              description: "Agent name (e.g. analyst, backend)",
+            },
+            action: {
+              type: "string",
+              description: "Action performed (e.g. CREATE, MODIFY)",
+            },
+            requestId: {
+              type: "string",
+              description: "Trace ID or Request ID",
+            },
+            files: {
+              type: "array",
+              items: { type: "string" },
+              description: "Files affected",
+            },
+            status: {
+              type: "string",
+              enum: ["SUCCESS", "FAILURE"],
+              description: "Action status",
+            },
+            summary: { type: "string", description: "Short English summary" },
+            details: { type: "object", description: "Additional details" },
+          },
+          required: ["agent", "action", "requestId", "status", "summary"],
         },
       },
     ],
@@ -325,12 +385,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
         const memoryPath = path.join(
           projectRoot,
-          ".gemini",
+          ".enderun",
           "PROJECT_MEMORY.md",
         );
         const memoryContent = fs.readFileSync(memoryPath, "utf-8");
         const statusRowMatch = memoryContent.match(
-          /\| Aktif Faz \| Profile \| Son Güncelleme \| Aktif Trace ID \| Blokaj \|\n\| :-------- \| :------ \| :------------- \| :------------- \| :----- \|\n\| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|/,
+          /\| Active Phase \| Profile \| Last Update \| Active Trace ID \| Blockers \|\n\| :----------- \| :------ \| :---------- \| :-------------- \| :------- \|\n\| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|/,
         );
         const phase = statusRowMatch?.[1]?.trim() ?? "UNKNOWN";
         const profile = statusRowMatch?.[2]?.trim() ?? "UNKNOWN";
@@ -363,52 +423,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       let safeTargetPath: string;
       const scanRules = [
         {
-          pattern: "sql`",
+          pattern: /sql`/,
           message: "Potential Raw SQL usage detected (check Kysely usage)",
           severity: "HIGH",
         },
         {
-          pattern: "console.log",
+          pattern: /(?<!\/\/\s*)console\.log/,
           message: "console.log found in production code",
           severity: "LOW",
         },
         {
-          pattern: "password:",
+          pattern: /(password|secret|api_?key)\s*[:=]\s*['"][^'"]+['"]/i,
           message: "Potential hardcoded secret/password detected",
           severity: "CRITICAL",
         },
         {
-          pattern: "secret:",
-          message: "Potential hardcoded secret detected",
-          severity: "CRITICAL",
-        },
-        {
-          pattern: "apiKey:",
-          message: "Potential hardcoded API Key detected",
-          severity: "CRITICAL",
-        },
-        {
-          pattern: "any",
+          pattern: /:\s*any(?!\w)/,
           message: "Usage of 'any' type detected",
           severity: "MEDIUM",
         },
         {
-          pattern: "eval(",
+          pattern: /(?<!\w)eval\s*\(/,
           message: "Dangerous 'eval()' usage detected",
           severity: "HIGH",
         },
         {
-          pattern: ".innerHTML =",
+          pattern: /\.innerHTML\s*=/,
           message: "Unsafe innerHTML assignment detected (XSS risk)",
           severity: "MEDIUM",
         },
         {
-          pattern: "dangerouslySetInnerHTML",
+          pattern: /dangerouslySetInnerHTML/,
           message: "React dangerouslySetInnerHTML detected",
           severity: "MEDIUM",
         },
         {
-          pattern: "TODO:",
+          pattern: /TODO:/,
           message: "Outstanding TODO item found",
           severity: "LOW",
         },
@@ -427,10 +477,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           new Set(["ts", "tsx"]),
         );
 
+        // Regex-based scans (for simple patterns)
         for (const rule of scanRules) {
           const ruleMatches = buildLineMatches(
             files,
-            (line) => line.includes(rule.pattern),
+            (line) => {
+              if (typeof rule.pattern === "string") {
+                return line.includes(rule.pattern);
+              } else {
+                return rule.pattern.test(line);
+              }
+            },
             5,
             projectRoot,
           );
@@ -441,14 +498,51 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           }
         }
 
+        // AST-based scans (for deeper structural analysis)
+        const tsProject = new Project({
+          compilerOptions: { allowJs: true },
+        });
+        tsProject.addSourceFilesAtPaths(
+          path.join(safeTargetPath, "**/*.{ts,tsx}"),
+        );
+
+        for (const sourceFile of tsProject.getSourceFiles()) {
+          const relativePath = path.relative(
+            projectRoot,
+            sourceFile.getFilePath(),
+          );
+
+          // 1. Precise 'any' detection
+          sourceFile.forEachDescendant((node) => {
+            if (node.getKindName() === "AnyKeyword") {
+              const line = node.getStartLineNumber();
+              vulnerabilities.push(
+                `[MEDIUM] Precise 'any' type detected in AST at ${relativePath}:${line}`,
+              );
+            }
+
+            // 2. Precise 'console.log' detection
+            if (node.getKind() === SyntaxKind.CallExpression) {
+              const callExp = node.asKind(SyntaxKind.CallExpression);
+              const expression = callExp?.getExpression();
+              if (expression?.getText() === "console.log") {
+                const line = node.getStartLineNumber();
+                vulnerabilities.push(
+                  `[LOW] Production 'console.log' detected in AST at ${relativePath}:${line}`,
+                );
+              }
+            }
+          });
+        }
+
         return {
           content: [
             {
               type: "text",
               text:
                 vulnerabilities.length > 0
-                  ? `### SECURITY AUDIT RESULTS\n\n${vulnerabilities.join("\n\n")}`
-                  : "No common security patterns or rule violations detected.",
+                  ? `### ADVANCED SECURITY AUDIT RESULTS\n\n${Array.from(new Set(vulnerabilities)).join("\n\n")}`
+                  : "No security patterns or rule violations detected (Regex & AST verified).",
             },
           ],
         };
@@ -461,12 +555,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
         const memoryPath = path.join(
           projectRoot,
-          ".gemini",
+          ".enderun",
           "PROJECT_MEMORY.md",
         );
         const dashboardPath = path.join(
           projectRoot,
-          ".gemini",
+          ".enderun",
           "BRAIN_DASHBOARD.md",
         );
 
@@ -479,7 +573,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         const history = memory.split("## HISTORY")[1] || "No history found.";
         const activeTasks =
-          memory.split("## AKTİF GÖREVLER")[1]?.split("##")[0] ||
+          memory.split("## ACTIVE TASKS")[1]?.split("##")[0] ||
           "No active tasks.";
         const dashboardAgents =
           dashboard.split("## 📈 Visualizations")[0] || dashboard;
@@ -506,12 +600,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const artifacts = collectMarkdownArtifacts(projectRoot);
         const memoryPath = path.join(
           projectRoot,
-          ".gemini",
+          ".enderun",
           "PROJECT_MEMORY.md",
         );
         const dashboardPath = path.join(
           projectRoot,
-          ".gemini",
+          ".enderun",
           "BRAIN_DASHBOARD.md",
         );
 
@@ -535,26 +629,44 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     case "get_project_gaps": {
-      const missing = [];
+      const missing: string[] = [];
       const checkPaths = [
-        { path: "apps", type: "folder" },
-        { path: "packages/shared-types/src/index.ts", type: "file" },
-        { path: ".gemini/docs/api/README.md", type: "file" },
-        { path: ".env", type: "file" },
-        { path: ".env.development", type: "file" },
-        { path: ".gemini/PROJECT_MEMORY.md", type: "file" },
-        { path: ".gemini/logs/manager.json", type: "file" },
-        { path: ".gemini/logs/analyst.json", type: "file" },
-        { path: ".gemini/logs/backend.json", type: "file" },
-        { path: ".gemini/logs/frontend.json", type: "file" },
-        { path: ".gemini/logs/explorer.json", type: "file" },
+        { path: "apps", type: "folder", optional: true },
+        { path: "packages/shared-types/src", type: "folder" },
+        { path: "docs/api", type: "folder", optional: true },
+        { path: ".env", type: "file", optional: true },
+        { path: ".env.example", type: "file" },
+        { path: ".enderun/PROJECT_MEMORY.md", type: "file" },
+        { path: ".enderun/BRAIN_DASHBOARD.md", type: "file" },
       ];
 
       for (const item of checkPaths) {
         const fullPath = path.join(projectRoot, item.path);
-        if (!fs.existsSync(fullPath)) {
+        if (!fs.existsSync(fullPath) && !item.optional) {
           missing.push(`[MISSING ${item.type.toUpperCase()}] ${item.path}`);
         }
+      }
+
+      // Additional dynamic checks
+      const agentsDir = path.join(projectRoot, ".enderun/agents");
+      if (fs.existsSync(agentsDir)) {
+        const agents = fs
+          .readdirSync(agentsDir)
+          .filter((f) => f.endsWith(".md"));
+        for (const agent of agents) {
+          const agentName = agent.replace(".md", "");
+          const logFile = path.join(
+            projectRoot,
+            `.enderun/logs/${agentName}.json`,
+          );
+          if (!fs.existsSync(logFile)) {
+            missing.push(
+              `[MISSING LOG FILE] .enderun/logs/${agentName}.json (Expected for agent ${agentName})`,
+            );
+          }
+        }
+      } else {
+        missing.push(`[MISSING FOLDER] .enderun/agents`);
       }
 
       return {
@@ -594,7 +706,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         );
         let queryRegex: RegExp;
         try {
-          queryRegex = new RegExp(query);
+          queryRegex = new RegExp(query, "i"); // make search case-insensitive by default
         } catch (error) {
           return {
             content: [
@@ -605,12 +717,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             ],
           };
         }
-        const matches = buildLineMatches(
-          files,
-          (line) => queryRegex.test(line),
-          20,
-          projectRoot,
-        );
+
+        // Fast search with limited results
+        const matches: string[] = [];
+        const MAX_RESULTS = 30;
+
+        for (const filePath of files) {
+          if (matches.length >= MAX_RESULTS) break;
+          const content = fs.readFileSync(filePath, "utf-8");
+          const lines = content.split("\n");
+
+          for (let i = 0; i < lines.length; i++) {
+            if (matches.length >= MAX_RESULTS) break;
+            const line = lines[i];
+            if (queryRegex.test(line)) {
+              const relativePath = path.relative(projectRoot, filePath);
+              matches.push(`- ${relativePath}:${i + 1}: ${line.trim()}`);
+            }
+          }
+        }
+
         const result = matches.join("\n");
         return {
           content: [{ type: "text", text: result || "No matches found." }],
@@ -641,103 +767,353 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             content: [{ type: "text", text: `Path not found: ${targetPath}` }],
           };
         const stats = fs.statSync(fullPath);
+
+        const tsProject = new Project({
+          compilerOptions: { allowJs: true },
+        });
+
         if (stats.isDirectory()) {
-          const files = fs
-            .readdirSync(fullPath)
-            .filter((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
+          tsProject.addSourceFilesAtPaths(
+            path.join(fullPath, "**/*.{ts,tsx,js,jsx}"),
+          );
+          const sourceFiles = tsProject.getSourceFiles();
           return {
             content: [
               {
                 type: "text",
-                text: `Directory contains ${files.length} TS files.`,
+                text: `Directory contains ${sourceFiles.length} source files. Use a specific file path for deep dependency analysis.`,
               },
             ],
           };
         } else {
-          const content = fs.readFileSync(fullPath, "utf-8");
-          const importRegex = /from\s+['"](.+?)['"]/g;
-          const imports = [];
-          let match;
-          while ((match = importRegex.exec(content)) !== null) {
-            const importPath = match[1];
-            let resolved = "unresolved";
-            
-            // Basic relative path resolution
-            if (importPath.startsWith(".")) {
-              const absImport = path.resolve(path.dirname(fullPath), importPath);
-              const possiblePaths = [absImport, absImport + ".ts", absImport + ".tsx", path.join(absImport, "index.ts")];
-              for (const p of possiblePaths) {
-                if (fs.existsSync(p)) {
-                  resolved = path.relative(projectRoot, p);
-                  break;
-                }
-              }
-            }
-            
-            imports.push(`- ${importPath} (${resolved})`);
-          }
-          
+          const sourceFile = tsProject.addSourceFileAtPath(fullPath);
+          const imports = sourceFile.getImportDeclarations();
+          const importDetails = imports.map((imp) => {
+            const moduleSpecifier = imp.getModuleSpecifierValue();
+            const source = imp.getModuleSpecifierSourceFile();
+            const resolvedPath = source
+              ? path.relative(projectRoot, source.getFilePath())
+              : "unresolved/external";
+            return `- ${moduleSpecifier} (${resolvedPath})`;
+          });
+
           return {
             content: [
               {
                 type: "text",
-                text: `Dependencies for ${targetPath}:\n${imports.length > 0 ? imports.join("\n") : "No imports found."}`,
+                text: `Dependencies for ${targetPath}:\n${importDetails.length > 0 ? importDetails.join("\n") : "No imports found."}`,
               },
             ],
           };
         }
       } catch (error) {
-        return { content: [{ type: "text", text: "Analysis failed." }] };
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                "Analysis failed: " +
+                (error instanceof Error ? error.message : String(error)),
+            },
+          ],
+        };
       }
     }
     case "update_project_memory": {
       const parsed = UPDATE_MEMORY_ARGS_SCHEMA.safeParse(args ?? {});
       if (!parsed.success) {
-        return { content: [{ type: "text", text: "Invalid section or content." }] };
+        return {
+          content: [{ type: "text", text: "Invalid section or content." }],
+        };
       }
 
       const { section, content } = parsed.data;
-      const memoryPath = path.join(projectRoot, ".gemini", "PROJECT_MEMORY.md");
+      const memoryPath = path.join(
+        projectRoot,
+        ".enderun",
+        "PROJECT_MEMORY.md",
+      );
       const lockPath = memoryPath + ".lock";
+      const lockOwner = `lock-${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
       try {
         // Lock protocol (simplified for MCP)
         if (fs.existsSync(lockPath)) {
-          return { content: [{ type: "text", text: "Memory is locked. Try again later." }] };
+          const stats = fs.statSync(lockPath);
+          const now = Date.now();
+          if (now - stats.mtimeMs > 120000) {
+            // 2 minutes stale
+            fs.unlinkSync(lockPath); // Override stale lock
+          } else {
+            return {
+              content: [
+                { type: "text", text: "Memory is locked. Try again later." },
+              ],
+            };
+          }
         }
-        fs.writeFileSync(lockPath, "LOCKED");
+        fs.writeFileSync(
+          lockPath,
+          JSON.stringify({
+            owner: lockOwner,
+            createdAt: new Date().toISOString(),
+          }),
+        );
 
         let memoryContent = fs.readFileSync(memoryPath, "utf-8");
-        
+
         if (section === "HISTORY") {
           memoryContent = prependToSection(
             memoryContent,
-            "HISTORY (Kalıcı Hafıza)",
+            "HISTORY (Persistent Memory)",
             content,
           );
-        } else if (section === "MEVCUT DURUM") {
+        } else if (section === "CURRENT STATUS") {
           memoryContent = replaceSectionContent(
             memoryContent,
-            "MEVCUT DURUM",
+            "CURRENT STATUS",
             content,
           );
-        } else if (section === "AKTİF GÖREVLER") {
+        } else if (section === "ACTIVE TASKS") {
           memoryContent = replaceSectionContent(
             memoryContent,
-            "AKTİF GÖREVLER",
+            "ACTIVE TASKS",
             content,
           );
         }
 
         fs.writeFileSync(memoryPath, memoryContent);
-        fs.unlinkSync(lockPath);
+        if (fs.existsSync(lockPath)) {
+          const lockContent = fs.readFileSync(lockPath, "utf-8");
+          if (lockContent.includes(lockOwner)) {
+            fs.unlinkSync(lockPath);
+          }
+        }
 
-        return { content: [{ type: "text", text: `Section ${section} updated successfully.` }] };
+        return {
+          content: [
+            { type: "text", text: `Section ${section} updated successfully.` },
+          ],
+        };
       } catch (error) {
-        if (fs.existsSync(lockPath)) fs.unlinkSync(lockPath);
-        const message = error instanceof Error ? error.message : "Unknown error";
+        if (fs.existsSync(lockPath)) {
+          const lockContent = fs.readFileSync(lockPath, "utf-8");
+          if (lockContent.includes(lockOwner)) {
+            fs.unlinkSync(lockPath);
+          }
+        }
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
         return {
           content: [{ type: "text", text: `Memory update failed: ${message}` }],
+        };
+      }
+    }
+
+    case "verify_api_contract": {
+      try {
+        const sharedTypesDir = path.join(
+          projectRoot,
+          "packages/shared-types/src",
+        );
+        const contractJsonPath = path.join(
+          projectRoot,
+          "packages/shared-types/contract.version.json",
+        );
+
+        if (
+          !fs.existsSync(sharedTypesDir) ||
+          !fs.existsSync(contractJsonPath)
+        ) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "Missing shared-types directory or contract.version.json",
+              },
+            ],
+          };
+        }
+
+        const files = collectFilesRecursively(sharedTypesDir, new Set(["ts"]));
+        files.sort(); // Sort to ensure consistent hashing
+
+        const hash = crypto.createHash("sha256");
+        for (const file of files) {
+          const fileContent = fs.readFileSync(file);
+          hash.update(fileContent);
+        }
+        const currentHash = hash.digest("hex");
+
+        const contractJson = JSON.parse(
+          fs.readFileSync(contractJsonPath, "utf-8"),
+        );
+        const storedHash = contractJson.contract_hash;
+
+        if (currentHash === storedHash) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "✅ MATCH: Contract is valid and synchronized.",
+              },
+            ],
+          };
+        } else {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `❌ MISMATCH: Current hash (${currentHash.slice(0, 8)}...) does not match stored hash (${storedHash.slice(0, 8)}...). 
+Contract is invalid or out of date!
+
+**How to fix:**
+1. Review changes in 'packages/shared-types/src/'.
+2. Run the MCP tool 'update_contract_hash' or use CLI:
+   \`npm run update-contract\` (if configured)`,
+              },
+            ],
+          };
+        }
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                "Failed to verify contract: " +
+                (error instanceof Error ? error.message : String(error)),
+            },
+          ],
+        };
+      }
+    }
+
+    case "update_contract_hash": {
+      try {
+        const sharedTypesDir = path.join(
+          projectRoot,
+          "packages/shared-types/src",
+        );
+        const contractJsonPath = path.join(
+          projectRoot,
+          "packages/shared-types/contract.version.json",
+        );
+
+        if (!fs.existsSync(sharedTypesDir)) {
+          return {
+            content: [{ type: "text", text: "Missing shared-types directory" }],
+          };
+        }
+
+        const files = collectFilesRecursively(sharedTypesDir, new Set(["ts"]));
+        if (files.length === 0) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "⚠️ WARNING: No TypeScript files found in shared-types/src. Hash not updated.",
+              },
+            ],
+          };
+        }
+        files.sort();
+
+        const hash = crypto.createHash("sha256");
+        for (const file of files) {
+          const fileContent = fs.readFileSync(file);
+          hash.update(fileContent);
+        }
+        const currentHash = hash.digest("hex");
+
+        let contractJson: any = {};
+        if (fs.existsSync(contractJsonPath)) {
+          contractJson = JSON.parse(fs.readFileSync(contractJsonPath, "utf-8"));
+        }
+        contractJson.contract_hash = currentHash;
+        contractJson.last_updated = new Date().toISOString();
+
+        fs.writeFileSync(
+          contractJsonPath,
+          JSON.stringify(contractJson, null, 2),
+        );
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `SUCCESS: Contract hash updated to ${currentHash}`,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                "Failed to update contract hash: " +
+                (error instanceof Error ? error.message : String(error)),
+            },
+          ],
+        };
+      }
+    }
+
+    case "log_agent_action": {
+      const parsed = LOG_AGENT_ACTION_ARGS_SCHEMA.safeParse(args ?? {});
+      if (!parsed.success) {
+        return {
+          content: [
+            { type: "text", text: "Invalid arguments for log_agent_action." },
+          ],
+        };
+      }
+
+      try {
+        const logsDir = path.join(projectRoot, ".enderun", "logs");
+        if (!fs.existsSync(logsDir)) {
+          fs.mkdirSync(logsDir, { recursive: true });
+        }
+
+        const logPath = path.join(logsDir, `${parsed.data.agent}.json`);
+        let logs: any[] = [];
+
+        if (fs.existsSync(logPath)) {
+          try {
+            logs = JSON.parse(fs.readFileSync(logPath, "utf-8"));
+            if (!Array.isArray(logs)) logs = [];
+          } catch {
+            logs = [];
+          }
+        }
+
+        const newEntry = {
+          timestamp: new Date().toISOString(),
+          ...parsed.data,
+        };
+
+        logs.push(newEntry);
+        fs.writeFileSync(logPath, JSON.stringify(logs, null, 2));
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `SUCCESS: Logged action to ${parsed.data.agent}.json`,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                "Failed to log action: " +
+                (error instanceof Error ? error.message : String(error)),
+            },
+          ],
         };
       }
     }

@@ -1,7 +1,7 @@
 {
   "name": "ai-enderun",
   "version": "1.0.5",
-  "contextFileName": "Gemini.md",
+  "contextFileName": "ENDERUN.md",
   "mcpServers": {
     "framework-mcp": {
       "command": "npx",

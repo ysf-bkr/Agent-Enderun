@@ -11,5 +11,10 @@
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true
-  }
+  },
+  "files.associations": {
+    "*.md": "markdown"
+  },
+  "editor.wordWrap": "on",
+  "markdown.preview.breaks": true
 }

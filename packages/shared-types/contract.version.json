@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "last_updated": "2026-05-07T00:00:00Z",
-  "contract_hash": "c8b9ce42486405c4a79dbe554457afd84819cef6911bef854a8bf5285d8cd480",
+  "last_updated": "2026-05-08T10:32:55.761Z",
+  "contract_hash": "c8234b84b539313752e115107887fc0f99fff8dcb4fe4eeaf59a55b02f11727a",
   "breaking_changes": [
     {
       "version": "1.0",

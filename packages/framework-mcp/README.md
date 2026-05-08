@@ -1,53 +1,74 @@
-# 🔌 @ai-enderun/framework-mcp (v0.0.5)
+# AI-Enderun MCP Server v0.0.6
 
-AI-Enderun Model Context Protocol (MCP) sunucusu. Bu paket, AI ajanlarınızın projeniz üzerinde derinlemesine analiz yapmasını, hafızayı yönetmesini ve mimari boşlukları tespit etmesini sağlayan özel araçlar (tools) sunar.
+English | [Turkce](#turkce)
 
-## 🛠️ Sağlanan Araçlar (Agent Tools)
+The `ai-enderun-mcp` package provides the Model Context Protocol server for AI-Enderun. It gives AI clients a structured way to inspect the codebase, audit conventions, manage project memory, and verify contract integrity.
 
-Ajanlar bu araçları kullanarak projenize "dokunabilirler":
+## English
 
-- **`search_codebase`**: Kod tabanında semantik ve metinsel arama yapar.
-- **`analyze_dependencies`**: Dosyalar ve modüller arası bağımlılık grafiğini çıkarır.
-- **`get_memory_insights`**: `.gemini/PROJECT_MEMORY.md` üzerinden projenin o anki state'ini özetler.
-- **`update_project_memory`**: Proje hafızasına güvenli ve kilitli (lock) yazma işlemi yapar.
-- **`get_project_gaps`**: Dökümantasyon, test veya kontratlardaki eksikleri tespit eder.
+### Purpose
 
-## ⚙️ Kurulum ve Yapılandırma
+This package acts as the execution bridge between AI clients and the local repository.
 
-`mcp.json` dosyanızda sunucuyu şu şekilde tanımlayabilirsiniz:
+### Included Capabilities
 
-```json
-{
-  "mcpServers": {
-    "ai-enderun-mcp": {
-      "command": "node",
-      "args": ["packages/framework-mcp/dist/index.js"]
-    }
-  }
-}
-```
+- Framework status and memory insight tools.
+- Search and dependency discovery helpers.
+- Contract verification and contract hash updates.
+- Security-oriented scans for common anti-patterns.
+- Structured logging support for agent actions.
 
-## 🔨 Geliştirme ve Build
+### Main Tools
 
-Sistemi derlemek için:
+- `get_framework_status`
+- `search_codebase`
+- `analyze_dependencies`
+- `get_memory_insights`
+- `update_project_memory`
+- `get_project_gaps`
+- `security_audit_scan`
+- `verify_api_contract`
+- `update_contract_hash`
+- `log_agent_action`
+
+### Development
 
 ```bash
 cd packages/framework-mcp
 npm install
 npm run build
+npm run dev
 ```
 
-Geliştirme modunda (build gerektirmeden) çalıştırmak için:
+### Framework Role
+
+This package reads and interprets:
+
+- `.enderun/` for memory, logs, dashboards, and SOP files
+- `docs/` for project-facing documentation
+- `packages/shared-types/` for contract verification
+
+## Turkce
+
+`ai-enderun-mcp`, AI-Enderun icin Model Context Protocol sunucusunu saglar. AI istemcilerine depoyu incelemek, kurallari denetlemek, proje hafizasini yonetmek ve kontrat butunlugunu dogrulamak icin yapisal bir arayuz verir.
+
+### Icerik
+
+- Framework durumu ve hafiza ozetleri
+- Kod arama ve bagimlilik analizi
+- Kontrat dogrulama ve hash guncelleme
+- Yaygin anti-pattern taramalari
+- Yapisal ajan loglama destegi
+
+### Gelistirme
 
 ```bash
-npm run mcp:dev
+cd packages/framework-mcp
+npm install
+npm run build
+npm run dev
 ```
 
-## 📜 Kurallar
-
-- Hiçbir ajan bir dosyayı körü körüne okumamalıdır; her zaman önce `search_codebase` veya `get_memory_insights` ile bağlamı taramalıdır.
-- Araçlar, AI-Enderun Anayasası'ndaki (`Gemini.md`) güvenlik sınırları içinde çalışır.
-
-## 📜 Lisans
+## License
 
 MIT

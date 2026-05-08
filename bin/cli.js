@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
-// --- YARDIMCI FONKSİYONLAR ---
+// --- HELPER FUNCTIONS ---
 
 function getPackageVersion() {
   const pkg = JSON.parse(fs.readFileSync(path.join(sourceDir, "package.json"), "utf8"));
@@ -18,7 +18,7 @@ function getPackageVersion() {
 }
 
 function getMemoryPath() {
-  return path.join(targetDir, ".gemini", "PROJECT_MEMORY.md");
+  return path.join(targetDir, ".enderun", "PROJECT_MEMORY.md");
 }
 
 function generateULID(seedTime = Date.now()) {
@@ -60,8 +60,8 @@ function releaseMemoryLock(lockPath) {
 }
 
 function insertTaskRow(memoryContent, row) {
-  const sectionHeader = "## AKTİF GÖREVLER";
-  const tableDivider = "| :------- | :---- | :--- | :------ | :---- |";
+  const sectionHeader = "## ACTIVE TASKS";
+  const tableDivider = "| :--- | :--- | :--- | :--- | :--- |";
   const sectionIndex = memoryContent.indexOf(sectionHeader);
   if (sectionIndex === -1) return null;
   const dividerIndex = memoryContent.indexOf(tableDivider, sectionIndex);
@@ -89,37 +89,42 @@ function normalizePriority(priority) {
   return /^P[0-3]$/.test(normalized) ? normalized : "P2";
 }
 
-// --- KOMUTLAR ---
+// --- COMMANDS ---
 
 /**
- * Projeyi ilklendirir (Eski init.js mantığı)
+ * Scaffold the framework into the target project.
  */
 async function initCommand(selectedAdapter) {
   const ADAPTERS = {
-    gemini: ["Gemini.md", "gemini-extension.json"],
+    gemini: ["GEMINI.md", "gemini-extension.json"],
     claude: ["CLAUDE.md"],
     cursor: ["CURSOR.md"],
     codex: ["CODEX.md"],
   };
 
   const CORE_FILES = [
-    ".gemini",
+    ".enderun",
+    "docs",
     "mcp.json",
-    ".env.example",
+    "ENDERUN.md",
+    "README.md",
+    "package.json",
     "packages/framework-mcp",
     "packages/shared-types",
   ];
 
-  console.log("🚀 AI Agent Framework kuruluyor...");
+  console.log("🚀 Installing AI Agent Framework...");
   
-  let filesToCopy = [...CORE_FILES, ...ADAPTERS.gemini, ...ADAPTERS.claude, ...ADAPTERS.cursor, ...ADAPTERS.codex];
+  let filesToCopy = [...CORE_FILES];
   
   if (selectedAdapter) {
     if (!ADAPTERS[selectedAdapter]) {
-      console.error(`❌ Geçersiz adaptör: ${selectedAdapter}`);
+      console.error(`❌ Invalid adapter: ${selectedAdapter}. Available: gemini, claude, cursor, codex`);
       process.exit(1);
     }
-    filesToCopy = [...CORE_FILES, "Gemini.md", ...ADAPTERS[selectedAdapter]];
+    filesToCopy = [...CORE_FILES, ...ADAPTERS[selectedAdapter]];
+  } else {
+    Object.values(ADAPTERS).forEach(list => filesToCopy.push(...list));
   }
 
   for (const item of filesToCopy) {
@@ -131,10 +136,45 @@ async function initCommand(selectedAdapter) {
       } else {
         fs.copyFileSync(src, dest);
       }
-      console.log(`✅ ${item} oluşturuldu.`);
+      console.log(`✅ ${item} created.`);
     }
   }
-  console.log("\n✨ Framework başarıyla kuruldu! (v" + getPackageVersion() + ")");
+
+  // --- Post-Install Hooks (Smart Setup) ---
+  
+  console.log("\n🛠️  Running smart configuration for adapters...");
+
+  if (selectedAdapter === "gemini" || !selectedAdapter) {
+    try {
+      const geminiAgentsDir = path.join(targetDir, ".gemini", "agents");
+      const enderunAgentsDir = path.relative(path.join(targetDir, ".gemini"), path.join(targetDir, ".enderun", "agents"));
+      
+      if (!fs.existsSync(path.join(targetDir, ".gemini"))) {
+        fs.mkdirSync(path.join(targetDir, ".gemini"), { recursive: true });
+      }
+      
+      if (!fs.existsSync(geminiAgentsDir)) {
+        fs.symlinkSync(enderunAgentsDir, geminiAgentsDir, "dir");
+        console.log("🔗 Gemini: Created symlink from .gemini/agents to .enderun/agents");
+      }
+    } catch (err) {
+      console.warn("⚠️  Gemini: Could not create symlink (might need admin rights or already exists).");
+    }
+  }
+
+  if (selectedAdapter === "claude" || !selectedAdapter) {
+    const mcpPath = path.join(targetDir, "packages/framework-mcp/src/index.ts");
+    console.log("\n📝 Claude Code Setup:");
+    console.log("To enable AI-Enderun tools in Claude Code, run this command:");
+    console.log(`\x1b[36mclaude config add framework-mcp npx tsx ${mcpPath}\x1b[0m`);
+  }
+
+  if (selectedAdapter === "cursor" || !selectedAdapter) {
+    // Add cursor-specific rules or settings if needed
+    console.log("✨ Cursor: Adapter CLAUDE.md is ready to guide your AI.");
+  }
+
+  console.log("\n✨ Framework successfully installed! (v" + getPackageVersion() + ")");
 }
 
 function copyDir(src, dest) {
@@ -151,30 +191,30 @@ function copyDir(src, dest) {
 }
 
 /**
- * Projenin mevcut durumunu gösterir
+ * Print the current framework status.
  */
 function statusCommand() {
   const memoryPath = getMemoryPath();
   if (!fs.existsSync(memoryPath)) {
-    console.error("❌ Hata: .gemini/PROJECT_MEMORY.md bulunamadı. Lütfen önce 'init' yapın.");
+    console.error("❌ Error: .enderun/PROJECT_MEMORY.md not found. Please run 'init' first.");
     return;
   }
 
   const content = fs.readFileSync(memoryPath, "utf8");
-  const statusMatch = content.match(/\| Aktif Faz \| Profile \| Son Güncelleme \| Aktif Trace ID \| Blokaj \|\n\| :-------- \| :------ \| :------------- \| :------------- \| :----- \|\n\| (.*?) \| (.*?) \| (.*?) \| (.*?) \| (.*?) \|/);
+  const statusMatch = content.match(/\| Active Phase \| Profile \| Last Update \| Active Trace ID \| Blockers \|\n\| :----------- \| :------ \| :---------- \| :-------------- \| :------- \|\n\| (.*?) \| (.*?) \| (.*?) \| (.*?) \| (.*?) \|/);
   
-  console.log("\n📊 --- PROJE DURUMU ---");
+  console.log("\n📊 --- PROJECT STATUS ---");
   if (statusMatch) {
-    console.log(`🔹 Faz: ${statusMatch[1].trim()}`);
+    console.log(`🔹 Phase: ${statusMatch[1].trim()}`);
     console.log(`🧭 Profile: ${statusMatch[2].trim()}`);
-    console.log(`📅 Güncelleme: ${statusMatch[3].trim()}`);
+    console.log(`📅 Update: ${statusMatch[3].trim()}`);
     console.log(`🆔 Trace ID: ${statusMatch[4].trim()}`);
-    console.log(`⛔ Blokaj: ${statusMatch[5].trim()}`);
+    console.log(`⛔ Blockers: ${statusMatch[5].trim()}`);
   }
 
-  const tasksSection = content.match(/## AKTİF GÖREVLER\n\n([\s\S]*?)\n\n##/);
+  const tasksSection = content.match(/## ACTIVE TASKS\n\n([\s\S]*?)\n\n##/);
   if (tasksSection) {
-    console.log("\n📋 Aktif Görevler:");
+    console.log("\n📋 Active Tasks:");
     console.log(tasksSection[1].trim());
   }
 
@@ -182,12 +222,12 @@ function statusCommand() {
 }
 
 /**
- * Yeni bir Trace ID üretir ve hafızaya ekler
+ * Generate a new Trace ID and add it to project memory.
  */
 function traceNewCommand(description, agent = "manager", priority = "P2") {
   const memoryPath = getMemoryPath();
   if (!fs.existsSync(memoryPath)) {
-    console.error("❌ Hata: PROJECT_MEMORY.md bulunamadı.");
+    console.error("❌ Error: PROJECT_MEMORY.md not found.");
     return;
   }
 
@@ -199,7 +239,7 @@ function traceNewCommand(description, agent = "manager", priority = "P2") {
   const lockPath = `${memoryPath}.lock`;
 
   if (!acquireMemoryLock(lockPath)) {
-    console.error("❌ Hata: Bellek kilidi zaman aşımına uğradı (5 deneme).");
+    console.error("❌ Error: Memory lock timeout (5 retries).");
     return;
   }
 
@@ -207,19 +247,57 @@ function traceNewCommand(description, agent = "manager", priority = "P2") {
     const content = fs.readFileSync(memoryPath, "utf8");
     const updated = insertTaskRow(content, newTask);
     if (!updated) {
-      console.error("❌ Hata: AKTİF GÖREVLER tablosu bulunamadı, görev eklenemedi.");
+      console.error("❌ Error: ACTIVE TASKS table not found, task could not be added.");
       return;
     }
 
     fs.writeFileSync(memoryPath, updated);
-    console.log(`\n✅ Yeni Trace ID oluşturuldu: ${traceId}`);
-    console.log(`📝 Görev listesine eklendi: ${description}\n`);
+    console.log(`\n✅ New Trace ID created: ${traceId}`);
+    console.log(`📝 Added to task list: ${description}\n`);
   } finally {
     releaseMemoryLock(lockPath);
   }
 }
 
-// --- ANA DISPATCHER ---
+/**
+ * Verify the shared-types contract hash.
+ */
+function verifyContractCommand() {
+  const sharedDir = path.join(targetDir, "packages/shared-types/src");
+  const contractPath = path.join(targetDir, "packages/shared-types/contract.version.json");
+
+  if (!fs.existsSync(sharedDir) || !fs.existsSync(contractPath)) {
+    console.error("❌ Error: Shared types or contract.version.json not found.");
+    return;
+  }
+
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => {
+    const p = path.join(d, e.name);
+    return e.isDirectory() ? walk(p) : (p.endsWith(".ts") ? [p] : []);
+  });
+
+  const files = walk(sharedDir).sort();
+  const h = crypto.createHash("sha256");
+  for (const f of files) {
+    h.update(fs.readFileSync(f));
+  }
+  const currentHash = h.digest("hex");
+  
+  try {
+    const stored = JSON.parse(fs.readFileSync(contractPath, "utf8")).contract_hash;
+    if (currentHash === stored) {
+      console.log("✅ Contract hash verified! (MATCH)");
+    } else {
+      console.error(`❌ HASH MISMATCH!\nExpected: ${stored}\nActual:   ${currentHash}`);
+      process.exit(1);
+    }
+  } catch (err) {
+    console.error("❌ Error reading contract.version.json");
+    process.exit(1);
+  }
+}
+
+// --- MAIN DISPATCHER ---
 
 async function main() {
   const [command, ...args] = process.argv.slice(2);
@@ -233,10 +311,13 @@ async function main() {
       break;
     case "trace:new":
       if (!args[0]) {
-        console.error("❌ Kullanım: ai-enderun trace:new <açıklama> [agent] [priority]");
+        console.error("❌ Usage: ai-enderun trace:new <description> [agent] [priority]");
       } else {
         traceNewCommand(args[0], args[1], args[2]);
       }
+      break;
+    case "verify-contract":
+      verifyContractCommand();
       break;
     case "version":
     case "-v":
@@ -247,14 +328,15 @@ async function main() {
       console.log(`
 🤖 AI-Enderun CLI (v${getPackageVersion()})
 
-Kullanılabilir Komutlar:
-  init [ai-name]    Framework'ü ilklendirir (gemini, claude, cursor, codex)
-  status            Mevcut faz ve görev durumunu gösterir
-  trace:new <desc>  Yeni bir Trace ID üretir ve görevi hafızaya ekler
-  version           Versiyon bilgisini gösterir
+Available Commands:
+  init [adapter]    Initialize the framework (gemini, claude, cursor, codex)
+  status            Show current phase and task status
+  trace:new <desc>  Generate a new Trace ID and add the task to memory
+  verify-contract   Check if shared types match the stored hash
+  version           Show version information
 
-Örnek:
-  ai-enderun trace:new "Auth modülü tasarımı" backend P1
+Example:
+  ai-enderun trace:new "Auth module design" backend P1
       `);
       break;
   }

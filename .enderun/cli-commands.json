@@ -28,11 +28,11 @@
     },
     "contract:list": {
       "agent": "analyst",
-      "description": ".gemini/docs/api/README.md üzerinden tüm kontratlandırılmış endpoint'leri listeler"
+      "description": ".enderun/docs/api/README.md üzerinden tüm kontratlandırılmış endpoint'leri listeler"
     },
     "api:list": {
       "agent": "analyst",
-      "description": ".gemini/docs/api/ klasöründeki tüm domain dosyalarını ve endpoint sayılarını gösterir"
+      "description": ".enderun/docs/api/ klasöründeki tüm domain dosyalarını ve endpoint sayılarını gösterir"
     },
     "trace:new": {
       "agent": "manager",

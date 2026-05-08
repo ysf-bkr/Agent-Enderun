@@ -1,56 +1,64 @@
-# 📦 @ai-enderun/shared-types (v0.0.5)
+# AI-Enderun Shared Types v0.0.6
 
-Bu paket, AI-Enderun ekosistemindeki Backend ve Frontend arasındaki **tek gerçeklik kaynağı (SSOT)** olan tip sözleşmelerini barındırır.
+English | [Turkce](#turkce)
 
-## 🌟 Öne Çıkan Özellikler
+The `ai-enderun-shared-types` package is the contract-first type layer of AI-Enderun. It defines shared interfaces, branded identifiers, and API response shapes that backend and frontend agents must agree on before implementation.
 
-- **Branded Types:** `UserID` ve `ProductID` gibi kimliklerin yanlışlıkla birbirinin yerine kullanılmasını engelleyen tip güvenliği.
-- **Built-in ULID:** Zamana göre sıralanabilir, 26 karakterlik performanslı kimlik üretimi.
-- **API Wrapper:** Tüm endpoint'ler için standart `ApiSuccess` ve `ApiError` yapıları.
-- **Strict Error Handling:** Proper HTTP Status kodlarıyla senkronize hata tipleri.
+## English
 
-## 🛠️ Temel Kullanım
+### Purpose
 
-### ULID ve ID Üretimi
-```typescript
-import { createUserID, createULID } from '@ai-enderun/shared-types';
+This package prevents drift between services, clients, and documentation.
 
-const id = createUserID(); // ULID formatında UserID döner
-const raw = createULID(); // Saf 26 karakterlik ULID string
-```
+### Principles
 
-### API Yanıt Yapısı
-Framework, hatalarda `200 OK` dönülmesini kesinlikle yasaklar.
+- Define shared types before implementation starts.
+- Prefer branded identifiers for domain-safe IDs.
+- Keep API success and error shapes explicit.
+- Recalculate the contract hash whenever shared types change.
 
-```typescript
-// Başarılı Yanıt
-const response: ApiResponse<User> = {
-  success: true,
-  data: { id: '...', name: 'Yusuf' }
-};
-
-// Hata Yanıtı (Gerçek HTTP 401/404 vb. ile birlikte)
-const error: ApiError = {
-  success: false,
-  code: 'UNAUTHORIZED',
-  message: 'Yetkisiz erişim.',
-  statusCode: 401
-};
-```
-
-## 📐 Mimari Kurallar
-
-1. **Owner:** Bu paketin birincil sahibi `@backend` ajanıdır.
-2. **Workflow:** Backend bir tip değiştirir -> `contract_hash` güncellenir -> Frontend dökümantasyonu okur ve tipi import eder.
-3. **No Logic:** Bu paket sadece tip tanımları ve hafif yardımcılar (generator'lar) içermelidir; ağır iş mantığı barındıramaz.
-
-## 🔨 Geliştirme
+### Development
 
 ```bash
+cd packages/shared-types
 npm install
-npm run build # npx tsc ile derler
+npm run build
+npm run typecheck
 ```
 
-## 📜 Lisans
+### Typical Usage
+
+```typescript
+import { ApiResponse, SessionID, UserID } from "ai-enderun-shared-types";
+```
+
+### Contract Workflow
+
+1. Update `src/index.ts`.
+2. Verify consuming packages still match the contract.
+3. Update `contract.version.json` when the shared surface changes.
+4. Reflect changes in `docs/api/` when endpoint contracts are affected.
+
+## Turkce
+
+`ai-enderun-shared-types`, AI-Enderun icindeki kontrat-oncelikli tip katmanidir. Backend ve frontend ajanlarinin implementasyondan once uzlasmasi gereken paylasilan arayuzleri, branded kimlik tiplerini ve API yanit sekillerini tanimlar.
+
+### Temel Kurallar
+
+- Ortak tipler implementasyondan once tanimlanir.
+- Alan-guvenli ID yapisi icin branded tipler tercih edilir.
+- API basari ve hata yapilari acik sekilde tanimlanir.
+- Shared type degisikliginde kontrat hash'i guncellenir.
+
+### Gelistirme
+
+```bash
+cd packages/shared-types
+npm install
+npm run build
+npm run typecheck
+```
+
+## License
 
 MIT
