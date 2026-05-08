@@ -1,86 +1,56 @@
-# ai-enderun-shared-types (v0.0.2)
+# 📦 @ai-enderun/shared-types (v0.0.5)
 
-`ai-enderun-shared-types`, AI-Enderun içinde backend/frontend arasında paylaşılan tip sözleşmelerinin merkezi paketidir.
+Bu paket, AI-Enderun ekosistemindeki Backend ve Frontend arasındaki **tek gerçeklik kaynağı (SSOT)** olan tip sözleşmelerini barındırır.
 
-## Amaç
+## 🌟 Öne Çıkan Özellikler
 
-- ID ve DTO tiplerini tek yerde toplamak
-- Contract-first geliştirmeyi desteklemek
-- Faz geçişlerinde sözleşme doğrulaması yapmak
+- **Branded Types:** `UserID` ve `ProductID` gibi kimliklerin yanlışlıkla birbirinin yerine kullanılmasını engelleyen tip güvenliği.
+- **Built-in ULID:** Zamana göre sıralanabilir, 26 karakterlik performanslı kimlik üretimi.
+- **API Wrapper:** Tüm endpoint'ler için standart `ApiSuccess` ve `ApiError` yapıları.
+- **Strict Error Handling:** Proper HTTP Status kodlarıyla senkronize hata tipleri.
 
-## Güncel Dizin Yapısı
+## 🛠️ Temel Kullanım
 
-```bash
-shared-types/
-├── src/
-│   └── index.ts
-├── dist/
-│   ├── index.js
-│   ├── index.d.ts
-│   └── *.map
-├── contract.version.json
-├── package.json
-└── tsconfig.json
+### ULID ve ID Üretimi
+```typescript
+import { createUserID, createULID } from '@ai-enderun/shared-types';
+
+const id = createUserID(); // ULID formatında UserID döner
+const raw = createULID(); // Saf 26 karakterlik ULID string
 ```
 
-## Geliştirme Komutları
+### API Yanıt Yapısı
+Framework, hatalarda `200 OK` dönülmesini kesinlikle yasaklar.
 
-```bash
-cd packages/shared-types
-npm install
-npm run build
-npm run typecheck
-```
-
-Not: Bu pakette `tsc` local devDependency olarak kullanılır.
-
-## Yayın Davranışı
-
-Paket yayınına giren dosyalar:
-
-- `dist/`
-- `README.md`
-- `package.json`
-
-Kontrol:
-
-```bash
-npm pack --dry-run
-```
-
-## Kontrat Hash Doğrulama
-
-`contract.version.json` içindeki hash ile kaynak hash'i karşılaştırma:
-
-```bash
-CURRENT_HASH=$(find packages/shared-types/src -name "*.ts" | sort | xargs shasum -a 256 | shasum -a 256 | awk '{print $1}')
-STORED_HASH=$(jq -r '.contract_hash' packages/shared-types/contract.version.json)
-[ "$CURRENT_HASH" = "$STORED_HASH" ] && echo "HASH OK" || echo "HASH MISMATCH"
-```
-
-## Kullanım Örneği
-
-```ts
-import type { ApiResponse, UserID } from "ai-enderun-shared-types";
-
-function asUserId(raw: string): UserID {
-  return raw as UserID;
-}
-
-const response: ApiResponse<{ id: UserID }> = {
+```typescript
+// Başarılı Yanıt
+const response: ApiResponse<User> = {
   success: true,
-  data: { id: asUserId("u-123") },
+  data: { id: '...', name: 'Yusuf' }
+};
+
+// Hata Yanıtı (Gerçek HTTP 401/404 vb. ile birlikte)
+const error: ApiError = {
+  success: false,
+  code: 'UNAUTHORIZED',
+  message: 'Yetkisiz erişim.',
+  statusCode: 401
 };
 ```
 
-## Değişiklik Protokolü
+## 📐 Mimari Kurallar
 
-1. `src/index.ts` güncelle.
-2. `npm run typecheck` çalıştır.
-3. `npm run build` ile `dist` üret.
-4. `contract.version.json` hash güncelle.
-5. `PROJECT_MEMORY.md` ve ilgili log dosyasında değişikliği kaydet.
+1. **Owner:** Bu paketin birincil sahibi `@backend` ajanıdır.
+2. **Workflow:** Backend bir tip değiştirir -> `contract_hash` güncellenir -> Frontend dökümantasyonu okur ve tipi import eder.
+3. **No Logic:** Bu paket sadece tip tanımları ve hafif yardımcılar (generator'lar) içermelidir; ağır iş mantığı barındıramaz.
 
-## Lisans
+## 🔨 Geliştirme
+
+```bash
+npm install
+npm run build # npx tsc ile derler
+```
+
+## 📜 Lisans
 
 MIT

@@ -1,153 +1,66 @@
-# AI-Enderun (v0.0.5)
+# 🎖️ AI-Enderun Orchestration Framework (v0.0.5)
 
-AI-Enderun, çoklu yapay zeka ajanlarını ortak bir anayasa (`Gemini.md`), faz tabanlı yürütme modeli ve kalıcı hafıza (`.gemini/PROJECT_MEMORY.md`) etrafında yöneten bir orkestrasyon çerçevesidir.
+AI-Enderun, çoklu yapay zeka ajanlarını (Gemini, Claude, GPT) ortak bir anayasa (`Gemini.md`), faz tabanlı yürütme modeli ve kalıcı hafıza (`.gemini/PROJECT_MEMORY.md`) etrafında yöneten, yüksek disiplinli bir orkestrasyon çerçevesidir.
 
-## Ne Sağlar?
+## 🏛️ Mimari Felsefe
 
-- Agent odaklı çalışma modeli: `@manager`, `@analyst`, `@backend`, `@frontend`, `@explorer`, `@mobile`, `@native`
-- Kalıcı hafıza ve görev takibi: `PROJECT_MEMORY.md`
-- MCP tabanlı keşif/sorgulama: `packages/framework-mcp`
-- Kontrat odaklı tip paylaşımı: `packages/shared-types`
-- CLI ile hızlı operasyon: `ai-enderun`
+Enderun usulü "Eğit ve Yönet" prensibiyle tasarlanan bu framework, yapay zekayı sadece bir araç olarak değil, projenin kurallarına (Anayasa) sıkı sıkıya bağlı profesyonel birer ekip üyesi olarak konumlandırır.
 
-## Hızlı Başlangıç
+- **Contract-First:** Backend ve Frontend arasındaki iletişim her zaman `shared-types` üzerinden, kod yazılmadan önce başlar.
+- **Zero UI Library Policy:** Estetik ve performans için hazır bileşen kütüphaneleri (shadcn, MUI) yerine **Panda CSS** ile özgün bileşen inşası zorunludur.
+- **ULID Standard:** Tüm kimlikler, veritabanı performansı için kronolojik olarak sıralanabilir ULID formatındadır.
+- **Proper API Design:** Hata yönetiminde gerçek HTTP durum kodları (4xx, 5xx) esastır; "200 OK + error" yapısı yasaklanmıştır.
+
+## 👥 Ajan Kadrosu
+
+| Ajan | Rol | Sorumluluk |
+| :--- | :--- | :--- |
+| **@manager** | CTO & Controller | Trace ID üretimi, görev dağıtımı ve faz geçiş onayı. |
+| **@analyst** | QA Gate & Memory | Kalite denetimi, dökümantasyon ve hafıza tutarlılığı. |
+| **@backend** | Architect | API kontratları, DB şeması ve iş mantığı. |
+| **@frontend** | UI/UX Specialist | Panda CSS ile özgün arayüzler ve fluid tasarım. |
+| **@explorer** | Research | Kod tabanı analizi, bağımlılık keşfi ve teknik araştırma. |
+
+## 🛠️ Teknoloji Yığınımız
+
+- **Core:** Node.js 20+ (ESM)
+- **Frontend:** React 19 + Vite + Zustand + **Panda CSS**
+- **Backend:** Fastify + Kysely + PostgreSQL
+- **ID Standard:** ULID (26 karakter, sortable)
+- **Monorepo:** npm Workspaces (Shared Types & Framework MCP)
+
+## 🚀 Hızlı Başlangıç
+
+### CLI Kurulumu
+Framework'ü projenize dahil etmek ve komutları kullanmak için:
 
 ```bash
 npx ai-enderun init
 ```
 
-Adapter bazlı ilklendirme:
-
+### Temel Komutlar
 ```bash
-npx ai-enderun init gemini
-npx ai-enderun init claude
-npx ai-enderun init cursor
-npx ai-enderun init codex
-```
-
-## Kurulum Sonrası Oluşan Çekirdek Yapı
-
-```bash
-.
-├── .gemini/
-│   ├── agents/
-│   ├── docs/
-│   ├── logs/
-│   └── PROJECT_MEMORY.md
-├── bin/cli.js
-├── packages/
-│   ├── framework-mcp/
-│   └── shared-types/
-├── mcp.json
-├── Gemini.md
-├── CLAUDE.md
-├── CURSOR.md
-└── CODEX.md
-```
-
-## CLI Komutları
-
-```bash
+# Projenin anlık faz, görev ve trace durumunu gör
 ai-enderun status
-ai-enderun trace:new "Auth modülü tasarımı" backend P1
-ai-enderun init codex
+
+# Yeni bir görev zinciri (ULID) başlat
+ai-enderun trace:new "Giriş sayfasının tasarımı" frontend P1
+
+# Framework versiyonunu kontrol et
 ai-enderun version
 ```
 
-Komut detayları:
+## 📦 Paket Yapısı
 
-- `status`: aktif faz, profil, trace ID ve aktif görevleri gösterir.
-- `trace:new <desc> [agent] [priority]`: UUID v4 trace üretir, görevi `AKTİF GÖREVLER` tablosuna ekler.
-- `init [adapter]`: framework dosyalarını hedef projeye kopyalar.
-- `version`: framework sürümünü yazdırır.
+- `packages/shared-types`: Backend ve Frontend arasındaki tip sözleşmeleri.
+- `packages/framework-mcp`: Agent yeteneklerini genişleten Model Context Protocol sunucusu.
+- `.gemini/agents`: Ajanların davranışlarını ve kurallarını belirleyen SOP (Standard Operating Procedure) dosyaları.
+- `.gemini/docs`: API spesifikasyonları ve teknik dökümantasyon.
 
-## MCP Entegrasyonu
+## 📜 Anayasa (Gemini.md)
 
-Varsayılan `mcp.json`:
+Projedeki her ajan, çalışmaya başlamadan önce `Gemini.md` dosyasını okumak ve buradaki kurallara %100 uymak zorundadır. Anayasaya aykırı kod yazımı (@analyst tarafından) reddedilir.
 
-```json
-{
-  "mcpServers": {
-    "framework-mcp": {
-      "command": "node",
-      "args": ["packages/framework-mcp/dist/index.js"]
-    }
-  }
-}
-```
+## 🛡️ Lisans
 
-MCP sunucusu build:
-
-```bash
-cd packages/framework-mcp
-npm install
-npm run build
-```
-
-Ayrıntılı tool listesi için: `packages/framework-mcp/README.md`
-
-## Hafıza ve İzlenebilirlik
-
-Ana hafıza dosyası:
-
-- `.gemini/PROJECT_MEMORY.md`
-
-Operasyonel loglar:
-
-- `.gemini/logs/manager.json`
-- `.gemini/logs/analyst.json`
-- `.gemini/logs/backend.json`
-- `.gemini/logs/frontend.json`
-- `.gemini/logs/explorer.json`
-- `.gemini/logs/mobile.json`
-- `.gemini/logs/native.json`
-
-Önerilen iş akışı:
-
-1. Görev için `trace:new` oluştur.
-2. İlgili ajan, dosya değişiklikleri ile birlikte log kaydı yazsın.
-3. Oturum sonunda `PROJECT_MEMORY.md` içinde `HISTORY` güncellensin.
-
-## Kontrat Yönetimi
-
-`packages/shared-types`, backend/frontend tip sözleşmesinin tek kaynağıdır.
-
-- Tip güncelleme: `packages/shared-types/src/index.ts`
-- Hash kaydı: `packages/shared-types/contract.version.json`
-
-Ayrıntı: `packages/shared-types/README.md`
-
-## Frontend Operasyon Test Sayfası
-
-Bu repoda `apps/web/` altında ekleme + düzenleme akışını doğrulamak için bir sayfa bulunmaktadır.
-
-Dosyalar:
-
-- `apps/web/index.html`
-- `apps/web/app.js`
-- `apps/web/store.js`
-- `apps/web/store.test.mjs`
-
-Store testi çalıştırma:
-
-```bash
-node apps/web/store.test.mjs
-```
-
-## Sürüm ve Paket Notları
-
-- Root paket sürümü: `0.0.5`
-- MCP paket sürümü: `0.0.5`
-- Shared-types paket sürümü: `0.0.5`
-
-Yayın öncesi önerilen kontrol:
-
-```bash
-npm pack --dry-run
-cd packages/framework-mcp && npm pack --dry-run
-cd ../shared-types && npm pack --dry-run
-```
-
-## Lisans
-
-MIT
+MIT © 2026 Yusuf BEKAR

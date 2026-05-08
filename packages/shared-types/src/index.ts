@@ -1,5 +1,5 @@
 /**
- * Shared Types — AI Agent Framework v1.0.2
+ * Shared Types — AI-Enderun v0.0.5
  * Bu paketteki tüm tipler backend ve frontend arasındaki kontratı tanımlar.
  * Sadece @backend düzenler, @frontend okur/import eder.
  */
@@ -48,7 +48,9 @@ export interface PaginatedResponse<T> {
 }
 
 // ─── API Response Wrapper ──────────────────────────────────────────────────────
-// Neden: Tüm API yanıtları tutarlı yapıda olmalı
+// Neden: Tüm API yanıtları tutarlı yapıda olmalı. 
+// ÖNEMLİ: Hatalarda 200 OK dönüp içinde "success: false" dönmek YASAKTIR. 
+// Gerçek HTTP status kodları (400, 401, 404 vb.) kullanılmalıdır.
 export interface ApiSuccess<T> {
   success: true;
   data: T;
@@ -58,7 +60,7 @@ export interface ApiError {
   success: false;
   code: string;        // 'NOT_FOUND' | 'VALIDATION_ERROR' | 'UNAUTHORIZED' vb.
   message: string;     // Kullanıcıya gösterilecek mesaj
-  statusCode: number;
+  statusCode: number;  // HTTP status kodu ile eşleşmeli
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;

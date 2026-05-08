@@ -10,8 +10,8 @@ import fs from "fs";
 
 const server = new Server(
   {
-    name: "ai-agent-framework-mcp",
-    version: "0.0.2",
+    name: "ai-enderun-mcp",
+    version: "0.0.5",
   },
   {
     capabilities: {

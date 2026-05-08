@@ -194,6 +194,7 @@ Frontend bu dosyayı okuyarak çalışır. Yazmazsan frontend kör çalışır.
 | `console.log` | `pino` logger kullan |
 | try/catch'siz async | Her hata ele alınmalı |
 | Hardcoded secret | `.env` hiyerarşisi zorunlu |
+| 200 OK ile hata dönmek | Gerçek HTTP status (4xx, 5xx) zorunlu |
 
 ---
 

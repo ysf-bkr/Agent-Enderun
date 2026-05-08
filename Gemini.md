@@ -114,7 +114,7 @@ Trace ID: 01H... (26 karakterlik ULID)
 
 ## CORE PRINCIPLES
 
-- **@manager Orchestration:** Manager analiz eder, ajanları seçer ve Briefing Template sağlar. Her görev için benzersiz bir `Trace ID` (UUID) üretmekten sorumludur.
+- **@manager Orchestration:** Manager analiz eder, ajanları seçer ve Briefing Template sağlar. Her görev için benzersiz bir `Trace ID` (ULID) üretmekten sorumludur.
 - **Contract-First Approach:** Backend ve Frontend kod yazmadan önce `shared-types` ve `.gemini/docs/api/` üzerinden anlaşmalıdır. **@backend** endpoint yazar → `.gemini/docs/api/[domain].md` günceller → **@frontend** okur, sonra kodlar.
 - **Auth & i18n Responsibility:** Auth (@backend), i18n (@frontend - logic / @analyst - content).
 - **Zero Mock Policy:** Sahte veri yasak.
@@ -249,7 +249,7 @@ _Logs are stored as a **JSON Array**. Every turn appends a new object to the arr
   "timestamp": "ISO-8601",
   "agent": "string",
   "action": "CREATE | MODIFY | DELETE | DECISION",
-  "requestId": "uuid",
+  "requestId": "ULID",
   "files": ["string[]"],
   "status": "SUCCESS | FAILURE",
   "summary": "İşlemin Türkçe özeti",

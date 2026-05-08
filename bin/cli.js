@@ -233,7 +233,7 @@ async function main() {
       break;
     case "trace:new":
       if (!args[0]) {
-        console.error("❌ Kullanım: ai-agent-framework trace:new <açıklama> [agent] [priority]");
+        console.error("❌ Kullanım: ai-enderun trace:new <açıklama> [agent] [priority]");
       } else {
         traceNewCommand(args[0], args[1], args[2]);
       }

@@ -16,7 +16,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "build:watch": "tsc --watch",
     "typecheck": "tsc --noEmit"
   },
