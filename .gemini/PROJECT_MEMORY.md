@@ -40,6 +40,7 @@ Bu dosya, projenin tek gerçeklik kaynağı (Single Source of Truth) ve kalıcı
 | 2026-05-07 | UUID Trace Standard | Yeni görev zincirlerinde yalnızca UUID v4 kullanmak | @manager |
 | 2026-05-08 | Panda CSS Transition | Mimari disiplin ve tip güvenliği için Tailwind'den Panda CSS'e geçiş | @manager |
 | 2026-05-08 | Zero UI Library Policy | Özgünlük ve tam kontrol için hazır kütüphanelerin yasaklanması | @manager |
+| 2026-05-08 | ULID Standard | Veritabanı performansı ve sıralanabilirlik için UUID yerine ULID'ye geçiş | @manager |
 
 ## TESLİM EDİLENLER
 
@@ -74,6 +75,14 @@ Bu dosya, projenin tek gerçeklik kaynağı (Single Source of Truth) ve kalıcı
 - **Yapılan:** Projenin tasarım sistemi Tailwind'den Panda CSS'e taşındı. "Sıfır Hazır UI Kütüphanesi" (Zero UI Library) politikası kabul edildi. `Gemini.md`, `tech-stack.md` ve `frontend.md` dosyaları güncellendi.
 - **Karar:** Mimari disiplini ve özgünlüğü en üst düzeye çıkarmak için Panda CSS + Custom UI Component (No Library) yaklaşımı benimsendi.
 - **Sonraki Adım:** `apps/web` içerisinde Panda CSS kurulumunun yapılması ve config dosyasının oluşturulması.
+
+### 2026-05-08 — ULID Standart Geçişi
+
+- **Ajan:** @manager
+- **Trace ID:** 01J... (Yeni ULID)
+- **Yapılan:** Proje genelinde UUID'den ULID'ye geçiş yapıldı. `shared-types` ve `cli.js` içine hafif bir ULID üretici eklendi. Tüm anayasal dökümanlar yeni standarda göre güncellendi.
+- **Karar:** Veritabanı indeksleme performansı ve kronolojik sıralanabilirlik avantajları nedeniyle ULID standardı benimsendi.
+- **Sonraki Adım:** Mevcut UUID'lerin (varsa) zamanla ULID ile değiştirilmesi veya hibrit yapının korunması.
 
 ### 2026-05-08 — Hafıza ve Yetenek Denetimi
 

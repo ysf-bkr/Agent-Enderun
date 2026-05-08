@@ -74,14 +74,22 @@ If `tech-stack.md` is missing or empty, do not write code until the following is
   ### [YYYY-MM-DD] — [Görev Başlığı]
 
   - **Ajan:** @[agent-name]
-  - **Trace ID:** [uuid veya —]
+  - **Trace ID:** [ULID veya —]
   - **Yapılan:** [Ne yapıldı, 2-3 cümle]
   - **Karar:** [Varsa önemli karar]
   - **Sonraki Adım:** [Ne yapılması gerekiyor]
   ```
 
 - **MEVCUT DURUM Güncellemesi:** Her oturum sonunda `MEVCUT DURUM` tablosundaki `Aktif Faz`, `Son Güncelleme` ve `Aktif Trace ID` alanlarını güncelle.
-- **Trace ID Rule:** Yeni görev zincirlerinde UUID v4 kullanılır. Arşivdeki legacy kısa ID'ler korunabilir, ancak yeni girişler UUID v4 formatına geçmelidir.
+- **Trace ID Protokolü:**
+
+Her yeni görev zinciri için ULID üret. Aynı feature üzerinde çalışan tüm ajanlar aynı Trace ID'yi kullanır.
+Arşivdeki legacy kısa ID'ler korunabilir; ancak yeni görev atamalarında kısa format kullanma.
+
+```
+Trace ID: 01H... (26 karakterlik ULID)
+```
+
 - **Memory Lock Rule:** To prevent concurrent writes, agents check for `.gemini/PROJECT_MEMORY.lock`.
   - If exists: Wait 1s, retry. (Max 5 retries).
   - After 5 retries: Report `BLOCKED — Memory Lock Timeout`.

@@ -21,8 +21,20 @@ function getMemoryPath() {
   return path.join(targetDir, ".gemini", "PROJECT_MEMORY.md");
 }
 
-function generateUUID() {
-  return crypto.randomUUID();
+function generateULID(seedTime = Date.now()) {
+  const ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+  const ENCODING_LEN = ENCODING.length;
+  let time = seedTime;
+  const timeChars = new Array(10);
+  for (let i = 9; i >= 0; i--) {
+    timeChars[i] = ENCODING.charAt(time % ENCODING_LEN);
+    time = Math.floor(time / ENCODING_LEN);
+  }
+  const randomChars = new Array(16);
+  for (let i = 0; i < 16; i++) {
+    randomChars[i] = ENCODING.charAt(Math.floor(Math.random() * ENCODING_LEN));
+  }
+  return timeChars.join("") + randomChars.join("");
 }
 
 function sleep(ms) {
@@ -179,7 +191,7 @@ function traceNewCommand(description, agent = "manager", priority = "P2") {
     return;
   }
 
-  const traceId = generateUUID();
+  const traceId = generateULID();
   const safeDescription = sanitizeTableCell(description);
   const safeAgent = normalizeAgentName(agent);
   const safePriority = normalizePriority(priority);

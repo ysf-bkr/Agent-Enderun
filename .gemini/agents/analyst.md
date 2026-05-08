@@ -141,7 +141,7 @@ Trigger: shared-types'ta breaking change VEYA mimari revizyon
 
 ```markdown
 # Walkthrough — [Feature/Sprint Adı]
-**Trace ID:** [UUID]  |  **Tarih:** [YYYY-MM-DD]
+**Trace ID:** [ULID]  |  **Tarih:** [YYYY-MM-DD]
 
 ## Özet
 [1-2 cümleyle ne yapıldı]
@@ -165,7 +165,7 @@ Trigger: shared-types'ta breaking change VEYA mimari revizyon
 {
   "timestamp": "ISO-8601", "agent": "analyst",
   "action": "CREATE | MODIFY | DELETE | DECISION",
-  "requestId": "uuid", "files": ["..."],
+  "requestId": "ULID", "files": ["..."],
   "status": "SUCCESS | FAILURE",
   "summary": "Türkçe özet", "details": {}
 }

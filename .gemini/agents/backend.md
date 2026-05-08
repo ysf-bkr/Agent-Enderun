@@ -128,7 +128,7 @@ async function createUser(data: CreateUserDTO): Promise<User> {
 ```typescript
 export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema.createTable('table_name')
-    .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
+    .addColumn('id', 'char(26)', (col) => col.primaryKey()) // ULID standardı (26 karakter)
     .addColumn('created_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
 }

@@ -8,14 +8,30 @@
 // Neden: Ham string ID'lerin birbirine karışmasını engeller (UserID ≠ ProductID)
 export type Brand<T, B> = T & { readonly _brand: B };
 
+// ─── ULID Generator (Lightweight) ──────────────────────────────────────────────
+const ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+const ENCODING_LEN = ENCODING.length;
+
+export const createULID = (seedTime: number = Date.now()): string => {
+  let time = seedTime;
+  const timeChars = new Array(10);
+  for (let i = 9; i >= 0; i--) {
+    timeChars[i] = ENCODING.charAt(time % ENCODING_LEN);
+    time = Math.floor(time / ENCODING_LEN);
+  }
+  const randomChars = new Array(16);
+  for (let i = 0; i < 16; i++) {
+    randomChars[i] = ENCODING.charAt(Math.floor(Math.random() * ENCODING_LEN));
+  }
+  return timeChars.join("") + randomChars.join("");
+};
+
 export type UserID = Brand<string, 'UserID'>;
 export type SessionID = Brand<string, 'SessionID'>;
-// Yeni ID tipleri buraya ekle: export type XxxID = Brand<string, 'XxxID'>;
 
-// ─── ID Üretici (Runtime) ──────────────────────────────────────────────────────
-// Neden: crypto.randomUUID() tarayıcı + Node.js'te çalışır, uuid paketi gereksiz
-export const createUserID = (): UserID => crypto.randomUUID() as UserID;
-export const createSessionID = (): SessionID => crypto.randomUUID() as SessionID;
+// ─── ID Üreticiler (Runtime) ──────────────────────────────────────────────────
+export const createUserID = (): UserID => createULID() as UserID;
+export const createSessionID = (): SessionID => createULID() as SessionID;
 
 // ─── Pagination ────────────────────────────────────────────────────────────────
 export interface PaginationQuery {

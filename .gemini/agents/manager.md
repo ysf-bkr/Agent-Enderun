@@ -43,11 +43,11 @@ Her proje başında profili belirle ve gerekçesini açıkla:
 
 ## Trace ID Protokolü
 
-Her yeni görev zinciri için UUID v4 üret. Aynı feature üzerinde çalışan tüm ajanlar aynı Trace ID'yi kullanır.
+Her yeni görev zinciri için ULID üret. Aynı feature üzerinde çalışan tüm ajanlar aynı Trace ID'yi kullanır.
 Arşivdeki legacy kısa ID'ler korunabilir; ancak yeni görev atamalarında kısa format kullanma.
 
 ```
-Trace ID: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+Trace ID: 01H... (26 karakterlik ULID)
 ```
 
 ---
@@ -56,7 +56,7 @@ Trace ID: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
 
 ```
 ## Agent Directive
-**Trace ID:** [UUID]
+**Trace ID:** [ULID]
 **Priority:** [P0 | P1 | P2 | P3]
 **Deadline:** [Tarih/Süre]
 **Target Agent:** @[agent-name]
