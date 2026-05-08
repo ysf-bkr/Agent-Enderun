@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.10] — 2026-05-08
+
+### 🛡️ Super-Stabilization & Bug Fixes
+- **Init Pathing Hardened:** Fixed a critical bug where the constitution and memory files were misplaced during initialization.
+- **Agent Loading Fix:** Added mandatory YAML frontmatter to the `@git` specialist to resolve loading errors in new projects.
+- **Unified Versioning:** Synchronized v0.0.10 across all packages, CLI constants, and agent SOPs for 100% consistency.
+- **Memory Scaffolding:** Ensured `PROJECT_MEMORY.md` is always created in the correct adapter-specific folder during setup.
+
 ## [0.0.9] — 2026-05-08
 
 ### 🚀 Major Structural & Clean Root Enhancements

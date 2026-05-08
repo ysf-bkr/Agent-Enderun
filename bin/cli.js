@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.0.9";
+const FRAMEWORK_VERSION = "0.0.10";
 
 // --- HELPER FUNCTIONS ---
 
@@ -126,7 +126,7 @@ function mergePackageJson(targetPath, sourcePath) {
 
   // Ensure basic fields
   if (!targetPkg.name) targetPkg.name = path.basename(process.cwd());
-  if (!targetPkg.version) targetPkg.version = "0.0.9";
+  if (!targetPkg.version) targetPkg.version = "0.0.10";
   if (!targetPkg.type) targetPkg.type = "module";
 
   // Add metadata
@@ -177,7 +177,10 @@ function updateGitIgnore(targetPath, frameworkDir = ".enderun") {
   }
 }
 
-function initializeMemory(memoryPath) {
+/**
+ * Create initial PROJECT_MEMORY.md if missing.
+ */
+function initializeMemory(memoryPath, targetBase) {
   if (fs.existsSync(memoryPath)) return;
 
   const traceId = generateULID();
@@ -240,8 +243,9 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 - **Next Step:** Define user requirements in docs/project-docs.md.
 `;
 
-  fs.writeFileSync(memoryPath, template);
-  console.log("✅ PROJECT_MEMORY.md initialized.");
+  const finalTemplate = template.replace(/\{\{FRAMEWORK_DIR\}\}/g, targetBase);
+  fs.writeFileSync(memoryPath, finalTemplate);
+  console.log(`✅ PROJECT_MEMORY.md initialized in ${targetBase}`);
 }
 
 // --- COMMANDS ---
@@ -258,6 +262,7 @@ async function initCommand(selectedAdapter) {
   };
 
   const targetBase = selectedAdapter ? `.${selectedAdapter}` : ".enderun";
+  const targetFrameworkDir = path.join(targetDir, targetBase);
 
   const CORE_FILES = [
     ".enderun",
@@ -282,7 +287,12 @@ async function initCommand(selectedAdapter) {
 
   console.log("🚀 Installing AI-Enderun (Smart Mode)...");
 
-  // Create directories
+  // Ensure target framework base exists
+  if (!fs.existsSync(targetFrameworkDir)) {
+    fs.mkdirSync(targetFrameworkDir, { recursive: true });
+  }
+
+  // Create subdirectories
   for (const dir of DIRS_TO_CREATE) {
     const fullPath = path.join(targetDir, dir);
     if (!fs.existsSync(fullPath)) {
@@ -308,8 +318,8 @@ async function initCommand(selectedAdapter) {
     let dest = path.join(targetDir, item);
     
     // Remap core framework files to targetBase
-    if (item === ".enderun") dest = path.join(targetDir, targetBase);
-    if (item === "ENDERUN.md") dest = path.join(targetDir, targetBase, "ENDERUN.md");
+    if (item === ".enderun") dest = targetFrameworkDir;
+    if (item === "ENDERUN.md") dest = path.join(targetFrameworkDir, "ENDERUN.md");
     if (ADAPTERS[selectedAdapter]?.includes(item)) {
       dest = path.join(targetDir, targetBase, item);
     }
@@ -350,7 +360,9 @@ async function initCommand(selectedAdapter) {
   // Smart setup
   mergePackageJson(path.join(targetDir, "package.json"), path.join(sourceDir, "package.json"));
   updateGitIgnore(path.join(targetDir, ".gitignore"), targetBase);
-  initializeMemory(getMemoryPath());
+  
+  const finalMemoryPath = path.join(targetDir, targetBase, "PROJECT_MEMORY.md");
+  initializeMemory(finalMemoryPath, targetBase);
 
   // --- Post-Install Hooks (Smart Setup) ---
   

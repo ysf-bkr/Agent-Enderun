@@ -265,7 +265,7 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 - **Decision:** Shifted critical security checks from Regex to AST for higher reliability and zero false positives.
 - **Next Step:** Maintain framework stability and observe agent coordination.
 
-### 2026-05-08 — Framework & Adapter Alignment (v0.0.6)
+### 2026-05-08 — Framework & Adapter Alignment (v0.0.10 MASTER)
 
 - **Agent:** @manager
 - **Trace ID:** 01J... (New ULID)
