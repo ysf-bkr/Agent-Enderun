@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.0.7";
+const FRAMEWORK_VERSION = "0.0.8";
 
 // --- HELPER FUNCTIONS ---
 
@@ -110,6 +110,7 @@ function mergePackageJson(targetPath, sourcePath) {
     "enderun:status": "ai-enderun status",
     "enderun:trace": "ai-enderun trace:new",
     "enderun:verify": "ai-enderun verify-contract",
+    "enderun:build": "npm run build --prefix packages/shared-types && npm run build --prefix packages/framework-mcp",
   };
 
   // Ensure basic fields
@@ -342,7 +343,7 @@ async function initCommand(selectedAdapter) {
   }
 
   console.log("\n✨ Framework successfully installed! (v" + FRAMEWORK_VERSION + ")");
-  console.log("\n⚠️  IMPORTANT: Run 'npm install && npm run build' to prepare the framework.");
+  console.log("\n⚠️  IMPORTANT: Run 'npm install && npm run enderun:build' to prepare the framework.");
   console.log("👉 Then run 'ai-enderun check' to verify the installation.");
 }
 
@@ -383,7 +384,7 @@ function checkCommand() {
   // MCP Build Check
   const mcpPath = path.join(process.cwd(), "packages/framework-mcp/dist/index.js");
   if (!fs.existsSync(mcpPath)) {
-    console.log("❌ MCP Build MISSING! (Run 'npm run build')");
+    console.log("❌ MCP Build MISSING! (Run 'npm run enderun:build')");
     issues++;
   } else {
     console.log("✅ MCP Build found.");

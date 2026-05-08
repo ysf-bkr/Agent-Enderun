@@ -13,7 +13,7 @@ import { Project, SyntaxKind } from "ts-morph";
 const server = new Server(
   {
     name: "ai-enderun-mcp",
-    version: "0.0.7",
+    version: "0.0.8",
   },
   {
     capabilities: {
@@ -53,7 +53,7 @@ const LOG_AGENT_ACTION_ARGS_SCHEMA = z.object({
   details: z.record(z.any()).default({}),
 });
 
-const FRAMEWORK_VERSION = "0.0.7";
+const FRAMEWORK_VERSION = "0.0.8";
 
 function resolveSafePath(projectRoot: string, targetPath: string): string {
   const resolved = path.resolve(projectRoot, targetPath);

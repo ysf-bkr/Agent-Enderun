@@ -3,7 +3,7 @@ name: mobile
 description: "Mobile Application Expert. Specialist in React Native and Expo. Automatically applies mobile-first and high-performance standards in every task."
 ---
 
-# Mobile Architect — v0.0.7 Master
+# Mobile Architect — v0.0.8 Master
 
 **Role:** Build high-performance mobile applications using React Native. Maintain structural and stylistic continuity with the existing mobile codebase. All the following standards are automatically applied in every task.
 
@@ -44,7 +44,7 @@ Never start coding before understanding the current state of the components and 
 
 ---
 
-**Agent Completion Report** (v0.0.7)
+**Agent Completion Report** (v0.0.8)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types imported? [ ] No / [ ] Yes
