@@ -1,47 +1,52 @@
 {
   "commands": {
+    "init": {
+      "agent": "manager",
+      "description": "Initialize the AI-Enderun framework with a specific adapter (gemini, claude, cursor, codex)"
+    },
     "status": {
       "agent": "analyst",
-      "description": "PROJECT_MEMORY.md üzerinden aktif fazı, görevleri ve son HISTORY girişlerini gösterir"
+      "description": "Display the current project status, active phase, and task list from PROJECT_MEMORY.md"
     },
-    "version": {
-      "agent": "manager",
-      "description": "Framework versiyonunu ve aktif Execution Profile'ı gösterir"
-    },
-    "run:agent": {
-      "agent": "manager",
-      "description": "Belirtilen agent'ı belirli bir görev için tetikler",
-      "args": ["<agent-name>", "<task-description>"]
-    },
-    "memory:read": {
+    "check": {
       "agent": "analyst",
-      "description": "PROJECT_MEMORY.md içeriğini özetler: faz, blokaj, son 3 HISTORY girişi, aktif görevler"
-    },
-    "memory:update": {
-      "agent": "analyst",
-      "description": "PROJECT_MEMORY.md MEVCUT DURUM tablosunu günceller",
-      "args": ["<faz>", "<trace-id>", "<blokaj>"]
-    },
-    "contract:verify": {
-      "agent": "analyst",
-      "description": "shared-types hash'ini contract.version.json ile karşılaştırır, uyuşmazlık varsa raporlar"
-    },
-    "contract:list": {
-      "agent": "analyst",
-      "description": ".enderun/docs/api/README.md üzerinden tüm kontratlandırılmış endpoint'leri listeler"
-    },
-    "api:list": {
-      "agent": "analyst",
-      "description": ".enderun/docs/api/ klasöründeki tüm domain dosyalarını ve endpoint sayılarını gösterir"
+      "description": "Perform a health check on framework files and MCP server status"
     },
     "trace:new": {
       "agent": "manager",
-      "description": "Yeni bir Trace ID (UUID v4) üretir ve PROJECT_MEMORY.md AKTİF GÖREVLER'e ekler",
-      "args": ["<task-description>", "<agent-name>", "<priority>"]
+      "description": "Generate a new Trace ID (ULID) and add a task to the active memory"
     },
-    "phase:check": {
+    "contract:list": {
       "agent": "analyst",
-      "description": "Mevcut fazın DoD kontrol listesini gösterir ve hangi maddelerin tamamlanmadığını raporlar"
+      "description": "List all contracted endpoints via {{FRAMEWORK_DIR}}/docs/api/README.md"
+    },
+    "api:list": {
+      "agent": "analyst",
+      "description": "Show all domain files and endpoint counts in the {{FRAMEWORK_DIR}}/docs/api/ folder"
+    },
+    "verify-contract": {
+      "agent": "backend",
+      "description": "Verify if the shared-types implementation matches the stored contract hash"
+    },
+    "git:snapshot": {
+      "agent": "git",
+      "description": "Create a phase-based git snapshot and tag for the current state"
+    },
+    "code:scan": {
+      "agent": "explorer",
+      "description": "Perform a deep scan of the codebase architecture and dependencies"
+    },
+    "ui:audit": {
+      "agent": "frontend",
+      "description": "Audit the UI components for Panda CSS compliance and Zero UI Policy"
+    },
+    "mobile:check": {
+      "agent": "mobile",
+      "description": "Verify the health and consistency of the mobile (React Native/Expo) application"
+    },
+    "native:check": {
+      "agent": "native",
+      "description": "Verify the desktop (Tauri/Electron) integration and OS-level security"
     }
   }
 }

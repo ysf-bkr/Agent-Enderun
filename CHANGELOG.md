@@ -2,15 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.9] — 2026-05-08
+
+### 🚀 Major Structural & Clean Root Enhancements
+- **8th Specialist Agent (@git):** Introduced a dedicated Version Control Specialist to handle atomic commits and snapshots.
+- **Specialized CLI Commands:** Added unique commands for all 8 agents (e.g., `git:snapshot`, `code:scan`, `ui:audit`) to the core CLI dictionary.
+- **Omni-Adapter .gitignore:** Automatically handles log and lock exclusions for Gemini, Claude, Cursor, and Codex.
+- **Adapter-Specific Folders:** Replaced the fixed `.enderun` folder with dynamic folders named after the selected adapter (e.g., `.gemini`, `.claude`).
+- **Clean Root Policy:** Moved framework assets (`ENDERUN.md`, agent instructions) into hidden folders to reduce project clutter.
+- **Non-Destructive Scaffolding:** `init` command now preserves existing user documentation in the root `docs/` folder.
+- **Dynamic Path Detection:** System-wide support for adapter-specific folders in CLI, MCP, and Agent SOPs.
+- **Environment Scaffolding:** Automatically includes `.env.example` in the core project setup.
+- **Smarter MCP:** Upgraded MCP server to dynamically detect the project's framework folder and standardized tool descriptions to English.
+
+## [0.0.8] — 2026-05-08
+
+### 🏗️ Build Automation
+- **Automated Root Scripts:** `init` command now automatically injects an `enderun:build` script into the target `package.json` for easy framework compilation.
+- **Enhanced Diagnostics:** Improved `check` command to point users directly to the automated build script when components are missing.
+
 ## [0.0.7] — 2026-05-08
 
 ### 🚀 Major Structural & Disciplinary Enhancements
 
+- **Health Check System:** Introduced the `ai-enderun check` command to verify framework integrity and MCP server readiness.
+- **Manager Hardening:** Updated `@manager` SOP with a mandatory MCP health check protocol during session startup.
+- **Git Orchestration:** Actively manages the `@git` agent. Signals when to perform atomic commits and mandates phase-based snapshots during DoD transitions.
 - **Documentation Decoupling:** Separated user requirements (root `docs/`) from framework constitution and technical rules (`.enderun/docs/`).
 - **Memory Hardening & Continuity:** Established the **Procedural Continuity** principle. All agent SOPs updated to mandate consistency with existing code patterns and stylistic standards.
 - **Smart Init System:** Upgraded CLI `init` command with post-install hooks. Automatically creates `.gemini/agents` symlinks and provides Claude Code MCP setup guidance.
 - **Trace ID Standardization:** Completed the project-wide transition to 26-character **ULID** for all tasks and historical records.
-- **Agent SOP v0.0.7:** Synchronized all 7 agent files (@manager, @analyst, @backend, @frontend, @explorer, @mobile, @native) with the latest framework version and continuity rules.
+- **Agent SOP v0.0.7-v0.0.9:** Synchronized all 8 agent files (@manager, @analyst, @backend, @frontend, @explorer, @mobile, @native, @git) with the latest framework version and continuity rules.
 
 ### 🚀 Major MCP Framework Enhancements
 

@@ -1,11 +1,11 @@
 /**
- * Shared Types — AI-Enderun v0.1.1
- * Bu paketteki tüm tipler backend ve frontend arasındaki kontratı tanımlar.
- * Sadece @backend düzenler, @frontend okur/import eder.
+ * Shared Types — AI-Enderun v0.0.9
+ * All types in this package define the contract between backend and frontend.
+ * Only @backend modifies this file; @frontend only reads/imports.
  */
 
-// ─── Branded Types (Tüm ID'ler bu pattern ile tanımlanır) ─────────────────────
-// Neden: Ham string ID'lerin birbirine karışmasını engeller (UserID ≠ ProductID)
+// ─── Branded Types (All IDs must follow this pattern) ─────────────────────
+// Why: Prevents raw string IDs from being mixed up (UserID ≠ ProductID).
 export type Brand<T, B> = T & { readonly _brand: B };
 
 // ─── ULID Generator (Lightweight) ──────────────────────────────────────────────
@@ -29,7 +29,7 @@ export const createULID = (seedTime: number = Date.now()): string => {
 export type UserID = Brand<string, 'UserID'>;
 export type SessionID = Brand<string, 'SessionID'>;
 
-// ─── ID Üreticiler (Runtime) ──────────────────────────────────────────────────
+// ─── ID Generators (Runtime) ──────────────────────────────────────────────────
 export const createUserID = (): UserID => createULID() as UserID;
 export const createSessionID = (): SessionID => createULID() as SessionID;
 
@@ -48,9 +48,9 @@ export interface PaginatedResponse<T> {
 }
 
 // ─── API Response Wrapper ──────────────────────────────────────────────────────
-// Neden: Tüm API yanıtları tutarlı yapıda olmalı. 
-// ÖNEMLİ: Hatalarda 200 OK dönüp içinde "success: false" dönmek YASAKTIR. 
-// Gerçek HTTP status kodları (400, 401, 404 vb.) kullanılmalıdır.
+// Why: All API responses must follow a consistent structure.
+// IMPORTANT: Returning 200 OK with "success: false" for errors is FORBIDDEN.
+// Real HTTP status codes (400, 401, 404, etc.) must be used.
 export interface ApiSuccess<T> {
   success: true;
   data: T;
@@ -58,15 +58,15 @@ export interface ApiSuccess<T> {
 
 export interface ApiError {
   success: false;
-  code: string;        // 'NOT_FOUND' | 'VALIDATION_ERROR' | 'UNAUTHORIZED' vb.
-  message: string;     // Kullanıcıya gösterilecek mesaj
-  statusCode: number;  // HTTP status kodu ile eşleşmeli
+  code: string;        // 'NOT_FOUND' | 'VALIDATION_ERROR' | 'UNAUTHORIZED' etc.
+  message: string;     // User-facing error message
+  statusCode: number;  // Must match the HTTP status code
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;
 
-// ─── Domain Types (Proje başladığında buraya ekle) ────────────────────────────
-// Örnek:
+// ─── Domain Types (Add here when project development starts) ──────────────────
+// Example:
 // export interface User {
 //   id: UserID;
 //   email: string;

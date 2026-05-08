@@ -13,7 +13,7 @@ import { Project, SyntaxKind } from "ts-morph";
 const server = new Server(
   {
     name: "ai-enderun-mcp",
-    version: "0.1.1",
+    version: "0.0.9",
   },
   {
     capabilities: {
@@ -53,7 +53,7 @@ const LOG_AGENT_ACTION_ARGS_SCHEMA = z.object({
   details: z.record(z.any()).default({}),
 });
 
-const FRAMEWORK_VERSION = "0.1.1";
+const FRAMEWORK_VERSION = "0.0.9";
 
 function getFrameworkDir(projectRoot: string): string {
   const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
@@ -314,7 +314,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: "update_project_memory",
         description:
-          "Update a specific section of PROJECT_MEMORY.md (MEVCUT DURUM, HISTORY, or AKTİF GÖREVLER) with new content.",
+          "Update a specific section of PROJECT_MEMORY.md (CURRENT STATUS, HISTORY, or ACTIVE TASKS) with new content.",
         inputSchema: {
           type: "object",
           properties: {
@@ -386,7 +386,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "read_project_memory",
-        description: "Read the entire content of .enderun/PROJECT_MEMORY.md safely. Use this instead of direct ReadFile tools to ensure framework compatibility.",
+        description: "Read the entire content of PROJECT_MEMORY.md safely. Use this instead of direct ReadFile tools to ensure framework compatibility.",
         inputSchema: { type: "object", properties: {} },
       },
     ],
@@ -654,14 +654,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     case "get_project_gaps": {
       const missing: string[] = [];
+      const frameworkDir = getFrameworkDir(projectRoot);
       const checkPaths = [
         { path: "apps", type: "folder", optional: true },
         { path: "packages/shared-types/src", type: "folder" },
-        { path: ".enderun/docs/api", type: "folder", optional: true },
+        { path: path.join(frameworkDir, "docs/api"), type: "folder", optional: true },
         { path: ".env", type: "file", optional: true },
         { path: ".env.example", type: "file" },
-        { path: path.join(getFrameworkDir(projectRoot), "PROJECT_MEMORY.md"), type: "file" },
-        { path: path.join(getFrameworkDir(projectRoot), "BRAIN_DASHBOARD.md"), type: "file" },
+        { path: path.join(frameworkDir, "PROJECT_MEMORY.md"), type: "file" },
+        { path: path.join(frameworkDir, "BRAIN_DASHBOARD.md"), type: "file" },
         { path: "docs/tech-stack.md", type: "file" },
         { path: "docs/project-docs.md", type: "file" },
       ];
@@ -674,28 +675,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       // Additional dynamic checks
-      const frameworkDir = getFrameworkDir(projectRoot);
       const agentsDir = path.join(projectRoot, frameworkDir, "agents");
-      if (fs.existsSync(agentsDir)) {
+      if (!fs.existsSync(agentsDir)) {
+        missing.push(`[MISSING FOLDER] ${frameworkDir}/agents`);
+      } else {
         const agents = fs
           .readdirSync(agentsDir)
-          .filter((f) => f.endsWith(".md"));
-        for (const agent of agents) {
-          const agentName = agent.replace(".md", "");
-          const logFile = path.join(
-            projectRoot,
-            frameworkDir,
-            "logs",
-            `${agentName}.json`,
-          );
+          .filter((f) => f.endsWith(".md"))
+          .map((f) => f.replace(".md", ""));
+        const logsDir = path.join(projectRoot, frameworkDir, "logs");
+        for (const agentName of agents) {
+          const logFile = path.join(logsDir, `${agentName}.json`);
           if (!fs.existsSync(logFile)) {
             missing.push(
-              `[MISSING LOG FILE] .enderun/logs/${agentName}.json (Expected for agent ${agentName})`,
+              `[MISSING LOG FILE] ${frameworkDir}/logs/${agentName}.json (Expected for agent ${agentName})`,
             );
           }
         }
-      } else {
-        missing.push(`[MISSING FOLDER] .enderun/agents`);
       }
 
       return {
@@ -857,9 +853,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       const { section, content } = parsed.data;
+      const frameworkDir = getFrameworkDir(projectRoot);
       const memoryPath = path.join(
         projectRoot,
-        ".enderun",
+        frameworkDir,
         "PROJECT_MEMORY.md",
       );
       const lockPath = memoryPath + ".lock";
@@ -1116,6 +1113,14 @@ Contract is invalid or out of date!
           } catch {
             logs = [];
           }
+        }
+
+        const requestId = parsed.data.requestId;
+        const ulidRegex = /^[0-9A-Z]{26}$/;
+        if (requestId !== "—" && !ulidRegex.test(requestId)) {
+          return {
+            content: [{ type: "text", text: "ERROR: requestId MUST be a 26-character ULID (or '—' for initialization)." }],
+          };
         }
 
         const newEntry = {

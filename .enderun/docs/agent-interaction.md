@@ -6,13 +6,13 @@
 | `apps/backend/` | @backend | @analyst |
 | `apps/web/` | @frontend | @analyst |
 | `packages/shared-types/` | @backend | @frontend |
-| `.enderun/PROJECT_MEMORY.md` | @analyst | All (History only) |
+| `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` | @analyst | All (History only) |
 
 ## Communication Protocol
 1. **Trace ID:** `@manager` generates a unique task identifier for every work chain.
 2. **Shared Types:** Backend and frontend must agree on the contract before implementation starts.
-3. **Project Docs:** Scope and project-facing requirements are tracked in [project-docs.md](./project-docs.md).
-4. **Project Memory:** `.enderun/PROJECT_MEMORY.md` is read at session start and updated after substantial work.
+3. **Project Docs:** Scope and project-facing requirements are tracked in [project-docs.md]({{FRAMEWORK_DIR}}/project-docs.md).
+4. **Project Memory:** `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` is read at session start and updated after substantial work.
 
 ## State Machine
 - **PHASE_0 (Discovery):** Clarify requirements and scope.

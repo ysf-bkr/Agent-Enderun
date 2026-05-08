@@ -4,8 +4,18 @@ dist
 .next
 out
 .turbo
-.enderun/logs/*.json
-.enderun/PROJECT_MEMORY.lock
 .env
 .env.local
 .env.production
+
+# AI-Enderun Framework
+.gemini/logs/*.json
+.claude/logs/*.json
+.cursor/logs/*.json
+.codex/logs/*.json
+.enderun/logs/*.json
+.gemini/*.lock
+.claude/*.lock
+.cursor/*.lock
+.codex/*.lock
+.enderun/*.lock

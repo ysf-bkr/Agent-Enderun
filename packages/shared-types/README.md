@@ -1,6 +1,6 @@
-# AI-Enderun Shared Types v0.0.7
+# AI-Enderun Shared Types v0.0.9
 
-English | [Turkce](#turkce)
+English | [Türkçe](#türkçe)
 
 The `ai-enderun-shared-types` package is the contract-first type layer of AI-Enderun. It defines shared interfaces, branded identifiers, and API response shapes that backend and frontend agents must agree on before implementation.
 
@@ -8,14 +8,15 @@ The `ai-enderun-shared-types` package is the contract-first type layer of AI-End
 
 ### Purpose
 
-This package prevents drift between services, clients, and documentation.
+This package prevents drift between services, clients, and documentation. It serves as the Single Source of Truth for the data contract.
 
 ### Principles
 
-- Define shared types before implementation starts.
-- Prefer branded identifiers for domain-safe IDs.
-- Keep API success and error shapes explicit.
-- Recalculate the contract hash whenever shared types change.
+- **Contract-First:** Define shared types before implementation starts.
+- **Branded Identifiers:** Prefer domain-safe IDs (e.g., `UserID`, `ProductID`).
+- **Standardized Responses:** Keep API success and error shapes explicit and consistent.
+- **ULID Standard:** Native support for 26-character sortable identifiers.
+- **Hash Verification:** Recalculate the contract hash whenever shared types change.
 
 ### Development
 
@@ -36,21 +37,22 @@ import { ApiResponse, SessionID, UserID } from "ai-enderun-shared-types";
 
 1. Update `src/index.ts`.
 2. Verify consuming packages still match the contract.
-3. Update `contract.version.json` when the shared surface changes.
-4. Reflect changes in `docs/api/` when endpoint contracts are affected.
+3. Update `contract.version.json` via MCP tools when the shared surface changes.
+4. Reflect changes in root `docs/api/` when endpoint contracts are affected.
 
-## Turkce
+## Türkçe
 
-`ai-enderun-shared-types`, AI-Enderun icindeki kontrat-oncelikli tip katmanidir. Backend ve frontend ajanlarinin implementasyondan once uzlasmasi gereken paylasilan arayuzleri, branded kimlik tiplerini ve API yanit sekillerini tanimlar.
+`ai-enderun-shared-types`, AI-Enderun içindeki kontrat-öncelikli (contract-first) tip katmanıdır. Backend ve frontend ajanlarının kod yazmadan önce uzlaşması gereken paylaşılan arayüzleri, güvenli kimlik tiplerini ve API yanıt şekillerini tanımlar.
 
 ### Temel Kurallar
 
-- Ortak tipler implementasyondan once tanimlanir.
-- Alan-guvenli ID yapisi icin branded tipler tercih edilir.
-- API basari ve hata yapilari acik sekilde tanimlanir.
-- Shared type degisikliginde kontrat hash'i guncellenir.
+- **Önce Kontrat:** Ortak tipler implementasyondan önce tanımlanır.
+- **Güvenli Kimlikler:** Hatalı eşleşmeleri önlemek için branded tipler (örn: `UserID`) kullanılır.
+- **Standart Yanıtlar:** API başarı ve hata yapıları projenin tamamında tutarlı tutulur.
+- **ULID Desteği:** 26 karakterlik sıralanabilir kimlikler için yerleşik destek sunar.
+- **Hash Doğrulama:** Tip değişikliğinde kontrat hash'i güncellenerek senkronizasyon sağlanır.
 
-### Gelistirme
+### Geliştirme
 
 ```bash
 cd packages/shared-types

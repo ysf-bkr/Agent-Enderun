@@ -1,20 +1,20 @@
-# AI-Enderun — Cursor Adapter (v0.1.1)
+# AI-Enderun — Cursor Adapter (v0.0.9)
 
 This file is the Cursor adapter layer.
-Core framework rules and agent capabilities are defined in `./ENDERUN.md`.
+Core framework rules and agent capabilities are defined in `{{FRAMEWORK_DIR}}/ENDERUN.md`.
 
 ## Mandatory Startup
 
-1. Read `./ENDERUN.md` fully (single source of truth).
-2. Read `.enderun/PROJECT_MEMORY.md` (`CURRENT STATUS`, `ACTIVE TASKS`, `HISTORY`).
-3. Read related SOP files in `.enderun/agents/`.
+1. Read `{{FRAMEWORK_DIR}}/ENDERUN.md` fully (single source of truth).
+2. Read `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` (`CURRENT STATUS`, `ACTIVE TASKS`, `HISTORY`).
+3. Read related SOP files in `{{FRAMEWORK_DIR}}/agents/`.
 4. Prefer MCP tools before direct file reads when possible.
 
 ## Agent Capability Preservation Rule
 
 - Do not duplicate agent role definitions here.
-- Do not fork `.enderun/agents/*` into Cursor-specific copies.
-- Use `.enderun/agents/*` as the canonical capability source.
+- Do not fork `{{FRAMEWORK_DIR}}/agents/*` into Cursor-specific copies.
+- Use `{{FRAMEWORK_DIR}}/agents/*` as the canonical capability source.
 
 ## Cursor-Specific Notes
 
@@ -39,7 +39,7 @@ Use the same MCP toolset:
 ## Completion Requirement
 
 At the end of each substantial task:
-1. Update `.enderun/PROJECT_MEMORY.md` history via `update_project_memory`.
+1. Update `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` history via `update_project_memory`.
 2. Log the operation via `log_agent_action`.
 3. Keep trace and phase fields consistent with performed work.
 4. End your response with the **Agent Completion Report** defined in `ENDERUN.md`.

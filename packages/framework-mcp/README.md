@@ -1,6 +1,6 @@
-# AI-Enderun MCP Server v0.0.7
+# AI-Enderun MCP Server v0.0.9
 
-English | [Turkce](#turkce)
+English | [Türkçe](#türkçe)
 
 The `ai-enderun-mcp` package provides the Model Context Protocol server for AI-Enderun. It gives AI clients a structured way to inspect the codebase, audit conventions, manage project memory, and verify contract integrity.
 
@@ -12,11 +12,11 @@ This package acts as the execution bridge between AI clients and the local repos
 
 ### Included Capabilities
 
-- Framework status and memory insight tools.
-- Search and dependency discovery helpers.
-- Contract verification and contract hash updates.
-- Security-oriented scans for common anti-patterns.
-- Structured logging support for agent actions.
+- **Framework Status & Memory:** High-level overview of active phases and tasks.
+- **Search & Discovery:** AST-powered dependency analysis and codebase search.
+- **Contract Verification:** Ensures shared types match the stored contract hash.
+- **Security Audit:** Scans for anti-patterns (console.logs, raw SQL, etc.).
+- **Structured Logging:** Centralized JSON logging for multi-agent traceability.
 
 ### Main Tools
 
@@ -44,23 +44,23 @@ npm run dev
 
 This package reads and interprets:
 
-- `.enderun/` for memory, logs, dashboards, and SOP files
-- `docs/` for project-facing documentation
-- `packages/shared-types/` for contract verification
+- `{{FRAMEWORK_DIR}}/` for memory, logs, dashboards, and SOP files.
+- `docs/` for project-facing documentation.
+- `packages/shared-types/` for contract verification.
 
-## Turkce
+## Türkçe
 
-`ai-enderun-mcp`, AI-Enderun icin Model Context Protocol sunucusunu saglar. AI istemcilerine depoyu incelemek, kurallari denetlemek, proje hafizasini yonetmek ve kontrat butunlugunu dogrulamak icin yapisal bir arayuz verir.
+`ai-enderun-mcp`, AI-Enderun için Model Context Protocol (MCP) sunucusunu sağlar. AI istemcilerine (Gemini, Claude vb.) kod tabanını incelemek, kuralları denetlemek, proje hafızasını yönetmek ve kontrat bütünlüğünü doğrulamak için yapısal bir arayüz sunar.
 
-### Icerik
+### Yetenekler
 
-- Framework durumu ve hafiza ozetleri
-- Kod arama ve bagimlilik analizi
-- Kontrat dogrulama ve hash guncelleme
-- Yaygin anti-pattern taramalari
-- Yapisal ajan loglama destegi
+- **Framework Durumu & Hafıza:** Aktif fazlar ve görevlerin üst düzey özeti.
+- **Arama & Keşif:** AST tabanlı bağımlılık analizi ve kod tabanı araması.
+- **Kontrat Doğrulama:** Paylaşılan tiplerin kayıtlı hash ile eşleştiğinden emin olur.
+- **Güvenlik Denetimi:** Anti-pattern'leri tarar (console.log, ham SQL vb.).
+- **Yapısal Loglama:** Çoklu ajan takibi için merkezi JSON loglama.
 
-### Gelistirme
+### Kurulum
 
 ```bash
 cd packages/framework-mcp

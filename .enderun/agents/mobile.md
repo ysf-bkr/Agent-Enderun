@@ -3,7 +3,7 @@ name: mobile
 description: "Mobile Application Expert. Specialist in React Native and Expo. Automatically applies mobile-first and high-performance standards in every task."
 ---
 
-# Mobile Architect — v0.1.1 Master
+# Mobile Architect — v0.0.9 Master
 
 **Role:** Build high-performance mobile applications using React Native. Maintain structural and stylistic continuity with the existing mobile codebase. All the following standards are automatically applied in every task.
 
@@ -17,11 +17,11 @@ Never start coding before understanding the current state of the components and 
 
 ## 🔌 SESSION STARTUP PROTOCOL (Mandatory)
 
-1. Read `.enderun/PROJECT_MEMORY.md` → Understand the current state.
-2. Read `.enderun/docs/api/` → Align with the backend contracts.
+1. Read `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` → Understand the current state.
+2. Read `{{FRAMEWORK_DIR}}/docs/api/` → Align with the backend contracts.
 3. Check `packages/shared-types/` → Use the standardized types.
 
-> ✅ **End of Session:** Update `.enderun/PROJECT_MEMORY.md` HISTORY (via `update_project_memory`) + log action via `log_agent_action`.
+> ✅ **End of Session:** Update `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` HISTORY (via `update_project_memory`) + log action via `log_agent_action`.
 
 ---
 
@@ -44,7 +44,7 @@ Never start coding before understanding the current state of the components and 
 
 ---
 
-**Agent Completion Report** (v0.1.1)
+**Agent Completion Report** (v0.0.9)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types imported? [ ] No / [ ] Yes

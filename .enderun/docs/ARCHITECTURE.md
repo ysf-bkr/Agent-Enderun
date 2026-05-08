@@ -4,7 +4,7 @@
 
 ```text
 ai-enderun/
-|-- .enderun/                # AI operating assets, memory, dashboards, logs, SOP files
+|-- {{FRAMEWORK_DIR}}/                # AI operating assets, memory, dashboards, logs, SOP files
 |   |-- agents/
 |   |-- logs/
 |   |-- PROJECT_MEMORY.md
@@ -31,7 +31,7 @@ ai-enderun/
 ## Separation of Concerns
 
 - `docs/` contains product, architecture, API, and implementation-facing documentation.
-- `.enderun/` contains operational AI assets such as memory, logs, dashboards, and role SOPs.
+- `{{FRAMEWORK_DIR}}/` contains operational AI assets such as memory, logs, dashboards, and role SOPs.
 - `packages/shared-types/` contains the shared contract layer.
 - `packages/framework-mcp/` contains the MCP integration layer.
 
@@ -44,9 +44,9 @@ ai-enderun/
 
 ## Memory and Traceability
 
-- `.enderun/PROJECT_MEMORY.md` is the persistent project memory.
-- `.enderun/BRAIN_DASHBOARD.md` acts as the navigation surface for agent collaboration.
-- `.enderun/logs/` stores structured agent activity logs.
+- `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` is the persistent project memory.
+- `{{FRAMEWORK_DIR}}/BRAIN_DASHBOARD.md` acts as the navigation surface for agent collaboration.
+- `{{FRAMEWORK_DIR}}/logs/` stores structured agent activity logs.
 - New task chains should use ULIDs for traceability.
 
 ## Quality Standards
@@ -61,5 +61,5 @@ ai-enderun/
 
 - English as the default documentation language.
 - Bilingual README files for public entry points.
-- `docs/` for project docs and `.enderun/` for AI-generated operational assets.
+- `docs/` for project docs and `{{FRAMEWORK_DIR}}/` for AI-generated operational assets.
 - Consistent contract-first messaging across adapters, agents, and packages.

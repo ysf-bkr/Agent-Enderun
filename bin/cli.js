@@ -11,7 +11,7 @@ const sourceDir = path.join(__dirname, "..");
 const targetDir = process.cwd();
 
 // --- CONSTANTS ---
-const FRAMEWORK_VERSION = "0.1.1";
+const FRAMEWORK_VERSION = "0.0.9";
 
 // --- HELPER FUNCTIONS ---
 
@@ -126,7 +126,7 @@ function mergePackageJson(targetPath, sourcePath) {
 
   // Ensure basic fields
   if (!targetPkg.name) targetPkg.name = path.basename(process.cwd());
-  if (!targetPkg.version) targetPkg.version = "0.1.1";
+  if (!targetPkg.version) targetPkg.version = "0.0.9";
   if (!targetPkg.type) targetPkg.type = "module";
 
   // Add metadata
@@ -139,13 +139,21 @@ function mergePackageJson(targetPath, sourcePath) {
   console.log("✅ package.json updated with Enderun scripts.");
 }
 
-function updateGitIgnore(targetPath) {
+function updateGitIgnore(targetPath, frameworkDir = ".enderun") {
   const IGNORE_LINES = [
-    ".enderun/*.lock",
+    "# AI-Enderun",
+    ".gemini/logs/*.json",
+    ".claude/logs/*.json",
+    ".cursor/logs/*.json",
+    ".codex/logs/*.json",
     ".enderun/logs/*.json",
-    "node_modules",
-    ".DS_Store",
+    ".gemini/*.lock",
+    ".claude/*.lock",
+    ".cursor/*.lock",
+    ".codex/*.lock",
+    ".enderun/*.lock",
     ".env",
+    ".DS_Store"
   ];
 
   let content = "";
@@ -311,7 +319,7 @@ async function initCommand(selectedAdapter) {
         // When copying framework dir, skip logs and project-specific state
         const skipFiles = (item === ".enderun") ? ["logs", "PROJECT_MEMORY.md", "BRAIN_DASHBOARD.md", "PROJECT_MEMORY.lock"] : [];
         const isDocs = item === "docs";
-        copyDir(src, dest, new Set(skipFiles), isDocs);
+        copyDir(src, dest, new Set(skipFiles), isDocs, targetBase);
       } else {
         // Special files handling
         if (item === "package.json") continue;
@@ -324,8 +332,16 @@ async function initCommand(selectedAdapter) {
           console.log(`ℹ️  Skipping existing file: ${item}`);
           continue;
         }
-        
-        fs.copyFileSync(src, dest);
+
+        const ext = path.extname(item);
+        const textExtensions = [".md", ".json", ".js", ".ts", ".txt", ""];
+        if (textExtensions.includes(ext)) {
+          let content = fs.readFileSync(src, "utf8");
+          content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, targetBase);
+          fs.writeFileSync(dest, content);
+        } else {
+          fs.copyFileSync(src, dest);
+        }
       }
       console.log(`✅ ${item} processed -> ${path.relative(targetDir, dest)}`);
     }
@@ -333,31 +349,30 @@ async function initCommand(selectedAdapter) {
 
   // Smart setup
   mergePackageJson(path.join(targetDir, "package.json"), path.join(sourceDir, "package.json"));
-  updateGitIgnore(path.join(targetDir, ".gitignore"));
+  updateGitIgnore(path.join(targetDir, ".gitignore"), targetBase);
   initializeMemory(getMemoryPath());
 
   // --- Post-Install Hooks (Smart Setup) ---
   
   console.log("\n🛠️  Running smart configuration for adapters...");
 
-  if (selectedAdapter === "gemini" || !selectedAdapter) {
-    try {
-      const targetBase = selectedAdapter ? `.${selectedAdapter}` : ".enderun";
-      const geminiAgentsDir = path.join(targetDir, ".gemini", "agents");
-      const frameworkAgentsDir = path.join(targetDir, targetBase, "agents");
-      
-      if (!fs.existsSync(path.join(targetDir, ".gemini"))) {
-        fs.mkdirSync(path.join(targetDir, ".gemini"), { recursive: true });
-      }
-      
-      if (targetBase !== ".gemini" && !fs.existsSync(geminiAgentsDir)) {
-        const relativePath = path.relative(path.join(targetDir, ".gemini"), frameworkAgentsDir);
-        fs.symlinkSync(relativePath, geminiAgentsDir, "dir");
-        console.log("🔗 Gemini: Created symlink from .gemini/agents to " + targetBase + "/agents");
-      }
-    } catch (err) {
-      console.warn("⚠️  Gemini: Could not create symlink.");
+  // Universal Gemini Compatibility (Symlink)
+  try {
+    const geminiDir = path.join(targetDir, ".gemini");
+    const geminiAgentsDir = path.join(geminiDir, "agents");
+    const frameworkAgentsDir = path.join(targetDir, targetBase, "agents");
+
+    if (!fs.existsSync(geminiDir)) {
+      fs.mkdirSync(geminiDir, { recursive: true });
     }
+
+    if (targetBase !== ".gemini" && !fs.existsSync(geminiAgentsDir)) {
+      const relativePath = path.relative(geminiDir, frameworkAgentsDir);
+      fs.symlinkSync(relativePath, geminiAgentsDir, "dir");
+      console.log(`🔗 Omni-Agent: Created symlink from .gemini/agents to ${targetBase}/agents`);
+    }
+  } catch (err) {
+    // Silently ignore if symlink fails (e.g. on non-compatible OS)
   }
 
   if (selectedAdapter === "claude" || !selectedAdapter) {
@@ -435,7 +450,7 @@ function checkCommand() {
   }
 }
 
-function copyDir(src, dest, skipSet = new Set(), nonDestructive = false) {
+function copyDir(src, dest, skipSet = new Set(), nonDestructive = false, frameworkDir = ".enderun") {
   const DEFAULT_SKIP = new Set(["node_modules", ".git", ".DS_Store"]);
   const actualSkip = new Set([...DEFAULT_SKIP, ...skipSet]);
 
@@ -450,13 +465,22 @@ function copyDir(src, dest, skipSet = new Set(), nonDestructive = false) {
     const destPath = path.join(dest, entry.name);
 
     if (entry.isDirectory()) {
-      copyDir(srcPath, destPath, skipSet, nonDestructive);
+      copyDir(srcPath, destPath, skipSet, nonDestructive, frameworkDir);
     } else {
       if (nonDestructive && fs.existsSync(destPath)) {
-        // Skip existing files in non-destructive mode
         return;
       }
-      fs.copyFileSync(srcPath, destPath);
+      
+      const ext = path.extname(entry.name);
+      const textExtensions = [".md", ".json", ".js", ".ts", ".txt", ""];
+      
+      if (textExtensions.includes(ext)) {
+        let content = fs.readFileSync(srcPath, "utf8");
+        content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, frameworkDir);
+        fs.writeFileSync(destPath, content);
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+      }
     }
   });
 }

@@ -4,16 +4,16 @@ This wiki is the central index for project documentation.
 
 ## Quick Links
 
-- [Architecture](./ARCHITECTURE.md): Repository structure, boundaries, and workflow model.
-- [Tech Stack](./tech-stack.md): Approved technologies and engineering standards.
-- [Project Docs](./project-docs.md): Product scope and active development scenario.
-- [Agent Interaction](./agent-interaction.md): Responsibility model and collaboration flow.
-- [API Contracts](./api/README.md): Endpoint documentation and contract index.
+- [Architecture]({{FRAMEWORK_DIR}}/ARCHITECTURE.md): Repository structure, boundaries, and workflow model.
+- [Tech Stack]({{FRAMEWORK_DIR}}/tech-stack.md): Approved technologies and engineering standards.
+- [Project Docs]({{FRAMEWORK_DIR}}/project-docs.md): Product scope and active development scenario.
+- [Agent Interaction]({{FRAMEWORK_DIR}}/agent-interaction.md): Responsibility model and collaboration flow.
+- [API Contracts]({{FRAMEWORK_DIR}}/api/README.md): Endpoint documentation and contract index.
 
 ## Documentation Rules
 
 - Keep project-facing documentation inside `docs/`.
-- Keep AI memory, logs, and generated operational artifacts inside `.enderun/`.
+- Keep AI memory, logs, and generated operational artifacts inside `{{FRAMEWORK_DIR}}/`.
 - Update API references when shared contracts or endpoints change.
 - Keep English as the primary documentation language.
 

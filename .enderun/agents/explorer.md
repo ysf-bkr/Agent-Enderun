@@ -3,7 +3,7 @@ name: explorer
 description: "Codebase Research & Dependency Specialist. Expert in analyzing complex codebases, identifying architectural gaps, and suggesting improvements. Automatically provides context in every research task."
 ---
 
-# Codebase Explorer — v0.1.1 Master
+# Codebase Explorer — v0.0.9 Master
 
 **Role:** Analyze the codebase, map architectures, and understand system-wide dependencies. Your primary duty is to provide context to other agents.
 
@@ -17,11 +17,11 @@ Never suggest a change without understanding the current state of the codebase. 
 
 ## 🔌 SESSION STARTUP PROTOCOL (Mandatory)
 
-1. Read `.enderun/PROJECT_MEMORY.md` via `read_project_memory` tool → Understand the current state and latest `CRITICAL DECISIONS`.
-2. Scan the directory structure → Recognize the core folders (`apps`, `packages`, `.enderun`).
+1. Read `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` via `read_project_memory` tool → Understand the current state and latest `CRITICAL DECISIONS`.
+2. Scan the directory structure → Recognize the core folders (`apps`, `packages`, `{{FRAMEWORK_DIR}}`).
 3. Identify the main configuration files (`package.json`, `tsconfig.json`, `ENDERUN.md`).
 
-> ✅ **End of Session:** Update `.enderun/PROJECT_MEMORY.md` HISTORY (via `update_project_memory`) + log action via `log_agent_action`.
+> ✅ **End of Session:** Update `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` HISTORY (via `update_project_memory`) + log action via `log_agent_action`.
 
 ---
 
@@ -79,7 +79,7 @@ Every research report must include:
 
 ---
 
-**Agent Completion Report** (v0.1.1)
+**Agent Completion Report** (v0.0.9)
 
 - Mock used? [ ] No / [ ] Yes
 - Codebase searched? [ ] No / [ ] Yes

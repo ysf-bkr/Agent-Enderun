@@ -1,4 +1,4 @@
-# AI-Enderun — Supreme Performance AI Orchestration (v0.1.1)
+# AI-Enderun — Supreme Performance AI Orchestration (v0.0.9)
 
 # Place in project root. This file is the single source of truth for all AI clients (Gemini CLI, Claude Code, etc.).
 
@@ -8,9 +8,18 @@
 
 ---
 
+## Git Discipline
+
+- **Atomic Commits:** Each commit must represent a single, logical unit of change. No "fix" or "wip" commits allowed.
+- **Commit Message Format:** `[Type](Scope): Description` (e.g., `feat(api): add auth header validation`).
+- **Phase Snapshots:** Every transition between `STATE MACHINE` phases must be marked with a git tag corresponding to the phase name (e.g., `git tag -a v0.0.9-phase1`).
+- **Branching:** Use `feature/trace-id-short-description` for all task-based work.
+
+---
+
 ## Constitution Status
 
-This file (`./ENDERUN.md`) and the `.enderun/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%.
+This file (`{{FRAMEWORK_DIR}}/ENDERUN.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%.
 
 ---
 
@@ -19,15 +28,15 @@ This file (`./ENDERUN.md`) and the `.enderun/docs/` folder represent the "Suprem
 This project is an "Agent Development School" designed to maximize the professional discipline, technical wisdom, and orchestration capabilities of agents (Claude/GPT/Gemini). This is not an end-user application; it is where the working standards and intelligence of agents are built.
 
 - **Focus:** Developing agents' autonomous decision-making, documentation discipline, and technical excellence.
-- **State:** Persistent memory is stored in `.enderun/PROJECT_MEMORY.md`.
+- **State:** Persistent memory is stored in `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md`.
 - **Communication:** Agents exchange information within the framework of constitutional rules.
 
 ---
 
 ## STEP 0 — STARTUP (EVERY SESSION, NON-NEGOTIABLE)
 
-1. **Read ./ENDERUN.md First:** Read and fully understand this file.
-2. **Read Project Memory:** Read `.enderun/PROJECT_MEMORY.md` and extract the following:
+1. **Read {{FRAMEWORK_DIR}}/ENDERUN.md First:** Read and fully understand this file.
+2. **Read Project Memory:** Read `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` and extract the following:
    - `CURRENT STATUS` → Which phase are we in? Is there an active Trace ID?
    - `CRITICAL DECISIONS` table → What was decided previously?
    - `ACTIVE TASKS` table → Are there any tasks assigned to me?
@@ -39,7 +48,7 @@ This project is an "Agent Development School" designed to maximize the professio
 4. **Default Stack:**
    - **Frontend:** React 19 + Vite (SPA) + Zustand + Panda CSS.
    - **Backend:** Node.js 20+ + Fastify + Kysely + PostgreSQL.
-5. **END OF SESSION REQUIREMENT:** Append a summary to `.enderun/PROJECT_MEMORY.md` → `HISTORY` section and write a record to the relevant log file at the end of every response. This step cannot be skipped.
+5. **END OF SESSION REQUIREMENT:** Append a summary to `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` → `HISTORY` section and write a record to the relevant log file at the end of every response. This step cannot be skipped.
 
 ---
 
@@ -64,7 +73,7 @@ If `tech-stack.md` is missing or empty, do not write code until the following is
 
 ## PROJECT MEMORY & LOCK PROTOCOL
 
-- **Memory Initialization:** All agents reference `.enderun/PROJECT_MEMORY.md` at the start of any task.
+- **Memory Initialization:** All agents reference `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` at the start of any task.
 - **Persistent Memory Protocol:** Every agent MUST append a summary to the **HISTORY** section of `PROJECT_MEMORY.md`.
 - **Canonical Memory Shape:** `PROJECT_MEMORY.md` maintains these main sections: `CURRENT STATUS`, `PROJECT DEFINITION`, `DOD STATUS`, `CRITICAL DECISIONS`, `DELIVERABLES`, `ACTIVE TASKS`, `HISTORY`.
 - **HISTORY Entry Format (Mandatory):**
@@ -89,7 +98,7 @@ Legacy short IDs in the archive can be preserved; however, do not use short form
 Trace ID: 01H... (26-character ULID)
 ```
 
-- **Memory Lock Rule:** To prevent concurrent writes, agents check for `.enderun/PROJECT_MEMORY.lock`.
+- **Memory Lock Rule:** To prevent concurrent writes, agents check for `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.lock`.
   - If exists: Wait 1s, retry. (Max 5 retries).
   - After 5 retries: Report `BLOCKED — Memory Lock Timeout`.
   - On success: Create lock, write, delete lock.
@@ -105,8 +114,8 @@ Trace ID: 01H... (26-character ULID)
 | `apps/mobile/`              | @mobile           | @analyst                              |
 | `apps/native/`              | @native           | @analyst                              |
 | `packages/shared-types/`    | @backend          | @frontend                             |
-| `.enderun/PROJECT_MEMORY.md` | @analyst          | All (History only)                    |
-| `.enderun/docs/api/`         | @backend (author) | @analyst (audits), @frontend (reader) |
+| `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` | @analyst          | All (History only)                    |
+| `{{FRAMEWORK_DIR}}/docs/api/`         | @backend (author) | @analyst (audits), @frontend (reader) |
 | `.env.*`                    | @manager          | @backend                              |
 
 ---
@@ -114,17 +123,21 @@ Trace ID: 01H... (26-character ULID)
 ## CORE PRINCIPLES
 
 - **@manager Orchestration:** Manager analyzes, selects agents, and provides the Briefing Template. Responsible for generating a unique `Trace ID` (ULID) for each task.
-- **Contract-First Approach:** Backend and Frontend must agree via `shared-types` and `.enderun/docs/api/` before writing code. **@backend** writes endpoint → updates `.enderun/docs/api/[domain].md` → **@frontend** reads, then codes.
+- **Contract-First Approach:** Backend and Frontend must agree via `shared-types` and `{{FRAMEWORK_DIR}}/docs/api/` before writing code. **@backend** writes endpoint → updates `{{FRAMEWORK_DIR}}/docs/api/[domain].md` → **@frontend** reads, then codes.
 - **Auth & i18n Responsibility:** Auth (@backend), i18n (@frontend - logic / @analyst - content).
 - **Zero Mock Policy:** Fake data is forbidden.
   - **Exception 1:** External 3rd party services (Stripe etc.) → `ADAPTER_PATTERN` + `SANDBOX_MODE`.
   - **Exception 2:** Unit Tests → Mocks allowed for external dependencies.
 - **Branded Types Law:** All IDs must be Branded Types (`packages/shared-types`).
 - **Search Before Reading:** No agent should read a file blindly; first scan the context with `search_codebase`, `analyze_dependencies`, `get_memory_insights`, and `get_project_gaps`. Legacy prompt compatibility aliases like `codebase_search`, `codebase_graph_query`, `codebase_context`, `codebase_context_search`, and `codebase_status` are also supported.
-- **Robust Access Law:** Agents MUST use MCP tools for system time (`get_system_time`) and memory reading (`read_project_memory`). Using Shell `date` or direct `ReadFile` on `.enderun/PROJECT_MEMORY.md` is strictly forbidden to ensure cross-platform stability.
+- **Robust Access Law:** Agents MUST use MCP tools for system time (`get_system_time`) and memory reading (`read_project_memory`). Using Shell `date` or direct `ReadFile` on `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` is strictly forbidden to ensure cross-platform stability.
 - **Procedural Continuity:** Agents MUST maintain consistency with existing code patterns. Before editing any file, analyze its current style, library usage, and architectural approach. Finish a task using the same standards it was started with. If a pattern change is required, it must be approved by @manager and recorded in `CRITICAL DECISIONS`.
 - **Full-Spectrum Responsive:** Every component starts mobile-first (320px) and must remain fluid using `clamp()` and `aspect-ratio` up to ultra-wide screens (1920px+).
 - **Supreme Frontend Aesthetics:** @frontend must avoid "AI slop" aesthetics; design original, characterful, and production-quality interfaces. **Zero UI Library Policy:** Agents never use ready-made component libraries like `shadcn/ui`, `MUI`, or `Chakra UI`. All UI components (Button, Modal, Input, etc.) must be built from scratch using Panda CSS, unique to the project.
+- **Proactive Engineering Standard:** Agents MUST NOT wait for the user to specify industry-standard features. If a module is being built, the agent is responsible for proactively including:
+  - **Backend:** Pagination, search/filtering, rate limiting, and robust input validation.
+  - **Frontend:** Loading skeletons, empty states, confirmation modals, and error notifications.
+  - **Git:** Atomic commits and logical branching without being prompted.
 - **Audit Logging:** All critical operations must be logged.
 
 ---
@@ -155,10 +168,23 @@ When multiple agents work on the same task or overlapping files:
 
 ---
 
+## 🛠️ GIT DISCIPLINE PROTOCOL (MANDATORY)
+
+To ensure "Procedural Continuity" and safe rollbacks, all agents must follow these Git rules:
+
+1. **Atomic Commits:** Perform a `git commit` after every successful sub-task or meaningful file change.
+2. **Commit Message Format:** `[{{TRACE_ID}}] <type>: <description>`
+   - Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `arch`.
+   - Example: `[01H...] feat: implement user authentication service`
+3. **Phase Transitions:** A mandatory commit MUST be made at the end of every PHASE (DoD completion).
+4. **Local Only:** Agents MUST NOT `git push` unless explicitly requested by the USER.
+
+---
+
 ## EXECUTION PROFILES
 
-- **Lightweight Profile (MVP):** For SaaS, MVP, or fast prototypes. Only manager, backend, frontend, analyst, and explorer are active.
-- **Full Profile (Enterprise):** For complex systems, those with mobile/native integration, or high security requirements. All agents are active.
+- **Lightweight Profile (MVP):** For SaaS, MVP, or fast prototypes. Only manager, backend, frontend, analyst, explorer, and git agents are active.
+- **Full Profile (Enterprise):** For complex systems, those with mobile/native integration, or high security requirements. All 8 agents are active.
 
 ---
 
@@ -209,7 +235,7 @@ _DoD checks only cover **active** agents in the selected (Lightweight/Full) prof
 
 - [ ] `shared-types` approved by all parties.
 - [ ] `contract.version.json` created and hash verified.
-- [ ] OpenAPI schema documented in `.enderun/docs/api/`.
+- [ ] OpenAPI schema documented in `{{FRAMEWORK_DIR}}/docs/api/`.
 
 **PHASE_2 → PHASE_3:**
 
@@ -293,8 +319,8 @@ _Logs are stored as a **JSON Array**. Every turn appends a new object to the arr
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types changed? [ ] No / [ ] Yes
-- **API contract written/read? [ ] No / [ ] Yes → .enderun/docs/api/[domain].md**
-- Log written? [ ] No / [ ] Yes → .enderun/logs/[agent].json
+- **API contract written/read? [ ] No / [ ] Yes → {{FRAMEWORK_DIR}}/docs/api/[domain].md**
+- Log written? [ ] No / [ ] Yes → {{FRAMEWORK_DIR}}/logs/[agent].json
 - **PROJECT_MEMORY HISTORY updated? [ ] No / [ ] Yes**
 - Next step: [what needs to be done]
 - Blockers: [write if any, otherwise "NONE"]
