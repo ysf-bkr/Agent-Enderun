@@ -1,27 +1,27 @@
-# Agent Enderun (v0.4.6)
+# Agent Enderun (v0.4.7)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
 > Check this list at the end of every response:
 > - [ ] **Zero Mock:** Did you use fake data or placeholders? (Strictly Forbidden)
 > - [ ] **Contract First:** Are `shared-types` and `contract.version.json` up to date?
-> - [ ] **Audit Log:** Did you log this action in `.enderun/logs/[agent].json`?
+> - [ ] **Audit Log:** Did you log this action in `{{FRAMEWORK_DIR}}/logs/[agent].json`?
 > - [ ] **CLI Orchestration:** Does the action comply with `gemini cli` rules?
 > - [ ] **No "..." allowed:** Did you write the code completely without omitting parts?
 
 ---
 
 ## Constitution Status
-This file (`./gemini.md`) and the `.enderun/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%. All framework-specific documentation is stored within `.enderun/docs/`.
+This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%. All framework-specific documentation is stored within `{{FRAMEWORK_DIR}}/docs/`.
 
 ---
 
 ## STEP 0 — STARTUP (EVERY SESSION, NON-NEGOTIABLE)
 
-1. **Read ./gemini.md First:** Read and fully understand this file before taking any action.
-2. **Check `.enderun/docs/` Folder:** Verify the existence of the `.enderun/docs/` folder (located within the framework directory).
-3. **Absorb Context:** Read `.enderun/docs/tech-stack.md`. If it is empty, ask the user to fill it before proceeding.
-4. **Demand Context:** If the `.enderun/docs/` folder does not exist, ask the user for project context and target audience information before writing any code.
+1. **Read ./{{ADAPTER}}.md First:** Read and fully understand this file before taking any action.
+2. **Check `{{FRAMEWORK_DIR}}/docs/` Folder:** Verify the existence of the `{{FRAMEWORK_DIR}}/docs/` folder (located within the framework directory).
+3. **Absorb Context:** Read `{{FRAMEWORK_DIR}}/docs/tech-stack.md`. If it is empty, ask the user to fill it before proceeding.
+4. **Demand Context:** If the `{{FRAMEWORK_DIR}}/docs/` folder does not exist, ask the user for project context and target audience information before writing any code.
 5. Default Frontend: React 19 + Vite (SPA) + react-router-dom (User Preference)
 
 **NEVER SKIP THIS STEP.** Do not assume context; read first, then act.
@@ -37,11 +37,11 @@ This file (`./gemini.md`) and the `.enderun/docs/` folder represent the "Supreme
 - **Zero Mock Policy:** The use of fake (mock) data or placeholders is strictly forbidden. Every line of code must connect to a real endpoint or a typed contract. (Exception: Controlled mock usage is allowed for external 3rd party services like Stripe, Twilio).
 - **Branded Types Law:** All IDs (UserID, ProjectID, etc.) must be in the "Branded Types" format defined under `packages/shared-types`. Using plain strings or numbers is forbidden.
 - **CLI-First Policy:** Due to the AI CLI Assistant focus, all outputs must be user-friendly (using Chalk, Clack, etc.) and stream-based. All commands must support the `--output json` flag and produce machine-readable output.
-- **Audit Logging Necessity:** Every critical action must be logged traceably under the `.enderun/logs/` folder.
+- **Audit Logging Necessity:** Every critical action must be logged traceably under the `{{FRAMEWORK_DIR}}/logs/` folder.
 - **Design Continuity & Response Policy:** All UI changes MUST be responsive (Mobile-First + Fluid) and surgical. Unnecessary overhauls of existing layouts are strictly forbidden.
 - **Shared Component First Policy:** Defining common UI elements (Button, Input, Card, etc.) inside page files is FORBIDDEN. All atomic UI components must be created in a shared directory (e.g., `apps/web/src/components/ui/`) and reused across the project.
 - **File Ownership Rule:** Each file is the responsibility of a single agent.
-- **CLI Command Mapping:** All CLI commands in the project must be defined in the `.enderun/cli-commands.json` file and assigned to the relevant agent.
+- **CLI Command Mapping:** All CLI commands in the project must be defined in the `{{FRAMEWORK_DIR}}/cli-commands.json` file and assigned to the relevant agent.
 - **Exit Code Standard:** Standard exit codes (e.g., 64: User Error, 70: Internal Error) must be used in error situations.
 - **Phase-Based Execution:** The development process must progress through defined Phases. You cannot move to the next phase until the current one is completed.
 - **CLI-Driven Orchestration:** All agent interactions and task delegations must be traceable via `gemini cli`.
@@ -51,13 +51,13 @@ This file (`./gemini.md`) and the `.enderun/docs/` folder represent the "Supreme
 
 ## STEP 1 — VALIDATE BEFORE ACTING
 
-Before writing any code or design, check `.enderun/docs/tech-stack.md`:
+Before writing any code or design, check `{{FRAMEWORK_DIR}}/docs/tech-stack.md`:
 
 | Unknown | Action |
 |---|---|
 | Target Audience | Ask — do not proceed |
 | Platform (web / mobile / desktop / backend) | Ask — do not proceed |
-| **Technology Stack** | **Check `.enderun/docs/tech-stack.md` → If missing → ASK** |
+| **Technology Stack** | **Check `{{FRAMEWORK_DIR}}/docs/tech-stack.md` → If missing → ASK** |
 | **Execution Profile (Full / Lightweight)** | **Ask — do not proceed** |
 | Database (MariaDB / SQLite / PostgreSQL) | Ask — do not proceed |
 | Environment (prototype / production) | Ask — do not proceed |
@@ -148,7 +148,7 @@ This file is the single source of truth for API stability. `@backend-architect` 
 
 The development process follows a strict State Machine. Transition to the next phase is prohibited until the "Success Criteria" of the current phase is met.
 
-- **[STATE: PHASE_0] Discovery & Setup:** Profile selection (Lightweight/Full), requirement analysis, and validating `.enderun/docs/tech-stack.md`.
+- **[STATE: PHASE_0] Discovery & Setup:** Profile selection (Lightweight/Full), requirement analysis, and validating `{{FRAMEWORK_DIR}}/docs/tech-stack.md`.
 - **[STATE: PHASE_1] Architecture & Contracts:** Setup of data models, API schemas, and `packages/shared-types`. Cannot proceed until Frontend and Backend approve these schemas.
 - **[STATE: PHASE_2] Core Development:** Active agents build core features in parallel based on the selected profile. (Under the apps/ folder)
 - **[STATE: PHASE_3] Integration & Testing:** System integration.
@@ -166,13 +166,13 @@ Every agent must produce a response for their assigned task within a maximum of 
 
 ## CLI STANDARDS & CONFIGURATION
 
-### 1. CLI Command Map (`.enderun/cli-commands.json`)
+### 1. CLI Command Map (`{{FRAMEWORK_DIR}}/cli-commands.json`)
 All CLI commands are centrally managed in this file. Each command must have a designated owner agent.
 
-### 2. Configuration (`.enderun/config.json`)
+### 2. Configuration (`{{FRAMEWORK_DIR}}/config.json`)
 CLI behaviors (logLevel, outputFormat, defaultProfile) are managed through this file.
 
-**Priority Rule:** CLI Flags > `.enderun/config.json` > `.env` > Default Values.
+**Priority Rule:** CLI Flags > `{{FRAMEWORK_DIR}}/config.json` > `.env` > Default Values.
 
 ### 3. Exit Codes
 - `0`: Success
@@ -191,12 +191,12 @@ All APIs are versioned via the URL path (`/api/v1/...`). The `packages/shared-ty
 ## PARALLEL EXECUTION & COORDINATION RULES
 
 1. **Shared-Types as Source of Truth:** All agents reference `packages/shared-types` and the `contract.version.json` file.
-2. **Commit-Level Logging:** Every agent must log every atomic change to the `.enderun/logs/[agent-name].json` file.
+2. **Commit-Level Logging:** Every agent must log every atomic change to the `{{FRAMEWORK_DIR}}/logs/[agent-name].json` file.
 3. **Implicit Dependency Lock:** If an agent's required output is not ready, it switches to `WAITING` state.
 4. **Ownership Enforcement:** Changes to files outside an agent's scope cannot be made without `@team-lead` approval.
-5. **No Blind Coding:** Agents must periodically read `.enderun/logs/` and `.enderun/STATUS.md`.
-6. **Agent Directives (Message Queue):** `.enderun/messages/` is used for inter-agent communication. 
-   - **Message Queue Lock Protocol:** Before writing to a file, check for `.enderun/messages/.lock`.
+5. **No Blind Coding:** Agents must periodically read `{{FRAMEWORK_DIR}}/logs/` and `{{FRAMEWORK_DIR}}/STATUS.md`.
+6. **Agent Directives (Message Queue):** `{{FRAMEWORK_DIR}}/messages/` is used for inter-agent communication. 
+   - **Message Queue Lock Protocol:** Before writing to a file, check for `{{FRAMEWORK_DIR}}/messages/.lock`.
    - If it exists, wait 500ms and retry (max 3 retries).
    - If lock persists after 3 retries, the agent MUST assume a **stale lock**, delete it, and notify `@team-lead` in their log.
    - Delete `.lock` and the message file immediately after processing.

@@ -1,11 +1,11 @@
-# Agent Enderun (v0.4.6)
+# Agent Enderun (v0.4.7)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
 > Check this list at the end of every response:
 > - [ ] **Zero Mock:** Did you use fake data or placeholders? (Strictly Forbidden)
 > - [ ] **Contract First:** Are `shared-types` and `contract.version.json` up to date?
-> - [ ] **Audit Log:** Did you log this action in `.enderun/logs/[agent].json`?
+> - [ ] **Audit Log:** Did you log this action in `{{FRAMEWORK_DIR}}/logs/[agent].json`?
 > - [ ] **CLI Orchestration:** Does the action comply with `gemini cli` rules?
 > - [ ] **No "..." allowed:** Did you write the code completely without omitting parts?
 
@@ -37,7 +37,7 @@ This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represen
 - **CLI-First Policy:** Due to the AI CLI Assistant focus, all outputs must be user-friendly (using Chalk, Clack, etc.) and stream-based. All commands must support the `--output json` flag and produce machine-readable output.
 - **Audit Logging Necessity:** Every critical action must be logged traceably under the `{{FRAMEWORK_DIR}}/logs/` folder.
 - **File Ownership Rule:** Each file is the responsibility of a single agent.
-- **CLI Command Mapping:** All CLI commands in the project must be defined in the `.enderun/cli-commands.json` file and assigned to the relevant agent.
+- **CLI Command Mapping:** All CLI commands in the project must be defined in the `{{FRAMEWORK_DIR}}/cli-commands.json` file and assigned to the relevant agent.
 - **Exit Code Standard:** Standard exit codes (e.g., 64: User Error, 70: Internal Error) must be used in error situations.
 - **Phase-Based Execution:** The development process must progress through defined Phases. You cannot move to the next phase until the current one is completed.
 - **CLI-Driven Orchestration:** All agent interactions and task delegations must be traceable via `{{ADAPTER}} cli`.
@@ -47,7 +47,7 @@ This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represen
 
 ## STEP 1 — VALIDATE BEFORE ACTING
 
-Before writing any code or design, check `.enderun/docs/tech-stack.md`:
+Before writing any code or design, check `{{FRAMEWORK_DIR}}/docs/tech-stack.md`:
 
 | Unknown | Action |
 |---|---|
@@ -144,7 +144,7 @@ This file is the single source of truth for API stability. `@backend-architect` 
 
 The development process follows a strict State Machine. Transition to the next phase is prohibited until the "Success Criteria" of the current phase is met.
 
-- **[STATE: PHASE_0] Discovery & Setup:** Profile selection (Lightweight/Full), requirement analysis, and validating `.enderun/docs/tech-stack.md`.
+- **[STATE: PHASE_0] Discovery & Setup:** Profile selection (Lightweight/Full), requirement analysis, and validating `{{FRAMEWORK_DIR}}/docs/tech-stack.md`.
 - **[STATE: PHASE_1] Architecture & Contracts:** Setup of data models, API schemas, and `packages/shared-types`. Cannot proceed until Frontend and Backend approve these schemas.
 - **[STATE: PHASE_2] Core Development:** Active agents build core features in parallel based on the selected profile. (Under the apps/ folder)
 - **[STATE: PHASE_3] Integration & Testing:** System integration.
@@ -162,13 +162,13 @@ Every agent must produce a response for their assigned task within a maximum of 
 
 ## CLI STANDARDS & CONFIGURATION
 
-### 1. CLI Command Map (`.enderun/cli-commands.json`)
+### 1. CLI Command Map (`{{FRAMEWORK_DIR}}/cli-commands.json`)
 All CLI commands are centrally managed in this file. Each command must have a designated owner agent.
 
-### 2. Configuration (`.enderun/config.json`)
+### 2. Configuration (`{{FRAMEWORK_DIR}}/config.json`)
 CLI behaviors (logLevel, outputFormat, defaultProfile) are managed through this file.
 
-**Priority Rule:** CLI Flags > `.enderun/config.json` > `.env` > Default Values.
+**Priority Rule:** CLI Flags > `{{FRAMEWORK_DIR}}/config.json` > `.env` > Default Values.
 
 ### 3. Exit Codes
 - `0`: Success
