@@ -1,5 +1,5 @@
 {
   "name": "Agent Enderun",
   "description": "Enterprise-grade AI orchestration framework for software teams.",
-  "instructions": "{{FRAMEWORK_DIR}}/ENDERUN.md"
+  "instructions": ".enderun/ENDERUN.md"
 }

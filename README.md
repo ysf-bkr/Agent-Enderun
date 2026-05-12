@@ -1,4 +1,4 @@
-# 🏛️ Agent Enderun — v0.4.5
+# 🏛️ Agent Enderun — v0.4.6
 
 **The Supreme AI Governance & Orchestration Framework for Enterprise Development**
 

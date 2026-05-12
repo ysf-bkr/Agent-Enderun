@@ -1,6 +1,6 @@
 {
   "name": "@ai-enderun/shared-types",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Shared TypeScript types for AI-Enderun Framework. Ensures Contract-First synchronization between agents.",
   "author": "Yusuf BEKAR",
   "license": "MIT",

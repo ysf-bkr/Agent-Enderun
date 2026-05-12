@@ -1,4 +1,4 @@
-# Agent Enderun (v0.3.4)
+# Agent Enderun (v0.4.6)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
@@ -12,14 +12,14 @@
 ---
 
 ## Constitution Status
-This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%.
+This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%. All framework-specific documentation is stored within `{{FRAMEWORK_DIR}}/docs/`.
 
 ---
 
 ## STEP 0 — STARTUP (EVERY SESSION, NON-NEGOTIABLE)
 
 1. **Read ./{{ADAPTER}}.md First:** Read and fully understand this file before taking any action.
-2. **Check `{{FRAMEWORK_DIR}}/docs/` Folder:** Verify the existence of the `{{FRAMEWORK_DIR}}/docs/` folder in the project root.
+2. **Check `{{FRAMEWORK_DIR}}/docs/` Folder:** Verify the existence of the `{{FRAMEWORK_DIR}}/docs/` folder (located within the framework directory).
 3. **Absorb Context:** Read `{{FRAMEWORK_DIR}}/docs/tech-stack.md`. If it is empty, ask the user to fill it before proceeding.
 4. **Demand Context:** If the `{{FRAMEWORK_DIR}}/docs/` folder does not exist, ask the user for project context and target audience information before writing any code.
 5. Default Frontend: React 19 + Vite (SPA) + react-router-dom (User Preference)

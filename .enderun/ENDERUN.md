@@ -1,4 +1,4 @@
-# Agent Enderun (v0.4.4)
+# Agent Enderun (v0.4.6)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
@@ -12,14 +12,14 @@
 ---
 
 ## Constitution Status
-This file (`./gemini.md`) and the `.enderun/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%.
+This file (`./gemini.md`) and the `.enderun/docs/` folder represent the "Supreme Law" of the project. All agents must read this file first in every session and strictly comply with its rules 100%. All framework-specific documentation is stored within `.enderun/docs/`.
 
 ---
 
 ## STEP 0 — STARTUP (EVERY SESSION, NON-NEGOTIABLE)
 
 1. **Read ./gemini.md First:** Read and fully understand this file before taking any action.
-2. **Check `.enderun/docs/` Folder:** Verify the existence of the `.enderun/docs/` folder in the project root.
+2. **Check `.enderun/docs/` Folder:** Verify the existence of the `.enderun/docs/` folder (located within the framework directory).
 3. **Absorb Context:** Read `.enderun/docs/tech-stack.md`. If it is empty, ask the user to fill it before proceeding.
 4. **Demand Context:** If the `.enderun/docs/` folder does not exist, ask the user for project context and target audience information before writing any code.
 5. Default Frontend: React 19 + Vite (SPA) + react-router-dom (User Preference)

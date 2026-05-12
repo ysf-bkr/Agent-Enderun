@@ -453,8 +453,15 @@ async function initCommand(selectedAdapter) {
         const textExtensions = [".md", ".json", ".js", ".ts", ".txt", ""];
         if (textExtensions.includes(ext)) {
           let content = fs.readFileSync(src, "utf8");
+          let currentAdapter = selectedAdapter || "enderun";
+          if (item.endsWith(".md") && Object.keys(ADAPTERS).some(a => item.startsWith(a))) {
+            currentAdapter = Object.keys(ADAPTERS).find(a => item.startsWith(a));
+          } else if (item.endsWith("-extension.json")) {
+             currentAdapter = Object.keys(ADAPTERS).find(a => item.startsWith(a)) || currentAdapter;
+          }
+
           content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, targetBase);
-          content = content.replace(/\{\{ADAPTER\}\}/g, selectedAdapter || "enderun");
+          content = content.replace(/\{\{ADAPTER\}\}/g, currentAdapter);
           
           if (ext === ".json") {
             try {
@@ -462,7 +469,7 @@ async function initCommand(selectedAdapter) {
               content = JSON.stringify(sanitizeJson(json, targetScope), null, 2);
               // Ensure variable replacement even inside JSON strings if any
               content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, targetBase);
-              content = content.replace(/\{\{ADAPTER\}\}/g, selectedAdapter || "enderun");
+              content = content.replace(/\{\{ADAPTER\}\}/g, currentAdapter);
             } catch (e) {
               content = content.replace(/workspace:[^"'\s]*/g, "*");
             }
@@ -738,9 +745,14 @@ function copyDir(src, dest, skipSet = new Set(), nonDestructive = false, framewo
           content = content.replace(/workspace:[^"'\s]*/g, "*");
         }
 
-        // Also replace ADAPTER
-        const adapterName = frameworkDir.startsWith(".") ? frameworkDir.slice(1) : frameworkDir;
-        content = content.replace(/\{\{ADAPTER\}\}/g, adapterName);
+        const frameworkBase = frameworkDir.startsWith(".") ? frameworkDir.slice(1) : frameworkDir;
+        let currentAdapter = frameworkBase;
+        if (entry.name.endsWith(".md") && [ "gemini", "claude", "cursor", "codex" ].some(a => entry.name.startsWith(a))) {
+          currentAdapter = [ "gemini", "claude", "cursor", "codex" ].find(a => entry.name.startsWith(a));
+        }
+
+        content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, frameworkDir);
+        content = content.replace(/\{\{ADAPTER\}\}/g, currentAdapter);
         
         fs.writeFileSync(destPath, content);
       } else {
