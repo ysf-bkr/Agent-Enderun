@@ -32,7 +32,7 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 
 | Date | Decision | Rationale | Agent |
 | :--- | :--- | :--- | :--- |
-| 2026-05-12 | Framework Unified to v0.4.3 | Absolute version parity across all components | @manager |
+| 2026-05-12 | Framework Unified to v0.4.5 | Inclusion of missing adapter files and installation fix | @manager |
 | 2026-05-09 | Project Initialized | Framework setup via CLI | @manager |
 
 ## DELIVERABLES
@@ -49,11 +49,17 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 
 ## HISTORY (Persistent Memory)
 
-### 2026-05-12 — The Unified Milestone & v0.4.3 Release
+### 2026-05-12 — The Installation Fix & v0.4.5 Release
++
++- **Agent:** @manager
++- **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
++- **Action:** Bumped version to v0.4.5. Fixed a critical issue where adapter files (gemini.md, cursor.md, claude.md, codex.md) were excluded from the npm package. Verified the fix via local and npx-simulated tests. Cleaned up logs and temporary test files.
++
++### 2026-05-12 — The Unified Milestone & v0.4.4 Release
 
 - **Agent:** @manager
 - **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
-- **Action:** Full framework synchronization to v0.4.3. Unified versioning across all core packages, specialist agents, and the supreme law. Consolidated history for a clean production debut.
+- **Action:** Full framework synchronization to v0.4.4. Unified versioning across all core packages, specialist agents, and the supreme law. Consolidated history for a clean production debut.
 
 ### 2026-05-12 — Pure Start & v0.4.1 Release
 

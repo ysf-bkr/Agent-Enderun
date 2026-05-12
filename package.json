@@ -1,6 +1,6 @@
 {
   "name": "agent-enderun",
-  "version": "0.4.3",
+  "version": "0.4.5",
   "description": "The Supreme AI Governance & Orchestration Framework for Enterprise Development",
   "author": "Yusuf BEKAR",
   "license": "MIT",
@@ -46,7 +46,12 @@
     "mcp.json",
     ".env.example",
     "tsconfig.json",
-    "panda.config.ts"
+    "panda.config.ts",
+    "gemini.md",
+    "gemini-extension.json",
+    "cursor.md",
+    "claude.md",
+    "codex.md"
   ],
   "scripts": {
     "enderun:build": "npm run build --workspaces --if-present",
@@ -71,7 +76,7 @@
     "concurrently": "^9.1.2"
   },
   "enderun": {
-    "version": "0.4.3",
+    "version": "0.4.5",
     "initializedAt": "2026-05-09T13:24:27.472Z"
   }
 }

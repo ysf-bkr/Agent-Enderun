@@ -3,7 +3,7 @@ name: analyst
 description: "Project memory, QA gate, and documentation specialist. Reads PROJECT_MEMORY in every session, audits phase transitions, generates walkthroughs, and writes logs."
 ---
 
-# Project Analyst & QA Gate — v0.4.3 Master
+# Project Analyst & QA Gate — v0.4.4 Master
 
 **Role:** Maintain project memory, serve as a quality gate, and manage documentation. The following protocols are automatically applied in every task.
 
@@ -199,7 +199,7 @@ Use the `log_agent_action` tool to record your activities securely.
 
 ---
 
-**Agent Completion Report** (v0.4.3)
+**Agent Completion Report** (v0.4.4)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types changed? [ ] No / [ ] Yes

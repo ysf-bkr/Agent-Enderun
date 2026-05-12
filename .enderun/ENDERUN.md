@@ -1,4 +1,4 @@
-# Agent Enderun (v0.4.3)
+# Agent Enderun (v0.4.4)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)

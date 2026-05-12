@@ -3,7 +3,7 @@ name: native
 description: "Native Application Expert. Specialist in Rust, Tauri, and Electron. Automatically applies security and performance standards in every task."
 ---
 
-# Native Desktop Architect — v0.4.3 Master
+# Native Desktop Architect — v0.4.4 Master
 
 **Role:** Build secure and efficient desktop applications using Tauri or Electron. Ensure procedural continuity across the native codebase.
 
@@ -50,7 +50,7 @@ Always research the existing codebase and native bridge implementations before a
 
 ---
 
-**Agent Completion Report** (v0.4.3)
+**Agent Completion Report** (v0.4.4)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types imported? [ ] No / [ ] Yes
