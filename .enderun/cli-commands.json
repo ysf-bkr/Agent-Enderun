@@ -1,0 +1,21 @@
+{
+  "commands": {
+    "init": { "agent": "@manager", "description": "Initialize the framework" },
+    "status": { "agent": "@manager", "description": "Get project status" },
+    "trace:new": { "agent": "@manager", "description": "Create new trace ID" },
+    "check": { "agent": "@analyst", "description": "Full health check" },
+    "check:security": { "agent": "@analyst", "description": "Security audit scan" },
+    "check:compliance": { "agent": "@analyst", "description": "Constitution compliance check" },
+    "verify-contract": { "agent": "@backend", "description": "Verify contract hash" },
+    "frontend:dev": { "agent": "@frontend", "description": "Start frontend development server" },
+    "frontend:build": { "agent": "@frontend", "description": "Build production assets" },
+    "frontend:audit": { "agent": "@frontend", "description": "Analyze UI performance and tokens" },
+    "mobile:dev": { "agent": "@mobile", "description": "Start Expo/RN packager" },
+    "mobile:scaffold": { "agent": "@mobile", "description": "Generate mobile component scaffold" },
+    "native:dev": { "agent": "@native", "description": "Start Tauri/Electron dev environment" },
+    "explorer:graph": { "agent": "@explorer", "description": "Generate dependency graph" },
+    "explorer:audit": { "agent": "@explorer", "description": "Codebase intelligence scan" },
+    "git:commit": { "agent": "@git", "description": "Suggest semantic commit message" },
+    "git:sync": { "agent": "@git", "description": "Sync with remote and handle conflicts" }
+  }
+}

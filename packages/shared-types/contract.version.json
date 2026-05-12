@@ -1,0 +1,9 @@
+{
+  "version": "0.1.11",
+  "last_updated": "2026-05-11T13:45:00Z",
+  "contract_hash": "a8ff433521ce2d7e249d67e84ae8ef0e54082260195b672789ef7a48a9a1e35a",
+  "breaking_changes": [
+    { "version": "0.1.11", "description": "Extended shared types for Enderun Brain Dashboard" }
+  ],
+  "deprecated_versions": []
+}

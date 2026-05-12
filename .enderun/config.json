@@ -1,0 +1,6 @@
+{
+  "logLevel": "info",
+  "outputFormat": "text",
+  "defaultProfile": "Lightweight",
+  "version": "0.0.9"
+}

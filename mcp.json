@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "agent-enderun": {
+      "command": "npx",
+      "args": ["agent-enderun", "mcp"],
+      "env": {}
+    }
+  }
+}

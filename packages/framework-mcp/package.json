@@ -1,0 +1,44 @@
+{
+  "name": "ai-enderun-mcp",
+  "version": "0.4.3",
+  "description": "Enterprise-grade MCP Server for AI Agent Framework",
+  "author": "Yusuf BEKAR",
+  "license": "MIT",
+  "readme": "README.md",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ysf-bkr/Agent-Enderun.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ysf-bkr/Agent-Enderun/issues"
+  },
+  "homepage": "https://github.com/ysf-bkr/Agent-Enderun#readme",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.js",
+  "bin": {
+    "framework-mcp": "dist/index.js"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "npx tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "ts-morph": "^28.0.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.4",
+    "typescript": "^5.9.3"
+  }
+}

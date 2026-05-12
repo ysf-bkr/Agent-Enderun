@@ -1,0 +1,77 @@
+{
+  "name": "agent-enderun",
+  "version": "0.4.3",
+  "description": "The Supreme AI Governance & Orchestration Framework for Enterprise Development",
+  "author": "Yusuf BEKAR",
+  "license": "MIT",
+  "readme": "README.md",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ysf-bkr/Agent-Enderun.git"
+  },
+  "homepage": "https://github.com/ysf-bkr/Agent-Enderun#readme",
+  "bugs": {
+    "url": "https://github.com/ysf-bkr/Agent-Enderun/issues"
+  },
+  "keywords": [
+    "ai",
+    "governance",
+    "orchestration",
+    "agents",
+    "mcp",
+    "typescript",
+    "framework"
+  ],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "bin": {
+    "agent-enderun": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "packages/shared-types/dist",
+    "packages/shared-types/src",
+    "packages/shared-types/package.json",
+    "packages/shared-types/contract.version.json",
+    "packages/framework-mcp/dist",
+    "packages/framework-mcp/src",
+    "packages/framework-mcp/package.json",
+    ".enderun",
+    "ENDERUN.md",
+    "README.md",
+    "LICENSE",
+    "mcp.json",
+    ".env.example",
+    "tsconfig.json",
+    "panda.config.ts"
+  ],
+  "scripts": {
+    "enderun:build": "npm run build --workspaces --if-present",
+    "enderun:test": "vitest run",
+    "enderun:test:watch": "vitest",
+    "enderun:status": "agent-enderun status",
+    "enderun:trace": "agent-enderun trace:new",
+    "enderun:verify": "agent-enderun verify-contract",
+    "enderun:check": "agent-enderun check",
+    "clean": "rm -rf node_modules packages/*/node_modules apps/*/node_modules packages/*/dist apps/*/dist"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "typescript": "^5.9.3",
+    "tsx": "^4.19.4",
+    "vitest": "^3.0.5",
+    "eslint": "^9.20.1",
+    "concurrently": "^9.1.2"
+  },
+  "enderun": {
+    "version": "0.4.3",
+    "initializedAt": "2026-05-09T13:24:27.472Z"
+  }
+}
