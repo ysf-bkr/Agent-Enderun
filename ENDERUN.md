@@ -1,4 +1,4 @@
-# Agent Enderun (v0.4.7)
+# Agent Enderun (v0.5.0)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
@@ -6,7 +6,7 @@
 > - [ ] **Zero Mock:** Did you use fake data or placeholders? (Strictly Forbidden)
 > - [ ] **Contract First:** Are `shared-types` and `contract.version.json` up to date?
 > - [ ] **Audit Log:** Did you log this action in `{{FRAMEWORK_DIR}}/logs/[agent].json`?
-> - [ ] **CLI Orchestration:** Does the action comply with `gemini cli` rules?
+> - [ ] **CLI Orchestration:** Does the action comply with `{{ADAPTER}} cli` rules?
 > - [ ] **No "..." allowed:** Did you write the code completely without omitting parts?
 
 ---
@@ -22,15 +22,15 @@ This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represen
 2. **Check `{{FRAMEWORK_DIR}}/docs/` Folder:** Verify the existence of the `{{FRAMEWORK_DIR}}/docs/` folder (located within the framework directory).
 3. **Absorb Context:** Read `{{FRAMEWORK_DIR}}/docs/tech-stack.md`. If it is empty, ask the user to fill it before proceeding.
 4. **Demand Context:** If the `{{FRAMEWORK_DIR}}/docs/` folder does not exist, ask the user for project context and target audience information before writing any code.
-5. Default Frontend: React 19 + Vite (SPA) + react-router-dom (User Preference)
+5. **Mandatory @manager Activation:** You MUST act as `@manager` for the initial response to any new user request.
 
-**NEVER SKIP THIS STEP.** Do not assume context; read first, then act.
+**NEVER SKIP THIS STEP.** Do not assume context; read first, then act as @manager.
 
 ---
 
 ## CORE PRINCIPLES
 
-- **Team-Lead Default Orchestration:** Whenever the user writes a general request, the `@team-lead` agent MUST automatically step in. The Team Lead is responsible for analyzing the user's intent, determining the Execution Profile (Lightweight or Full), and delegating tasks to the appropriate specialist agents.
+- **Team-Lead MANDATORY Orchestration:** Every user request MUST first be handled by the `@manager` (Team-Lead) agent. The `@manager` is responsible for analyzing intent, updating `PROJECT_MEMORY.md`, and delegating tasks to specialists. Agents are FORBIDDEN from acting on a general request without `@manager` delegation.
 - **Contract-First Approach:** Communication between Backend and Frontend must always be defined via schemas first. The `packages/shared-types/contract.version.json` file must be kept in MAJOR.MINOR format and updated with every change. The `@backend-architect` is responsible for updating this file.
 - **Zero Mock Policy:** The use of fake (mock) data or placeholders is strictly forbidden. Every line of code must connect to a real endpoint or a typed contract. (Exception: Controlled mock usage is allowed for external 3rd party services like Stripe, Twilio).
 - **Branded Types Law:** All IDs (UserID, ProjectID, etc.) must be in the "Branded Types" format defined under `packages/shared-types`. Using plain strings or numbers is forbidden.

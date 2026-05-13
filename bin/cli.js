@@ -197,16 +197,8 @@ function mergePackageJson(targetPath, sourcePath) {
 function updateGitIgnore(targetPath, frameworkDir = ".enderun") {
   const IGNORE_LINES = [
     "# AI-Enderun",
-    ".enderun/logs/*.json",
-    ".claude/logs/*.json",
-    ".cursor/logs/*.json",
-    ".codex/logs/*.json",
-    ".enderun/logs/*.json",
-    ".enderun/*.lock",
-    ".claude/*.lock",
-    ".cursor/*.lock",
-    ".codex/*.lock",
-    ".enderun/*.lock",
+    `${frameworkDir}/logs/*.json`,
+    `${frameworkDir}/*.lock`,
     ".env",
     ".DS_Store"
   ];

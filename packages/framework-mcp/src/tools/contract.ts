@@ -36,7 +36,7 @@ export const contractTools = [
 ];
 
 export const contractHandlers = {
-    verify_api_contract: async (args: any, projectRoot: string) => {
+    verify_api_contract: async (args: unknown, projectRoot: string) => {
         try {
             const sharedTypesDir = path.join(projectRoot, "packages/shared-types/src");
             const contractJsonPath = path.join(projectRoot, "packages/shared-types/contract.version.json");
@@ -51,7 +51,7 @@ export const contractHandlers = {
             return { content: [{ type: "text", text: "Failed to verify contract." }] };
         }
     },
-    update_contract_hash: async (args: any, projectRoot: string) => {
+    update_contract_hash: async (args: unknown, projectRoot: string) => {
         try {
             const sharedTypesDir = path.join(projectRoot, "packages/shared-types/src");
             const contractJsonPath = path.join(projectRoot, "packages/shared-types/contract.version.json");
@@ -70,7 +70,7 @@ export const contractHandlers = {
             return { content: [{ type: "text", text: "Failed to update contract hash." }] };
         }
     },
-    verify_contract_integrity: async (args: any, projectRoot: string) => {
+    verify_contract_integrity: async (args: unknown, projectRoot: string) => {
         const parsed = VERIFY_CONTRACT_INTEGRITY_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid domain argument." }] };
         try {

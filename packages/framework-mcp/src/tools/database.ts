@@ -18,7 +18,7 @@ export const databaseTools = [
 ];
 
 export const databaseHandlers = {
-    analyze_database_schema: async (args: any, projectRoot: string) => {
+    analyze_database_schema: async (args: unknown, projectRoot: string) => {
         const parsed = ANALYZE_DATABASE_SCHEMA_ARGS_SCHEMA.safeParse(args ?? {});
         const targetPath = parsed.success ? parsed.data.path : "apps/backend";
         try {

@@ -35,7 +35,7 @@ export const memoryTools = [
 ];
 
 export const memoryHandlers = {
-    update_project_memory: async (args: any, projectRoot: string) => {
+    update_project_memory: async (args: unknown, projectRoot: string) => {
         const parsed = UPDATE_MEMORY_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid section or content." }] };
         const { section, content } = parsed.data;
@@ -59,7 +59,9 @@ export const memoryHandlers = {
                         memoryContent = prependToSection(memoryContent, h, content);
                         updated = true;
                         break;
-                    } catch (e) {}
+                    } catch (e) {
+                        // Ignore section not found
+                    }
                 }
                 if (!updated) throw new Error("HISTORY section not found.");
             } else if (section === "CURRENT STATUS") {
@@ -75,7 +77,7 @@ export const memoryHandlers = {
             return { content: [{ type: "text", text: `Memory update failed: ${error instanceof Error ? error.message : "Unknown error"}` }] };
         }
     },
-    read_project_memory: async (args: any, projectRoot: string) => {
+    read_project_memory: async (args: unknown, projectRoot: string) => {
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
             const memoryPath = path.join(projectRoot, frameworkDir, "PROJECT_MEMORY.md");

@@ -2,10 +2,11 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { allTools, allHandlers } from "./tools/index.js";
+import { FRAMEWORK_VERSION } from "./utils.js";
 
 const server = new Server({
     name: "ai-enderun-mcp",
-    version: "0.3.4",
+    version: FRAMEWORK_VERSION,
 }, {
     capabilities: {
         tools: {},

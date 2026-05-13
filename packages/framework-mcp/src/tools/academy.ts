@@ -90,7 +90,7 @@ export const academyTools = [
 ];
 
 export const academyHandlers = {
-    get_academy_performance: async (args: any, projectRoot: string) => {
+    get_academy_performance: async (args: unknown, projectRoot: string) => {
         const parsed = GET_ACADEMY_PERFORMANCE_ARGS_SCHEMA.safeParse(args ?? {});
         const days = parsed.success ? parsed.data.periodDays : 30;
         try {
@@ -100,8 +100,8 @@ export const academyHandlers = {
             const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
             let totalActions = 0, totalSuccess = 0;
             const agentStats = fs.readdirSync(logsDir).filter(f => f.endsWith(".json")).map(file => {
-                const logs = JSON.parse(fs.readFileSync(path.join(logsDir, file), "utf-8")).filter((l: any) => new Date(l.timestamp) >= cutoff);
-                const success = logs.filter((l: any) => l.status === "SUCCESS").length;
+                const logs = JSON.parse(fs.readFileSync(path.join(logsDir, file), "utf-8")).filter((l: unknown) => new Date(l.timestamp) >= cutoff);
+                const success = logs.filter((l: unknown) => l.status === "SUCCESS").length;
                 totalActions += logs.length; totalSuccess += success;
                 return { agent: file.replace(".json", ""), actions: logs.length, successRate: (success / (logs.length || 1)) * 100 };
             }).filter(s => s.actions > 0);
@@ -110,7 +110,7 @@ export const academyHandlers = {
             return { content: [{ type: "text", text: "Failed to generate global performance report." }] };
         }
     },
-    generate_strategic_briefing: async (args: any, projectRoot: string) => {
+    generate_strategic_briefing: async (args: unknown, projectRoot: string) => {
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
             const logsDir = path.join(projectRoot, frameworkDir, "logs");
@@ -118,7 +118,7 @@ export const academyHandlers = {
             if (fs.existsSync(logsDir)) {
                 fs.readdirSync(logsDir).filter(f => f.endsWith(".json")).forEach(file => {
                     const logs = JSON.parse(fs.readFileSync(path.join(logsDir, file), "utf-8"));
-                    totalActions += logs.length; successCount += logs.filter((l: any) => l.status === "SUCCESS").length;
+                    totalActions += logs.length; successCount += logs.filter((l: unknown) => l.status === "SUCCESS").length;
                 });
             }
             const successRate = (successCount / (totalActions || 1)) * 100;
@@ -127,7 +127,7 @@ export const academyHandlers = {
             return { content: [{ type: "text", text: "Strategic briefing generation failed." }] };
         }
     },
-    generate_academy_progress_report: async (args: any, projectRoot: string) => {
+    generate_academy_progress_report: async (args: unknown, projectRoot: string) => {
         const parsed = GENERATE_ACADEMY_PROGRESS_REPORT_ARGS_SCHEMA.safeParse(args ?? {});
         const days = parsed.success ? parsed.data.days : 7;
         try {
@@ -141,7 +141,7 @@ export const academyHandlers = {
             return { content: [{ type: "text", text: "Failed to generate progress report." }] };
         }
     },
-    get_agent_audit_report: async (args: any, projectRoot: string) => {
+    get_agent_audit_report: async (args: unknown, projectRoot: string) => {
         const parsed = GET_AGENT_AUDIT_REPORT_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid agent or days argument." }] };
         try {
@@ -149,14 +149,14 @@ export const academyHandlers = {
             const logPath = path.join(projectRoot, frameworkDir, "logs", `${parsed.data.agent}.json`);
             if (!fs.existsSync(logPath)) return { content: [{ type: "text", text: `No logs found for agent: ${parsed.data.agent}` }] };
             const cutoff = new Date(Date.now() - parsed.data.days * 24 * 60 * 60 * 1000);
-            const logs = JSON.parse(fs.readFileSync(logPath, "utf-8")).filter((l: any) => new Date(l.timestamp) >= cutoff);
-            const successCount = logs.filter((l: any) => l.status === "SUCCESS").length;
+            const logs = JSON.parse(fs.readFileSync(logPath, "utf-8")).filter((l: unknown) => new Date(l.timestamp) >= cutoff);
+            const successCount = logs.filter((l: unknown) => l.status === "SUCCESS").length;
             return { content: [{ type: "text", text: `### AGENT AUDIT REPORT: ${parsed.data.agent.toUpperCase()}\n\n- **Total Actions:** ${logs.length}\n- **Success Rate:** ${((successCount / (logs.length || 1)) * 100).toFixed(1)}%` }] };
         } catch (error) {
             return { content: [{ type: "text", text: "Failed to generate audit report." }] };
         }
     },
-    log_agent_action: async (args: any, projectRoot: string) => {
+    log_agent_action: async (args: unknown, projectRoot: string) => {
         const parsed = LOG_AGENT_ACTION_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid arguments for log_agent_action." }] };
         try {

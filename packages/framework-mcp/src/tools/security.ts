@@ -43,7 +43,7 @@ export const securityTools = [
 ];
 
 export const securityHandlers = {
-    security_audit_scan: async (args: any, projectRoot: string) => {
+    security_audit_scan: async (args: unknown, projectRoot: string) => {
         const parsed = SECURITY_AUDIT_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid path argument." }] };
         const vulnerabilities: string[] = [];
@@ -86,7 +86,7 @@ export const securityHandlers = {
             return { content: [{ type: "text", text: "Security scan failed." }] };
         }
     },
-    analyze_constitution_compliance: async (args: any, projectRoot: string) => {
+    analyze_constitution_compliance: async (args: unknown, projectRoot: string) => {
         const parsed = ANALYZE_CONSTITUTION_COMPLIANCE_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid path argument." }] };
         try {

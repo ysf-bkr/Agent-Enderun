@@ -34,7 +34,7 @@ export const messageTools = [
 ];
 
 export const messageHandlers = {
-    send_agent_message: async (args: any, projectRoot: string) => {
+    send_agent_message: async (args: unknown, projectRoot: string) => {
         const parsed = SEND_AGENT_MESSAGE_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid message arguments." }] };
         try {
@@ -43,7 +43,7 @@ export const messageHandlers = {
             const messagesDir = path.join(projectRoot, frameworkDir, "messages");
             if (!fs.existsSync(messagesDir)) fs.mkdirSync(messagesDir, { recursive: true });
             const messagePath = path.join(messagesDir, `${recipient}.json`);
-            let messages = fs.existsSync(messagePath) ? JSON.parse(fs.readFileSync(messagePath, "utf-8")) : [];
+            const messages = fs.existsSync(messagePath) ? JSON.parse(fs.readFileSync(messagePath, "utf-8")) : [];
             messages.push({ timestamp: new Date().toISOString(), from: "manager", traceId: parsed.data.traceId, content: parsed.data.message, read: false });
             fs.writeFileSync(messagePath, JSON.stringify(messages, null, 2));
             return { content: [{ type: "text", text: `Message sent to @${recipient}.` }] };
@@ -51,7 +51,7 @@ export const messageHandlers = {
             return { content: [{ type: "text", text: "Failed to send message." }] };
         }
     },
-    read_agent_messages: async (args: any, projectRoot: string) => {
+    read_agent_messages: async (args: unknown, projectRoot: string) => {
         const parsed = READ_AGENT_MESSAGES_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid agent name." }] };
         try {
@@ -60,9 +60,9 @@ export const messageHandlers = {
             const messagePath = path.join(projectRoot, frameworkDir, "messages", `${agentName}.json`);
             if (!fs.existsSync(messagePath)) return { content: [{ type: "text", text: "No messages found." }] };
             const messages = JSON.parse(fs.readFileSync(messagePath, "utf-8"));
-            const unread = messages.filter((m: any) => !m.read);
-            fs.writeFileSync(messagePath, JSON.stringify(messages.map((m: any) => ({ ...m, read: true })), null, 2));
-            return { content: [{ type: "text", text: unread.length === 0 ? "No new messages." : `### INBOX: @${agentName}\n\n` + unread.map((m: any) => `- **From:** ${m.from}\n  **Message:** ${m.content}`).join("\n\n") }] };
+            const unread = messages.filter((m: unknown) => !m.read);
+            fs.writeFileSync(messagePath, JSON.stringify(messages.map((m: unknown) => ({ ...m, read: true })), null, 2));
+            return { content: [{ type: "text", text: unread.length === 0 ? "No new messages." : `### INBOX: @${agentName}\n\n` + unread.map((m: unknown) => `- **From:** ${m.from}\n  **Message:** ${m.content}`).join("\n\n") }] };
         } catch (error) {
             return { content: [{ type: "text", text: "Failed to read messages." }] };
         }

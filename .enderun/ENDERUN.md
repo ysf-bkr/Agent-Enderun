@@ -1,4 +1,4 @@
-# Agent Enderun (v0.4.7)
+# Agent Enderun (v0.5.0)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
@@ -6,7 +6,7 @@
 > - [ ] **Zero Mock:** Did you use fake data or placeholders? (Strictly Forbidden)
 > - [ ] **Contract First:** Are `shared-types` and `contract.version.json` up to date?
 > - [ ] **Audit Log:** Did you log this action in `{{FRAMEWORK_DIR}}/logs/[agent].json`?
-> - [ ] **CLI Orchestration:** Does the action comply with `gemini cli` rules?
+> - [ ] **CLI Orchestration:** Does the action comply with `{{ADAPTER}} cli` rules?
 > - [ ] **No "..." allowed:** Did you write the code completely without omitting parts?
 
 ---
@@ -22,15 +22,15 @@ This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represen
 2. **Check `{{FRAMEWORK_DIR}}/docs/` Folder:** Verify the existence of the `{{FRAMEWORK_DIR}}/docs/` folder (located within the framework directory).
 3. **Absorb Context:** Read `{{FRAMEWORK_DIR}}/docs/tech-stack.md`. If it is empty, ask the user to fill it before proceeding.
 4. **Demand Context:** If the `{{FRAMEWORK_DIR}}/docs/` folder does not exist, ask the user for project context and target audience information before writing any code.
-5. Default Frontend: React 19 + Vite (SPA) + react-router-dom (User Preference)
+5. **Mandatory @manager Activation:** You MUST act as `@manager` for the initial response to any new user request.
 
-**NEVER SKIP THIS STEP.** Do not assume context; read first, then act.
+**NEVER SKIP THIS STEP.** Do not assume context; read first, then act as @manager.
 
 ---
 
 ## CORE PRINCIPLES
 
-- **Agent Academy Focus:** This repository is dedicated to the development and evolution of AI Agents. All actions must aim to improve agent intelligence, autonomy, and procedural continuity.
+- **Team-Lead MANDATORY Orchestration:** Every user request MUST first be handled by the `@manager` (Team-Lead) agent. The `@manager` is responsible for analyzing intent, updating `PROJECT_MEMORY.md`, and delegating tasks to specialists. Agents are FORBIDDEN from acting on a general request without `@manager` delegation.
 - **Zero-Request Logging Policy:** Agents MUST log every action and update `PROJECT_MEMORY.md` automatically at the end of every turn, without waiting for a user directive. This is the "Operating Mode" of the framework.
 - **Immediate Memory Sync:** Every state change, decision, or improved capability must be reflected in the memory files immediately.
 - **Contract-First Agent Evolution:** Tools and SOPs used by agents must be defined via schemas and contracts first.
@@ -44,7 +44,7 @@ This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represen
 - **CLI Command Mapping:** All CLI commands in the project must be defined in the `{{FRAMEWORK_DIR}}/cli-commands.json` file and assigned to the relevant agent.
 - **Exit Code Standard:** Standard exit codes (e.g., 64: User Error, 70: Internal Error) must be used in error situations.
 - **Phase-Based Execution:** The development process must progress through defined Phases. You cannot move to the next phase until the current one is completed.
-- **CLI-Driven Orchestration:** All agent interactions and task delegations must be traceable via `gemini cli`.
+- **CLI-Driven Orchestration:** All agent interactions and task delegations must be traceable via `{{ADAPTER}} cli`.
 - **Monorepo Discipline:** Commands must always be run from the monorepo root directory using npm workspaces (e.g., `npm run dev --workspace=web`).
 
 ---

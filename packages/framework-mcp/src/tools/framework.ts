@@ -45,7 +45,7 @@ export const frameworkTools = [
 ];
 
 export const frameworkHandlers = {
-    bootstrap_legacy_memory: async (args: any, projectRoot: string) => {
+    bootstrap_legacy_memory: async (args: unknown, projectRoot: string) => {
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
             const memoryPath = path.join(projectRoot, frameworkDir, "PROJECT_MEMORY.md");
@@ -71,7 +71,7 @@ export const frameworkHandlers = {
             return { content: [{ type: "text", text: "Failed to bootstrap legacy memory." }] };
         }
     },
-    get_framework_status: async (args: any, projectRoot: string) => {
+    get_framework_status: async (args: unknown, projectRoot: string) => {
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
             const memoryPath = path.join(projectRoot, frameworkDir, "PROJECT_MEMORY.md");
@@ -86,7 +86,7 @@ export const frameworkHandlers = {
             return { content: [{ type: "text", text: "Framework active. Memory unreadable." }] };
         }
     },
-    get_project_gaps: async (args: any, projectRoot: string) => {
+    get_project_gaps: async (args: unknown, projectRoot: string) => {
         const missing: string[] = [];
         const frameworkDir = getFrameworkDir(projectRoot);
         const checkPaths = [
@@ -121,7 +121,7 @@ export const frameworkHandlers = {
         }
         return { content: [{ type: "text", text: missing.length > 0 ? `Detected Gaps:\n${missing.join("\n")}` : "No structural gaps detected based on core standards." }] };
     },
-    get_memory_insights: async (args: any, projectRoot: string) => {
+    get_memory_insights: async (args: unknown, projectRoot: string) => {
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
             const memoryPath = path.join(projectRoot, frameworkDir, "PROJECT_MEMORY.md");
@@ -138,7 +138,7 @@ export const frameworkHandlers = {
             return { content: [{ type: "text", text: "Failed to gather memory insights." }] };
         }
     },
-    codebase_context: async (args: any, projectRoot: string) => {
+    codebase_context: async (args: unknown, projectRoot: string) => {
         try {
             const artifacts = collectMarkdownArtifacts(projectRoot);
             const frameworkDir = getFrameworkDir(projectRoot);

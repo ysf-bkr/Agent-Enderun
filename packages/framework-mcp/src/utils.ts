@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-export const FRAMEWORK_VERSION = "0.4.7";
+export const FRAMEWORK_VERSION = "0.5.0";
 
 export function getFrameworkDir(projectRoot: string): string {
     const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
@@ -79,7 +79,7 @@ export function collectMarkdownArtifacts(projectRoot: string): string[] {
 
 export function replaceSectionContent(markdown: string, sectionTitle: string, newBody: string): string {
     const escaped = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const sectionRegex = new RegExp(`## ${escaped}[\\s\\S]*?(?=\\n## |$)`, "m");
+    const sectionRegex = new RegExp(`## ${escaped}[\\s\\S]*?(?=\\n## |$)`);
     if (!sectionRegex.test(markdown)) {
         throw new Error(`Section not found: ${sectionTitle}`);
     }
@@ -88,7 +88,7 @@ export function replaceSectionContent(markdown: string, sectionTitle: string, ne
 
 export function prependToSection(markdown: string, sectionTitle: string, contentToPrepend: string): string {
     const escaped = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const sectionRegex = new RegExp(`(## ${escaped}\\n)([\\s\\S]*?)(?=\\n## |$)`, "m");
+    const sectionRegex = new RegExp(`(## ${escaped}\\n)([\\s\\S]*?)(?=\\n## |$)`);
     const match = markdown.match(sectionRegex);
     if (!match) {
         throw new Error(`Section not found: ${sectionTitle}`);

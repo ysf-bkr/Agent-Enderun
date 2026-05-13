@@ -1,4 +1,4 @@
-# 🏛️ Agent Enderun — v0.4.7
+# 🏛️ Agent Enderun — v0.5.0
 
 **The Supreme AI Governance & Orchestration Framework for Enterprise Development**
 
@@ -110,7 +110,7 @@ agent-enderun verify-contract
 
 Agent Enderun consists of **4 integrated layers**:
 
-### Layer 1: Governance (.enderun/)
+### Layer 1: Governance ({{FRAMEWORK_DIR}}/)
 ```
 .enderun/
 ├── ENDERUN.md              ← The "Supreme Law" (read this first!)
@@ -349,7 +349,7 @@ agent-enderun/
 ### Q: Do agents actually understand all this?
 **A:** Yes. Before every action, agents read:
 1. `ENDERUN.md` (the constitution)
-2. `.enderun/PROJECT_MEMORY.md` (project state)
+2. `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` (project state)
 3. `docs/` files (your requirements)
 4. `.enderun/knowledge/` (technical guidelines)
 
@@ -373,7 +373,7 @@ agent-enderun/
 
 ## 🔗 Key Files to Read First
 
-1. **`.enderun/ENDERUN.md`** — The constitution (rules all agents must follow)
+1. **`{{FRAMEWORK_DIR}}/ENDERUN.md`** — The constitution (rules all agents must follow)
 2. **`.enderun/PROJECT_MEMORY.md`** — Current project state and history
 3. **`docs/tech-stack.md`** — Technology decisions
 4. **`packages/shared-types/src/index.ts`** — The contract (types)
@@ -492,7 +492,7 @@ agent-enderun verify-contract
 
 Agent Enderun **4 entegre katmandan** oluşur:
 
-### Katman 1: Yönetişim (.enderun/)
+### Katman 1: Yönetişim ({{FRAMEWORK_DIR}}/)
 - `ENDERUN.md` — Anayasa (bunu ilk oku!)
 - `PROJECT_MEMORY.md` — Proje durumu
 - `agents/` — 8 ajan rolü tanımları
@@ -597,7 +597,7 @@ agent-enderun/
 ### S: Ajanlar bütün bunları anlıyor mu?
 **C:** Evet. Her işlem öncesi şunları okurlar:
 1. `ENDERUN.md` (anayasa)
-2. `.enderun/PROJECT_MEMORY.md` (proje durumu)
+2. `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` (proje durumu)
 3. `docs/` dosyaları (gereksinimler)
 4. `.enderun/knowledge/` (teknik rehberler)
 
@@ -617,7 +617,7 @@ agent-enderun/
 
 ## 🔗 Önce Okumanız Gereken Dosyalar
 
-1. **`.enderun/ENDERUN.md`** — Anayasa
+1. **`{{FRAMEWORK_DIR}}/ENDERUN.md`** — Anayasa
 2. **`.enderun/PROJECT_MEMORY.md`** — Proje durumu
 3. **`docs/tech-stack.md`** — Teknoloji kararları
 4. **`packages/shared-types/src/index.ts`** — Sözleşme (türler)

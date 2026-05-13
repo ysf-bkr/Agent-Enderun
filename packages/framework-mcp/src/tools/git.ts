@@ -17,7 +17,7 @@ export const gitTools = [
 ];
 
 export const gitHandlers = {
-    generate_semantic_commit_message: async (args: any, projectRoot: string) => {
+    generate_semantic_commit_message: async (args: unknown, projectRoot: string) => {
         const parsed = GENERATE_SEMANTIC_COMMIT_MESSAGE_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid traceId argument." }] };
         try {

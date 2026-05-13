@@ -33,7 +33,7 @@ export const knowledgeTools = [
 ];
 
 export const knowledgeHandlers = {
-    search_knowledge_base: async (args: any, projectRoot: string) => {
+    search_knowledge_base: async (args: unknown, projectRoot: string) => {
         const parsed = SEARCH_KNOWLEDGE_BASE_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid search query." }] };
         try {
@@ -52,7 +52,7 @@ export const knowledgeHandlers = {
             return { content: [{ type: "text", text: "Knowledge base search failed." }] };
         }
     },
-    update_knowledge_base: async (args: any, projectRoot: string) => {
+    update_knowledge_base: async (args: unknown, projectRoot: string) => {
         const parsed = UPDATE_KNOWLEDGE_BASE_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid topic or content." }] };
         try {

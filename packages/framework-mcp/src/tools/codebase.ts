@@ -134,7 +134,7 @@ export const codebaseTools = [
 ];
 
 export const codebaseHandlers = {
-    search_codebase: async (args: any, projectRoot: string) => {
+    search_codebase: async (args: unknown, projectRoot: string) => {
         const parsed = SEARCH_CODEBASE_ARGS_SCHEMA.safeParse(args);
         if (!parsed.success) {
             return { content: [{ type: "text", text: "Invalid query/extension argument." }] };
@@ -168,7 +168,7 @@ export const codebaseHandlers = {
             return { content: [{ type: "text", text: "Search failed." }] };
         }
     },
-    analyze_dependencies: async (args: any, projectRoot: string) => {
+    analyze_dependencies: async (args: unknown, projectRoot: string) => {
         const parsed = ANALYZE_DEPENDENCIES_ARGS_SCHEMA.safeParse(args);
         if (!parsed.success) {
             return { content: [{ type: "text", text: "Invalid path argument." }] };
@@ -198,7 +198,7 @@ export const codebaseHandlers = {
             return { content: [{ type: "text", text: "Analysis failed: " + (error instanceof Error ? error.message : String(error)) }] };
         }
     },
-    analyze_codebase_intelligence: async (args: any, projectRoot: string) => {
+    analyze_codebase_intelligence: async (args: unknown, projectRoot: string) => {
         const parsed = ANALYZE_CODEBASE_INTELLIGENCE_ARGS_SCHEMA.safeParse(args);
         const targetPath = parsed.success ? parsed.data.path : ".";
         try {
@@ -227,7 +227,7 @@ export const codebaseHandlers = {
             return { content: [{ type: "text", text: "Intelligence scan failed." }] };
         }
     },
-    analyze_procedural_continuity: async (args: any, projectRoot: string) => {
+    analyze_procedural_continuity: async (args: unknown, projectRoot: string) => {
         const parsed = ANALYZE_PROCEDURAL_CONTINUITY_ARGS_SCHEMA.safeParse(args);
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid targetPath or referencePath." }] };
         try {
@@ -251,7 +251,7 @@ export const codebaseHandlers = {
             return { content: [{ type: "text", text: "Continuity analysis failed." }] };
         }
     },
-    generate_dependency_graph: async (args: any, projectRoot: string) => {
+    generate_dependency_graph: async (args: unknown, projectRoot: string) => {
         const parsed = GENERATE_DEPENDENCY_GRAPH_ARGS_SCHEMA.safeParse(args);
         const targetPath = parsed.success ? parsed.data.path : "src";
         const format = parsed.success ? parsed.data.format : "mermaid";

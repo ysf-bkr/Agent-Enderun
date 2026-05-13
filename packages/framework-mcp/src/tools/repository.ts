@@ -35,7 +35,7 @@ export const repositoryTools = [
 ];
 
 export const repositoryHandlers = {
-    validate_repository_health: async (args: any, projectRoot: string) => {
+    validate_repository_health: async (args: unknown, projectRoot: string) => {
         const parsed = VALIDATE_REPOSITORY_HEALTH_ARGS_SCHEMA.safeParse(args ?? {});
         const scope = parsed.success ? parsed.data.scope : "full";
         try {
@@ -52,7 +52,7 @@ export const repositoryHandlers = {
             return { content: [{ type: "text", text: "Health validation failed." }] };
         }
     },
-    analyze_documentation_debt: async (args: any, projectRoot: string) => {
+    analyze_documentation_debt: async (args: unknown, projectRoot: string) => {
         const parsed = ANALYZE_DOCUMENTATION_DEBT_ARGS_SCHEMA.safeParse(args ?? {});
         const targetPath = parsed.success ? parsed.data.path : ".";
         try {
@@ -64,7 +64,7 @@ export const repositoryHandlers = {
                 const relativePath = path.relative(projectRoot, sourceFile.getFilePath());
                 if (relativePath.includes("node_modules") || relativePath.includes("dist")) continue;
                 sourceFile.getExportedDeclarations().forEach((declarations, name) => {
-                    declarations.forEach(decl => { if (typeof (decl as any).getJsDocs === "function" && (decl as any).getJsDocs().length === 0) missingJSDoc.push(`${relativePath} -> ${name}`); });
+                    declarations.forEach(decl => { if (typeof (decl as unknown).getJsDocs === "function" && (decl as unknown).getJsDocs().length === 0) missingJSDoc.push(`${relativePath} -> ${name}`); });
                 });
             }
             const majorDirs = ["apps/backend", "apps/web", "packages/shared-types", "packages/framework-mcp"], missingREADME = majorDirs.filter(dir => fs.existsSync(path.join(projectRoot, dir)) && !fs.existsSync(path.join(projectRoot, dir, "README.md")));

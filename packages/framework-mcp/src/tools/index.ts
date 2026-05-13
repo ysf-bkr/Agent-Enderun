@@ -24,7 +24,7 @@ export const allTools = [
     ...repositoryTools,
 ];
 
-export const allHandlers: Record<string, (args: any, projectRoot: string) => Promise<any>> = {
+export const allHandlers: Record<string, (args: unknown, projectRoot: string) => Promise<unknown>> = {
     ...codebaseHandlers,
     ...frameworkHandlers,
     ...securityHandlers,
