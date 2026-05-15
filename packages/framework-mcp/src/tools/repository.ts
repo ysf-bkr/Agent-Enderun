@@ -64,7 +64,12 @@ export const repositoryHandlers = {
                 const relativePath = path.relative(projectRoot, sourceFile.getFilePath());
                 if (relativePath.includes("node_modules") || relativePath.includes("dist")) continue;
                 sourceFile.getExportedDeclarations().forEach((declarations, name) => {
-                    declarations.forEach(decl => { if (typeof (decl as unknown).getJsDocs === "function" && (decl as unknown).getJsDocs().length === 0) missingJSDoc.push(`${relativePath} -> ${name}`); });
+                    declarations.forEach(decl => { 
+                        const d = decl as unknown as { getJsDocs?: () => unknown[] };
+                        if (typeof d.getJsDocs === "function" && d.getJsDocs().length === 0) {
+                            missingJSDoc.push(`${relativePath} -> ${name}`);
+                        }
+                    });
                 });
             }
             const majorDirs = ["apps/backend", "apps/web", "packages/shared-types", "packages/framework-mcp"], missingREADME = majorDirs.filter(dir => fs.existsSync(path.join(projectRoot, dir)) && !fs.existsSync(path.join(projectRoot, dir, "README.md")));

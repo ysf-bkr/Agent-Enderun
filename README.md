@@ -1,4 +1,4 @@
-# 🏛️ Agent Enderun — v0.5.0
+# 🏛️ Agent Enderun (v0.5.1) — The Supreme AI Governance Framework
 
 **The Supreme AI Governance & Orchestration Framework for Enterprise Development**
 
@@ -9,6 +9,17 @@
 # English
 
 ## Executive Summary
+
+Agent Enderun, yazılım ekipleri için tasarlanmış, **Anayasal Yönetişim (Constitutional Governance)** ve **Çoklu Ajan Orkestrasyonu (Multi-Agent Orchestration)** sağlayan kurumsal düzeyde bir framework'tür. 
+
+### 🚀 v0.5.1: The Academy & Hermes Upgrade
+
+Bu sürümle birlikte Agent Enderun, basit bir yönetişim aracından otonom bir **Ajan Akademisi**'ne dönüşmüştür:
+
+- **📡 Hermes Messaging Protocol:** Ajanlar arası kategorize edilmiş (Action/Delegation/Info) ve önceliklendirilmiş iletişim bus'ı.
+- **📚 Obsidian-Style LLM Wiki:** YAML metadata destekli, ilişkisel ve graf tabanlı teknik bilgi bankası yönetimi.
+- **🛡️ Contract-First Automation:** API ve tip kontratlarının SHA-256 ile otomatik doğrulanması.
+- **🤖 MCP Intelligence:** Bilgi grafiği üretme, inbox istatistikleri ve anlık sistem sağlığı denetimi sağlayan gelişmiş MCP araçları.
 
 Agent Enderun is a **production-grade AI governance framework** designed for engineering teams that must maintain control, traceability, and discipline when using AI assistants for code generation. It transforms chaotic AI output into structured, auditable, enterprise-ready deliverables through:
 
@@ -37,7 +48,7 @@ git clone https://github.com/ybekar/agent-enderun.git
 cd agent-enderun
 
 # Option B: Or use as npm package (when published)
-npx agent-enderun init gemini
+npx agent{{FRAMEWORK_DIR}} init gemini
 ```
 
 #### Step 2: Install Dependencies
@@ -52,7 +63,7 @@ npm run enderun:build
 
 #### Step 4: Verify Setup
 ```bash
-agent-enderun check
+agent{{FRAMEWORK_DIR}} check
 ```
 
 Expected output:
@@ -70,38 +81,38 @@ Expected output:
 
 ### Initialize Your Project
 ```bash
-# Creates .enderun/ directory with governance files
-npx agent-enderun init gemini
+# Creates {{FRAMEWORK_DIR}}/ directory with governance files
+npx agent{{FRAMEWORK_DIR}} init gemini
 ```
 
 ### Check Project Health
 ```bash
 # Runs security audit, compliance check, and dependency analysis
-agent-enderun check
+agent{{FRAMEWORK_DIR}} check
 
 # Just security
-agent-enderun check:security
+agent{{FRAMEWORK_DIR}} check:security
 
 # Just compliance
-agent-enderun check:compliance
+agent{{FRAMEWORK_DIR}} check:compliance
 ```
 
 ### View Project Status
 ```bash
 # Shows current phase, active agents, and blockers
-agent-enderun status
+agent{{FRAMEWORK_DIR}} status
 ```
 
 ### Create a New Task
 ```bash
 # Creates a ULID-based trace for a new feature
-agent-enderun trace:new "Implement User Authentication" backend P1
+agent{{FRAMEWORK_DIR}} trace:new "Implement User Authentication" backend P1
 ```
 
 ### Verify API Contracts
 ```bash
 # Ensures shared-types and API docs are synchronized
-agent-enderun verify-contract
+agent{{FRAMEWORK_DIR}} verify-contract
 ```
 
 ---
@@ -112,7 +123,7 @@ Agent Enderun consists of **4 integrated layers**:
 
 ### Layer 1: Governance ({{FRAMEWORK_DIR}}/)
 ```
-.enderun/
+{{FRAMEWORK_DIR}}/
 ├── ENDERUN.md              ← The "Supreme Law" (read this first!)
 ├── PROJECT_MEMORY.md       ← Single source of truth for state
 ├── STATUS.md               ← Agent status dashboard
@@ -237,8 +248,8 @@ Agents use the `search_knowledge_base` tool to find answers to common questions.
 - [ ] **npm 9+** installed (`npm --version`)
 - [ ] **Git** initialized (`git init`)
 - [ ] **Framework installed** (`npm install && npm run enderun:build`)
-- [ ] **Health check passed** (`agent-enderun check` shows ✅)
-- [ ] **First task created** (`agent-enderun trace:new "Your task" backend P1`)
+- [ ] **Health check passed** (`agent{{FRAMEWORK_DIR}} check` shows ✅)
+- [ ] **First task created** (`agent{{FRAMEWORK_DIR}} trace:new "Your task" backend P1`)
 - [ ] **Docs created** (add files to `docs/` for agents to read)
 - [ ] **MCP connected** (agents can now use tools)
 
@@ -259,7 +270,7 @@ Implement JWT-based authentication with refresh tokens.
 " > docs/requirements.md
 
 # Step 2: Create a task
-agent-enderun trace:new "Implement Auth Module" backend P1
+agent{{FRAMEWORK_DIR}} trace:new "Implement Auth Module" backend P1
 
 # Step 3: Agents read requirements and build
 # (They will automatically read docs/requirements.md)
@@ -270,7 +281,7 @@ agent-enderun trace:new "Implement Auth Module" backend P1
 ## 📁 Project Structure
 
 ```
-agent-enderun/
+agent{{FRAMEWORK_DIR}}/
 ├── README.md                          ← This file
 ├── package.json                       ← Root npm config
 ├── bin/
@@ -298,7 +309,7 @@ agent-enderun/
 ├── apps/                              ← Your applications (start here)
 │   ├── backend/                       ← (you create this)
 │   └── web/                           ← (you create this)
-└── .enderun/                          ← Framework governance
+└── {{FRAMEWORK_DIR}}/                          ← Framework governance
     ├── ENDERUN.md                     ← Constitution (MANDATORY READ)
     ├── PROJECT_MEMORY.md              ← State machine
     ├── STATUS.md                      ← Agent dashboard
@@ -351,7 +362,7 @@ agent-enderun/
 1. `ENDERUN.md` (the constitution)
 2. `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` (project state)
 3. `docs/` files (your requirements)
-4. `.enderun/knowledge/` (technical guidelines)
+4. `{{FRAMEWORK_DIR}}/knowledge/` (technical guidelines)
 
 ### Q: What if I don't use an AI adapter?
 **A:** The framework still works as a **collaborative development platform**. You and your team use it to enforce:
@@ -364,7 +375,7 @@ agent-enderun/
 **A:** Yes. Add new tool files in `packages/framework-mcp/src/tools/`, define the schema, and export the handler. The CLI will automatically discover them.
 
 ### Q: How do I add my own agents?
-**A:** Create a markdown file in `.enderun/agents/your-agent.md`, define the SOP, and add a CLI mapping in `.enderun/cli-commands.json`.
+**A:** Create a markdown file in `{{FRAMEWORK_DIR}}/agents/your-agent.md`, define the SOP, and add a CLI mapping in `{{FRAMEWORK_DIR}}/cli-commands.json`.
 
 ### Q: Is this production-ready?
 **A:** The **framework** is production-ready. Individual features (like `apps/`) depend on what you build. Start with `apps/backend` or `apps/web`.
@@ -374,7 +385,7 @@ agent-enderun/
 ## 🔗 Key Files to Read First
 
 1. **`{{FRAMEWORK_DIR}}/ENDERUN.md`** — The constitution (rules all agents must follow)
-2. **`.enderun/PROJECT_MEMORY.md`** — Current project state and history
+2. **`{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md`** — Current project state and history
 3. **`docs/tech-stack.md`** — Technology decisions
 4. **`packages/shared-types/src/index.ts`** — The contract (types)
 5. **`README.md`** (this file) — How to use the framework
@@ -387,7 +398,7 @@ agent-enderun/
 File issues with clear reproduction steps and framework version.
 
 ### Contribute
-1. Read `.enderun/ENDERUN.md`
+1. Read `{{FRAMEWORK_DIR}}/ENDERUN.md`
 2. Follow the agent role guidelines
 3. Submit PRs with semantic commit messages
 4. Ensure tests pass: `npm run enderun:build`
@@ -428,7 +439,7 @@ git clone https://github.com/ybekar/agent-enderun.git
 cd agent-enderun
 
 # Seçenek B: veya npm paketi olarak kullan
-npx agent-enderun init gemini
+npx agent{{FRAMEWORK_DIR}} init gemini
 ```
 
 #### Adım 2: Bağımlılıkları Yükle
@@ -443,7 +454,7 @@ npm run enderun:build
 
 #### Adım 4: Kurulumu Doğrula
 ```bash
-agent-enderun check
+agent{{FRAMEWORK_DIR}} check
 ```
 
 Beklenen çıktı:
@@ -461,29 +472,29 @@ Beklenen çıktı:
 
 ### Projeyi Başlat
 ```bash
-npx agent-enderun init gemini
+npx agent{{FRAMEWORK_DIR}} init gemini
 ```
 
 ### Sağlık Durumunu Kontrol Et
 ```bash
-agent-enderun check                 # Tam kontrol
-agent-enderun check:security        # Sadece güvenlik
-agent-enderun check:compliance      # Sadece uyum
+agent{{FRAMEWORK_DIR}} check                 # Tam kontrol
+agent{{FRAMEWORK_DIR}} check:security        # Sadece güvenlik
+agent{{FRAMEWORK_DIR}} check:compliance      # Sadece uyum
 ```
 
 ### Proje Durumunu Görüntüle
 ```bash
-agent-enderun status
+agent{{FRAMEWORK_DIR}} status
 ```
 
 ### Yeni Görev Oluştur
 ```bash
-agent-enderun trace:new "Kullanıcı Doğrulama Uygulaması" backend P1
+agent{{FRAMEWORK_DIR}} trace:new "Kullanıcı Doğrulama Uygulaması" backend P1
 ```
 
 ### API Kontratlarını Doğrula
 ```bash
-agent-enderun verify-contract
+agent{{FRAMEWORK_DIR}} verify-contract
 ```
 
 ---
@@ -537,8 +548,8 @@ Agent Enderun **4 entegre katmandan** oluşur:
 - [ ] **npm 9+** yüklü (`npm --version`)
 - [ ] **Git** başlatılmış (`git init`)
 - [ ] **Framework yüklü** (`npm install && npm run enderun:build`)
-- [ ] **Sağlık kontrolü geçti** (`agent-enderun check` ✅ gösteriyor)
-- [ ] **İlk görev oluşturuldu** (`agent-enderun trace:new "Görev" backend P1`)
+- [ ] **Sağlık kontrolü geçti** (`agent{{FRAMEWORK_DIR}} check` ✅ gösteriyor)
+- [ ] **İlk görev oluşturuldu** (`agent{{FRAMEWORK_DIR}} trace:new "Görev" backend P1`)
 - [ ] **Doklar oluşturuldu** (`docs/` klasörüne dosya ekledim)
 - [ ] **MCP bağlandı** (ajanlar araçları kullanabiliyor)
 
@@ -559,7 +570,7 @@ JWT tabanlı kimlik doğrulama sistemi kurun.
 " > docs/requirements.md
 
 # Adım 2: Görev oluşturun
-agent-enderun trace:new "Auth Modülü Uygula" backend P1
+agent{{FRAMEWORK_DIR}} trace:new "Auth Modülü Uygula" backend P1
 
 # Adım 3: Ajanlar sizin için çalışır
 # (Otomatik olarak docs/requirements.md okurlar)
@@ -570,13 +581,13 @@ agent-enderun trace:new "Auth Modülü Uygula" backend P1
 ## 📁 Proje Yapısı
 
 ```
-agent-enderun/
+agent{{FRAMEWORK_DIR}}/
 ├── docs/                 ← Ajanların okuyacağı dokümantasyon
 ├── packages/
 │   ├── shared-types/     ← Paylaşılan türler (sözleşme)
 │   └── framework-mcp/    ← MCP sunucusu (40+ araç)
 ├── apps/                 ← Uygulamalarınız (siz oluşturun)
-├── .enderun/             ← Yönetişim dosyaları
+├── {{FRAMEWORK_DIR}}/             ← Yönetişim dosyaları
 │   ├── ENDERUN.md        ← Anayasa (OKUNMALI)
 │   ├── PROJECT_MEMORY.md ← Proje durumu
 │   ├── agents/           ← 8 ajan tanımı
@@ -599,7 +610,7 @@ agent-enderun/
 1. `ENDERUN.md` (anayasa)
 2. `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` (proje durumu)
 3. `docs/` dosyaları (gereksinimler)
-4. `.enderun/knowledge/` (teknik rehberler)
+4. `{{FRAMEWORK_DIR}}/knowledge/` (teknik rehberler)
 
 ### S: AI adaptörü kullanmak zorunlu mu?
 **C:** Hayır. Framework, AI'sız da işlev görür. Faz ilerleme, denetim kaydı ve tür disiplini zorunludur.
@@ -608,7 +619,7 @@ agent-enderun/
 **C:** Evet. `packages/framework-mcp/src/tools/` klasörüne yeni dosya ekleyin.
 
 ### S: Kendi ajanlarımı ekleyebilir miyim?
-**C:** Evet. `.enderun/agents/` klasörüne `.md` dosyası oluşturun ve CLI mapping'ini güncelleyin.
+**C:** Evet. `{{FRAMEWORK_DIR}}/agents/` klasörüne `.md` dosyası oluşturun ve CLI mapping'ini güncelleyin.
 
 ### S: Üretim için hazır mı?
 **C:** Framework hazır. `apps/` klasörü tamamen sizin.
@@ -618,7 +629,7 @@ agent-enderun/
 ## 🔗 Önce Okumanız Gereken Dosyalar
 
 1. **`{{FRAMEWORK_DIR}}/ENDERUN.md`** — Anayasa
-2. **`.enderun/PROJECT_MEMORY.md`** — Proje durumu
+2. **`{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md`** — Proje durumu
 3. **`docs/tech-stack.md`** — Teknoloji kararları
 4. **`packages/shared-types/src/index.ts`** — Sözleşme (türler)
 5. **`README.md`** — Bu dosya
@@ -631,7 +642,7 @@ agent-enderun/
 Net adımlarla ve versiyon numarası ile sorun bildir.
 
 ### Katkıda Bulun
-1. `.enderun/ENDERUN.md` oku
+1. `{{FRAMEWORK_DIR}}/ENDERUN.md` oku
 2. Agent rolü yönergelerine uyun
 3. Semantik commit'ler gönder
 4. Testleri geç: `npm run enderun:build`
@@ -639,30 +650,30 @@ Net adımlarla ve versiyon numarası ile sorun bildir.
 ### Lisans
 MIT © 2026 Yusuf BEKAR
 ```bash
-agent-enderun status
+agent{{FRAMEWORK_DIR}} status
 ```
 
 ### 4. Advanced Intelligence Commands
 ```bash
 # Run Security Audit
-agent-enderun check:security
+agent{{FRAMEWORK_DIR}} check:security
 
 # Generate Dependency Graph
-agent-enderun explorer:graph
+agent{{FRAMEWORK_DIR}} explorer:graph
 
 # Get Commit Suggestion
-agent-enderun git:commit [TRACE-ID]
+agent{{FRAMEWORK_DIR}} git:commit [TRACE-ID]
 ```
 
 ---
 
-## 📂 Consolidated Framework Structure (`.enderun/`)
+## 📂 Consolidated Framework Structure (`{{FRAMEWORK_DIR}}/`)
 
 All governance and engineering assets are consolidated under the framework directory for a clean project root.
 
 ```text
 .
-├── .enderun/
+├── {{FRAMEWORK_DIR}}/
 │   ├── ENDERUN.md           # Supreme Law (Constitution)
 │   ├── PROJECT_MEMORY.md    # Working Memory & History
 │   ├── BRAIN_DASHBOARD.md   # Intelligence & Performance Stats

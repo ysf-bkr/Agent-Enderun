@@ -7,15 +7,24 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
-    - run: npm install
-    - run: npm run enderun:build
-    - run: node bin/cli.js check
+    - name: Install dependencies
+      run: npm install
+    - name: Build all packages
+      run: npm run enderun:build
+    - name: Run unit + integration E2E tests
+      run: npm run enderun:test
+    - name: Framework health check
+      run: node bin/cli.js check
+    - name: Verify contract integrity
+      run: node bin/update-contract.js
+    - name: Lint
+      run: npm run lint

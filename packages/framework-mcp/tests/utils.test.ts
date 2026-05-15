@@ -13,8 +13,8 @@ vi.mock('fs');
 describe('Framework Utilities', () => {
     describe('getFrameworkDir', () => {
         it('should detect .gemini adapter if it exists', () => {
-            vi.mocked(fs.existsSync).mockImplementation((p: any) => p.toString().endsWith('.gemini'));
-            vi.mocked(fs.lstatSync).mockReturnValue({ isDirectory: () => true } as any);
+            vi.mocked(fs.existsSync).mockImplementation((p: unknown) => (p as string).endsWith('.gemini'));
+            vi.mocked(fs.lstatSync).mockReturnValue({ isDirectory: () => true } as unknown as fs.Stats);
             
             const dir = getFrameworkDir('/root');
             expect(dir).toBe('.gemini');

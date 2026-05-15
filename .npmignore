@@ -8,6 +8,7 @@ npm-debug.log*
 .env*
 apps/
 scratch/
+test-install/
 node_modules/
 **/node_modules/
 packages/**/node_modules/
@@ -20,6 +21,7 @@ packages/**/dist/
 package-lock.json
 **/package-lock.json
 jest.config.js
+vitest.config.ts
 Dockerfile
-
-
+packages/framework-mcp/tests/
+tests/integration/

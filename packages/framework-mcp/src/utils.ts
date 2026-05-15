@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-export const FRAMEWORK_VERSION = "0.5.0";
+export const FRAMEWORK_VERSION = "0.5.1";
 
 export function getFrameworkDir(projectRoot: string): string {
     const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];

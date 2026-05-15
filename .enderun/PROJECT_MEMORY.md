@@ -6,10 +6,12 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 
 | Active Phase | Profile | Last Update | Active Trace ID | Blockers |
 | :----------- | :------ | :---------- | :-------------- | :------- |
-| PHASE_0      | Lightweight | 2026-05-12 | 01KR6EJA6GG3RPS849097KS37Q | NONE |
+| PHASE_0      | Lightweight | 2026-05-15 | 01KR6EJA6GG3RPS849097KS37Q | NONE |
 
 ## PROJECT DEFINITION
 
+- **Name:** Agent Enderun
+- **Version:** v0.5.1
 | Field | Value |
 | :--- | :--- |
 | Project Name | agent-enderun |
@@ -48,6 +50,18 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 | 01KR6EJA6GG3RPS849097KS37Q | Framework setup and architecture alignment | @manager | P1 | IN_PROGRESS |
 
 ## HISTORY (Persistent Memory)
+
+### 2026-05-15 — The Academy Upgrade & v0.5.1 Release
+
+- **Agent:** @manager
+- **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
+- **Action:** Major framework upgrade (v0.5.1). Implemented Hermes Messaging Protocol and Obsidian-style LLM Wiki with YAML metadata. Consolidated constitution into root `ENDERUN.md` and removed legacy `jest.config.js`. Enhanced MCP server with new intelligence tools for knowledge graphs and system health.
+
+### 2026-05-15 — Hermes + Obsidian + LLM Wiki & Discovery
+
+- **Agent:** @manager
+- **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
+- **Action:** Major upgrade to framework intelligence. Implemented Hermes Messaging Protocol for inter-agent orchestration and Obsidian-style structured Wiki for knowledge management. Unified versioning across all packages to v0.5.0.
 
 ### 2026-05-12 — The Installation Fix & v0.4.5 Release
 +

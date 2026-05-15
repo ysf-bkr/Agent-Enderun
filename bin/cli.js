@@ -525,6 +525,12 @@ async function initCommand(selectedAdapter) {
   const buildCmd = pkgMgr === "npm" ? "npm run enderun:build" : `${pkgMgr} run enderun:build`;
 
   console.log(`\n✨ Framework scaffolded! (v${FRAMEWORK_VERSION})`);
+
+  // Allow skipping install in test/CI environments
+  if (process.env.ENDERUN_SKIP_INSTALL === "1") {
+    console.log("\n⏭️  Skipping install steps (ENDERUN_SKIP_INSTALL=1).");
+    return;
+  }
   
   try {
     const { execSync } = await import("child_process");

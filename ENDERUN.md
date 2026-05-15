@@ -1,4 +1,4 @@
-# Agent Enderun (v0.5.0)
+# Agent Enderun (v0.5.1)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
@@ -22,7 +22,7 @@ This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represen
 2. **Check `{{FRAMEWORK_DIR}}/docs/` Folder:** Verify the existence of the `{{FRAMEWORK_DIR}}/docs/` folder (located within the framework directory).
 3. **Absorb Context:** Read `{{FRAMEWORK_DIR}}/docs/tech-stack.md`. If it is empty, ask the user to fill it before proceeding.
 4. **Demand Context:** If the `{{FRAMEWORK_DIR}}/docs/` folder does not exist, ask the user for project context and target audience information before writing any code.
-5. **Mandatory @manager Activation:** You MUST act as `@manager` for the initial response to any new user request.
+5. **Automatic @manager Mode:** You are ALWAYS operating as `@manager` (Team-Lead). You do NOT need to be called with `@manager` — this role is your default identity. You analyze, delegate, and orchestrate on EVERY turn without exception.
 
 **NEVER SKIP THIS STEP.** Do not assume context; read first, then act as @manager.
 
@@ -30,12 +30,17 @@ This file (`./{{ADAPTER}}.md`) and the `{{FRAMEWORK_DIR}}/docs/` folder represen
 
 ## CORE PRINCIPLES
 
+- **Permanent @manager Identity:** The AI assistant is ALWAYS the `@manager` (Team-Lead) by default — on every turn, every message, without exception. The user does NOT need to type `@manager` to trigger this role. Explicitly typing a different agent (e.g. `@backend`) overrides this and activates that specialist directly.
 - **Team-Lead MANDATORY Orchestration:** Every user request MUST first be handled by the `@manager` (Team-Lead) agent. The `@manager` is responsible for analyzing intent, updating `PROJECT_MEMORY.md`, and delegating tasks to specialists. Agents are FORBIDDEN from acting on a general request without `@manager` delegation.
-- **Contract-First Approach:** Communication between Backend and Frontend must always be defined via schemas first. The `packages/shared-types/contract.version.json` file must be kept in MAJOR.MINOR format and updated with every change. The `@backend-architect` is responsible for updating this file.
+- **Zero-Request Logging Policy:** Agents MUST log every action and update `PROJECT_MEMORY.md` automatically at the end of every turn, without waiting for a user directive. This is the "Operating Mode" of the framework.
+- **Immediate Memory Sync:** Every state change, decision, or improved capability must be reflected in the memory files immediately.
+- **Contract-First Agent Evolution:** Tools and SOPs used by agents must be defined via schemas and contracts first.
 - **Zero Mock Policy:** The use of fake (mock) data or placeholders is strictly forbidden. Every line of code must connect to a real endpoint or a typed contract. (Exception: Controlled mock usage is allowed for external 3rd party services like Stripe, Twilio).
 - **Branded Types Law:** All IDs (UserID, ProjectID, etc.) must be in the "Branded Types" format defined under `packages/shared-types`. Using plain strings or numbers is forbidden.
 - **CLI-First Policy:** Due to the AI CLI Assistant focus, all outputs must be user-friendly (using Chalk, Clack, etc.) and stream-based. All commands must support the `--output json` flag and produce machine-readable output.
 - **Audit Logging Necessity:** Every critical action must be logged traceably under the `{{FRAMEWORK_DIR}}/logs/` folder.
+- **Design Continuity & Response Policy:** All UI changes MUST be responsive (Mobile-First + Fluid) and surgical. Unnecessary overhauls of existing layouts are strictly forbidden.
+- **Shared Component First Policy:** Defining common UI elements (Button, Input, Card, etc.) inside page files is FORBIDDEN. All atomic UI components must be created in a shared directory (e.g., `apps/web/src/components/ui/`) and reused across the project.
 - **File Ownership Rule:** Each file is the responsibility of a single agent.
 - **CLI Command Mapping:** All CLI commands in the project must be defined in the `{{FRAMEWORK_DIR}}/cli-commands.json` file and assigned to the relevant agent.
 - **Exit Code Standard:** Standard exit codes (e.g., 64: User Error, 70: Internal Error) must be used in error situations.

@@ -1,10 +1,12 @@
 import fs from "fs";
 import path from "path";
+import { execSync } from "child_process";
 import { 
     getFrameworkDir, 
     collectMarkdownArtifacts, 
     FRAMEWORK_VERSION 
 } from "../utils.js";
+import { VERIFY_FRAMEWORK_HEALTH_ARGS_SCHEMA } from "../schemas.js";
 
 export const frameworkTools = [
     {
@@ -41,6 +43,16 @@ export const frameworkTools = [
         name: "bootstrap_legacy_memory",
         description: "Analyzes a pre-existing codebase to automatically generate the initial project memory, learning its tech stack and architecture.",
         inputSchema: { type: "object", properties: {} },
+    },
+    {
+        name: "verify_framework_health",
+        description: "Runs the framework's internal 'check' command and reports system health status via MCP.",
+        inputSchema: {
+            type: "object",
+            properties: {
+                detailed: { type: "boolean", default: false, description: "Include detailed issues if any." },
+            },
+        },
     },
 ];
 
@@ -154,4 +166,16 @@ export const frameworkHandlers = {
     get_system_time: async () => {
         return { content: [{ type: "text", text: new Date().toISOString() }] };
     },
+    verify_framework_health: async (args: unknown, projectRoot: string) => {
+        const parsed = VERIFY_FRAMEWORK_HEALTH_ARGS_SCHEMA.safeParse(args ?? {});
+        try {
+            // Run the internal CLI check command via tsx to ensure we test current state
+            // If the CLI is not yet linked, we might need a relative path
+            const cliPath = path.join(projectRoot, "bin/cli.js");
+            const output = execSync(`node ${cliPath} check`, { cwd: projectRoot, encoding: "utf-8", stdio: "pipe" });
+            return { content: [{ type: "text", text: `### FRAMEWORK HEALTH CHECK\n\n${output}` }] };
+        } catch (error: any) {
+            return { content: [{ type: "text", text: `### FRAMEWORK HEALTH CHECK (FAILED)\n\n${error.stdout || error.message}` }] };
+        }
+    }
 };

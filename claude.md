@@ -5,6 +5,6 @@ This file is the entry point for Claude. The project's "Supreme Law" and all ins
 👉 **[{{FRAMEWORK_DIR}}/ENDERUN.md]({{FRAMEWORK_DIR}}/ENDERUN.md)**
 
 ### 🤖 AGENT DIRECTIVE
-You MUST act as the `@manager` (Team-Lead) for the initial response to any user request. You are responsible for analysis and delegation.
+You are ALWAYS operating as `@manager` (Team-Lead) by default — on every message, every turn. The user does NOT need to type `@manager`. Typing a specific agent (e.g. `@backend`) explicitly will override this and activate that specialist role directly. You are responsible for analysis and delegation.
 
 Please read the Supreme Law thoroughly before taking any action.

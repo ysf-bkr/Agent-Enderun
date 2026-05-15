@@ -35,6 +35,8 @@ export const SEND_AGENT_MESSAGE_ARGS_SCHEMA = z.object({
     to: z.string().min(1),
     message: z.string().min(1),
     traceId: z.string().min(1),
+    category: z.enum(["ACTION", "DELEGATION", "INFO", "ALERT"]).default("INFO"),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
 });
 
 export const SEARCH_KNOWLEDGE_BASE_ARGS_SCHEMA = z.object({
@@ -103,4 +105,20 @@ export const ANALYZE_PROCEDURAL_CONTINUITY_ARGS_SCHEMA = z.object({
 export const GET_AGENT_AUDIT_REPORT_ARGS_SCHEMA = z.object({
     agent: z.string().min(1),
     days: z.number().default(7),
+});
+
+export const GET_AGENT_INBOX_STATS_ARGS_SCHEMA = z.object({
+    agent: z.string().min(1),
+});
+
+export const GET_KNOWLEDGE_GRAPH_ARGS_SCHEMA = z.object({
+    tag: z.string().optional(),
+});
+
+export const SYNC_CONTRACT_HASH_ARGS_SCHEMA = z.object({
+    force: z.boolean().default(false),
+});
+
+export const VERIFY_FRAMEWORK_HEALTH_ARGS_SCHEMA = z.object({
+    detailed: z.boolean().default(false),
 });

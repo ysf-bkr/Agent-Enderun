@@ -20,7 +20,7 @@ describe('Security Tools - Constitution Compliance', () => {
 
     it('should return compliance success if no violations found', async () => {
         vi.mocked(fs.existsSync).mockReturnValue(true);
-        vi.mocked(fs.lstatSync).mockReturnValue({ isDirectory: () => true } as any);
+        vi.mocked(fs.lstatSync).mockReturnValue({ isDirectory: () => true } as unknown as fs.Stats);
         
         const result = await securityHandlers.analyze_constitution_compliance({ path: 'src' }, projectRoot);
         expect(result.content[0].text).toContain('ALL SYSTEMS COMPLIANT');
@@ -28,7 +28,7 @@ describe('Security Tools - Constitution Compliance', () => {
 
     it('should detect library violations in single files', async () => {
         vi.mocked(fs.existsSync).mockReturnValue(true);
-        vi.mocked(fs.lstatSync).mockReturnValue({ isDirectory: () => false } as any);
+        vi.mocked(fs.lstatSync).mockReturnValue({ isDirectory: () => false } as unknown as fs.Stats);
         vi.mocked(fs.readFileSync).mockReturnValue("import { Button } from 'antd';");
         
         const result = await securityHandlers.analyze_constitution_compliance({ path: 'src/App.tsx' }, projectRoot);

@@ -1,6 +1,6 @@
 {
   "name": "agent-enderun",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "The Supreme AI Governance & Orchestration Framework for Enterprise Development",
   "author": "Yusuf BEKAR",
   "license": "MIT",
@@ -78,7 +78,7 @@
     "vitest": "^3.0.5"
   },
   "enderun": {
-    "version": "0.5.0",
+    "version": "0.5.1",
     "initializedAt": "2026-05-09T13:24:27.472Z"
   }
 }
