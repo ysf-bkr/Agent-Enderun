@@ -12,13 +12,32 @@ const projectRoot = path.join(__dirname, "..");
 const contractPath = path.join(projectRoot, "packages/shared-types/contract.version.json");
 const sharedTypesDir = path.join(projectRoot, "packages/shared-types/src");
 
+function collectTypeFiles(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...collectTypeFiles(fullPath));
+    } else if (entry.name.endsWith(".ts")) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
 function calculateHash(dir) {
   const hash = crypto.createHash("sha256");
-  const files = fs.readdirSync(dir).filter(f => f.endsWith(".ts") || f.endsWith(".json")).sort();
+  const files = collectTypeFiles(dir).sort();
   
   files.forEach(file => {
-    const content = fs.readFileSync(path.join(dir, file));
+    const content = fs.readFileSync(file);
+    hash.update(path.relative(projectRoot, file));
+    hash.update("\0");
     hash.update(content);
+    hash.update("\0");
   });
   
   return hash.digest("hex");

@@ -6,12 +6,12 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 
 | Active Phase | Profile | Last Update | Active Trace ID | Blockers |
 | :----------- | :------ | :---------- | :-------------- | :------- |
-| PHASE_0      | Lightweight | 2026-05-15 | 01KR6EJA6GG3RPS849097KS37Q | NONE |
+| PHASE_0      | Lightweight | 2026-05-16 | 01KR6EJA6GG3RPS849097KS37Q | NONE |
 
 ## PROJECT DEFINITION
 
 - **Name:** Agent Enderun
-- **Version:** v0.5.1
+- **Version:** v0.5.2
 | Field | Value |
 | :--- | :--- |
 | Project Name | agent-enderun |
@@ -46,10 +46,35 @@ This file is the Single Source of Truth (SSOT) and the persistent memory of the 
 
 | Trace ID | Task | Agent | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- |
+| 01KRRZRSDGFG38RRDPQCSBXE3D | Phase 1: shared-types kontratlarını ve branded types yapısını genişlet | @backend | P1 | IN_PROGRESS |
 | 01KRC3WPMGXW2G3A4B0FVABKX0 | Modular Refactoring and Documentation Overhaul | @analyst | P0 | COMPLETE |
 | 01KR6EJA6GG3RPS849097KS37Q | Framework setup and architecture alignment | @manager | P1 | IN_PROGRESS |
 
 ## HISTORY (Persistent Memory)
+
+### 2026-05-16 — Framework Path Placeholder Fix (v0.5.2)
+
+- **Agent:** @manager
+- **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
+- **Action:** Fixed critical bug where all agent files (`manager.md`, `analyst.md`, `backend.md`, `frontend.md`, `native.md`, `mobile.md`) contained hardcoded `.enderun/` paths. Replaced with `{{FRAMEWORK_DIR}}/` placeholder. Updated `bin/cli.js` `copyDir` and `initCommand` with fallback `.enderun/` → `frameworkDir` replace at all three content-processing points. Now `init gemini` correctly produces `.gemini/docs/api/`, `init claude` produces `.claude/docs/api/`, etc. Verified: 0 hardcoded references remain, 18/18 health checks pass, 12/12 tests pass.
+
+### 2026-05-16 — Zero-Config & Auto-Wiring Milestone (v0.5.2)
+
+- **Agent:** @manager
+- **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
+- **Action:** Bumped version to v0.5.2. Achieved full automation for framework onboarding. Implemented Auto-Wiring for Gemini (auto-patching `gemini-extension.json`), automated MCP build during `init`, and refined directory logic for user-facing documentation. This release marks the transition to a truly "plug-and-play" enterprise framework.
+
+### 2026-05-16 — Dizin Yapısı Düzenlemesi (Düzeltildi)
+
+- **Agent:** @manager
+- **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
+- **Action:** Root `docs/` was incorrectly deleted (confused with `.enderun/docs/`). Restored with `docs/README.md` explaining its purpose: agent-written project documentation during PHASE_2. Added `docs/` to `package.json` files array and `cli.js` DIRS_TO_CREATE. Distinction clarified: `/docs` = user project docs (agent-generated), `/.enderun/docs/` = framework config (tech-stack, security, privacy). Updated `STATUS.md` to mark `@mobile`/`@native` as INACTIVE (Full Profile only).
+
+### 2026-05-16 — Proje Gözlem & Durum İncelemesi (Düzeltildi)
+
+- **Agent:** @manager
+- **Trace ID:** 01KR6EJA6GG3RPS849097KS37Q
+- **Action:** Full project review conducted. PHASE_0 in progress. Confirmed design intent: (1) `apps/` is intentionally empty — this is a framework package, not an app project; (2) `{{ADAPTER}}`/`{{FRAMEWORK_DIR}}` in ENDERUN.md are template variables resolved by `init` command at install time (gemini→.gemini, claude→.claude, cursor→.cursor, codex→.enderun). Fixed `codex.md` source file inconsistency where `{{FRAMEWORK_DIR}}` was not hardcoded like other adapters.
 
 ### 2026-05-15 — The Academy Upgrade & v0.5.1 Release
 

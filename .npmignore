@@ -22,6 +22,5 @@ package-lock.json
 **/package-lock.json
 jest.config.js
 vitest.config.ts
-Dockerfile
 packages/framework-mcp/tests/
 tests/integration/

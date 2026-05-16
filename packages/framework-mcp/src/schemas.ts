@@ -46,6 +46,7 @@ export const SEARCH_KNOWLEDGE_BASE_ARGS_SCHEMA = z.object({
 export const UPDATE_KNOWLEDGE_BASE_ARGS_SCHEMA = z.object({
     topic: z.string().min(1),
     content: z.string().min(1),
+    tags: z.array(z.string().min(1)).default([]),
 });
 
 export const ANALYZE_DATABASE_SCHEMA_ARGS_SCHEMA = z.object({
@@ -79,6 +80,7 @@ export const VALIDATE_REPOSITORY_HEALTH_ARGS_SCHEMA = z.object({
 
 export const READ_AGENT_MESSAGES_ARGS_SCHEMA = z.object({
     agent: z.string().min(1),
+    traceId: z.string().min(1).optional(),
 });
 
 export const VERIFY_CONTRACT_INTEGRITY_ARGS_SCHEMA = z.object({

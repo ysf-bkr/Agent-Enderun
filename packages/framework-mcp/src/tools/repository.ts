@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
 import { Project } from "ts-morph";
 import { 
     resolveSafePath, 
@@ -42,12 +42,33 @@ export const repositoryHandlers = {
             const pkgPath = path.join(projectRoot, "package.json");
             if (!fs.existsSync(pkgPath)) return { content: [{ type: "text", text: "package.json not found." }] };
             const scripts = JSON.parse(fs.readFileSync(pkgPath, "utf-8")).scripts || {};
-            const runScript = (name: string) => scripts[name] ? { name, status: (execSync(`npm run ${name}`, { stdio: "pipe", cwd: projectRoot }) ? "PASSED" : "FAILED") } : { name, status: "SKIPPED" };
+            const scriptCandidates: Record<string, string[]> = {
+                lint: ["lint", "enderun:lint"],
+                test: ["test", "enderun:test"],
+                build: ["build", "enderun:build"],
+            };
+            const runScript = (name: string) => {
+                const scriptName = scriptCandidates[name].find((candidate) => scripts[candidate]);
+                if (!scriptName) return { name, script: "-", status: "SKIPPED", details: "No matching script found." };
+
+                const result = spawnSync("npm", ["run", scriptName], {
+                    cwd: projectRoot,
+                    encoding: "utf-8",
+                    stdio: "pipe",
+                });
+                const output = `${result.stdout || ""}${result.stderr || ""}`.trim();
+                return {
+                    name,
+                    script: scriptName,
+                    status: result.status === 0 ? "PASSED" : "FAILED",
+                    details: output.split("\n").slice(-5).join("\n"),
+                };
+            };
             const results = [];
             if (scope === "full" || scope === "lint") results.push(runScript("lint"));
             if (scope === "full" || scope === "test") results.push(runScript("test"));
             if (scope === "full" || scope === "build") results.push(runScript("build"));
-            return { content: [{ type: "text", text: `### REPOSITORY HEALTH REPORT\n\n` + results.map(r => `- **${r.name.toUpperCase()}:** ${r.status}`).join("\n") }] };
+            return { content: [{ type: "text", text: `### REPOSITORY HEALTH REPORT\n\n` + results.map(r => `- **${r.name.toUpperCase()}** (${r.script}): ${r.status}${r.status === "FAILED" && r.details ? `\n  ${r.details}` : ""}`).join("\n") }] };
         } catch (error) {
             return { content: [{ type: "text", text: "Health validation failed." }] };
         }

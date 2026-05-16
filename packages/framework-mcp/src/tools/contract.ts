@@ -8,6 +8,18 @@ import {
 } from "../utils.js";
 import { VERIFY_CONTRACT_INTEGRITY_ARGS_SCHEMA } from "../schemas.js";
 
+function calculateContractHash(sharedTypesDir: string, projectRoot: string): string {
+    const files = collectFilesRecursively(sharedTypesDir, new Set(["ts"])).sort();
+    const hash = crypto.createHash("sha256");
+    files.forEach((filePath) => {
+        hash.update(path.relative(projectRoot, filePath));
+        hash.update("\0");
+        hash.update(fs.readFileSync(filePath));
+        hash.update("\0");
+    });
+    return hash.digest("hex");
+}
+
 export const contractTools = [
     {
         name: "verify_api_contract",
@@ -41,10 +53,7 @@ export const contractHandlers = {
             const sharedTypesDir = path.join(projectRoot, "packages/shared-types/src");
             const contractJsonPath = path.join(projectRoot, "packages/shared-types/contract.version.json");
             if (!fs.existsSync(sharedTypesDir) || !fs.existsSync(contractJsonPath)) return { content: [{ type: "text", text: "Missing shared-types directory or contract.version.json" }] };
-            const files = collectFilesRecursively(sharedTypesDir, new Set(["ts"])).sort();
-            const hash = crypto.createHash("sha256");
-            files.forEach(f => hash.update(fs.readFileSync(f)));
-            const currentHash = hash.digest("hex");
+            const currentHash = calculateContractHash(sharedTypesDir, projectRoot);
             const storedHash = JSON.parse(fs.readFileSync(contractJsonPath, "utf-8")).contract_hash;
             return { content: [{ type: "text", text: currentHash === storedHash ? "✅ MATCH: Contract is valid and synchronized." : `❌ MISMATCH: Current hash (${currentHash.slice(0, 8)}...) does not match stored hash (${storedHash.slice(0, 8)}...).` }] };
         } catch (error) {
@@ -58,9 +67,7 @@ export const contractHandlers = {
             if (!fs.existsSync(sharedTypesDir)) return { content: [{ type: "text", text: "Missing shared-types directory" }] };
             const files = collectFilesRecursively(sharedTypesDir, new Set(["ts"])).sort();
             if (files.length === 0) return { content: [{ type: "text", text: "⚠️ WARNING: No TypeScript files found in shared-types/src. Hash not updated." }] };
-            const hash = crypto.createHash("sha256");
-            files.forEach(f => hash.update(fs.readFileSync(f)));
-            const currentHash = hash.digest("hex");
+            const currentHash = calculateContractHash(sharedTypesDir, projectRoot);
             const contractJson = fs.existsSync(contractJsonPath) ? JSON.parse(fs.readFileSync(contractJsonPath, "utf-8")) : {};
             contractJson.contract_hash = currentHash;
             contractJson.last_updated = new Date().toISOString();

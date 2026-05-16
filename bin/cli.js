@@ -22,7 +22,7 @@ function getPackageVersion() {
 }
 
 function getFrameworkDir() {
-  const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
+  const adapters = [".gemini", ".claude", ".cursor", ".enderun", ".codex"];
   for (const adp of adapters) {
     const fullPath = path.join(targetDir, adp);
     if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {
@@ -323,7 +323,7 @@ async function initCommand(selectedAdapter) {
     codex: ["codex.md"],
   };
 
-  const targetBase = selectedAdapter ? `.${selectedAdapter}` : ".enderun";
+  const targetBase = selectedAdapter && selectedAdapter !== "codex" ? `.${selectedAdapter}` : ".enderun";
 
   const targetFrameworkDir = path.join(targetDir, targetBase);
 
@@ -351,7 +351,7 @@ async function initCommand(selectedAdapter) {
     `${targetBase}/messages`,
     "apps/web",
     "apps/backend",
-    
+    "docs",
     "packages/shared-types",
     "packages/framework-mcp",
   ];
@@ -454,6 +454,8 @@ async function initCommand(selectedAdapter) {
 
           content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, targetBase);
           content = content.replace(/\{\{ADAPTER\}\}/g, currentAdapter);
+          // Fallback: replace any residual hardcoded .enderun/ paths
+          content = content.replace(/\.enderun\//g, `${targetBase}/`);
           
           if (ext === ".json") {
             try {
@@ -497,6 +499,21 @@ async function initCommand(selectedAdapter) {
 
 
   if (selectedAdapter === "gemini") {
+    // Patch gemini-extension.json to wire up the MCP server automatically
+    const geminiExtPath = path.join(targetDir, "gemini-extension.json");
+    try {
+      const ext = JSON.parse(fs.readFileSync(geminiExtPath, "utf8"));
+      ext.mcpServers = {
+        "agent-enderun": {
+          command: "node",
+          args: ["packages/framework-mcp/dist/index.js"]
+        }
+      };
+      fs.writeFileSync(geminiExtPath, JSON.stringify(ext, null, 2) + "\n");
+      console.log("💎 Gemini: MCP server wired up in gemini-extension.json automatically.");
+    } catch (e) {
+      console.warn("⚠️  Gemini: Could not patch gemini-extension.json for MCP. Wire it up manually.");
+    }
     console.log(`💎 Gemini: Adapter gemini.md and ${targetBase}/ folder are ready.`);
   }
 
@@ -730,6 +747,8 @@ function copyDir(src, dest, skipSet = new Set(), nonDestructive = false, framewo
       if (textExtensions.includes(ext)) {
         let content = fs.readFileSync(srcPath, "utf8");
         content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, frameworkDir);
+        // Also replace any residual hardcoded .enderun/ paths left in source files
+        content = content.replace(/\.enderun\//g, `${frameworkDir}/`);
         
         // Sanitize workspace: protocol
         if (ext === ".json") {
@@ -751,6 +770,8 @@ function copyDir(src, dest, skipSet = new Set(), nonDestructive = false, framewo
 
         content = content.replace(/\{\{FRAMEWORK_DIR\}\}/g, frameworkDir);
         content = content.replace(/\{\{ADAPTER\}\}/g, currentAdapter);
+        // Fallback: replace any residual hardcoded .enderun/ paths
+        content = content.replace(/\.enderun\//g, `${frameworkDir}/`);
         
         fs.writeFileSync(destPath, content);
       } else {
@@ -825,6 +846,7 @@ function traceNewCommand(description, agent = "manager", priority = "P2") {
     fs.writeFileSync(memoryPath, updated);
     console.log(`\n✅ New Trace ID created: ${traceId}`);
     console.log(`📝 Added to task list: ${description}\n`);
+    return traceId;
   } finally {
     releaseMemoryLock(lockPath);
   }
@@ -850,7 +872,10 @@ function verifyContractCommand() {
   const files = walk(sharedDir).sort();
   const h = crypto.createHash("sha256");
   for (const f of files) {
+    h.update(path.relative(targetDir, f));
+    h.update("\0");
     h.update(fs.readFileSync(f));
+    h.update("\0");
   }
   const currentHash = h.digest("hex");
   
@@ -1099,6 +1124,593 @@ function updateProjectMemoryCommand(section, content) {
   }
 }
 
+function ensureDir(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+}
+
+function writeTextFile(filePath, content) {
+  ensureDir(path.dirname(filePath));
+  fs.writeFileSync(filePath, content.endsWith("\n") ? content : `${content}\n`);
+}
+
+function writeJsonFile(filePath, value) {
+  writeTextFile(filePath, JSON.stringify(value, null, 2));
+}
+
+function slugifyName(value) {
+  const slug = String(value || "enderun-app")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "enderun-app";
+}
+
+function titleCase(value) {
+  return String(value || "Enderun App")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function inferAppSpec(description) {
+  const normalized = String(description || "").toLowerCase();
+  const isCrm = /\bcrm\b|customer|musteri|müşteri/.test(normalized);
+  const hasAuth = /auth|login|giris|giriş|signin|sign in|user|kullanici|kullanıcı|role|rol/.test(normalized);
+  const hasRoles = /role|rol|permission|yetki|admin/.test(normalized);
+  const hasReports = /report|rapor|analytics|dashboard|chart|metric/.test(normalized);
+  const appName = isCrm ? "crm-dashboard" : slugifyName(description).split("-").slice(0, 4).join("-");
+
+  return {
+    rawDescription: description,
+    appName,
+    title: isCrm ? "CRM Dashboard" : titleCase(appName),
+    domain: isCrm ? "CRM" : "Business",
+    modules: {
+      auth: hasAuth || isCrm,
+      users: hasAuth || hasRoles || isCrm,
+      roles: hasRoles || isCrm,
+      reports: hasReports || isCrm,
+    },
+  };
+}
+
+function buildSharedTypesContent(existingContent) {
+  const marker = "// --- Generated Application Contract ---";
+  const generated = [
+    marker,
+    'export type RoleID = Brand<string, "RoleID">;',
+    'export type ReportID = Brand<string, "ReportID">;',
+    'export type CustomerID = Brand<string, "CustomerID">;',
+    "",
+    "export interface AuthSession {",
+    "  user: User;",
+    "  token: string;",
+    "  expiresAt: string;",
+    "}",
+    "",
+    "export interface Role {",
+    "  id: RoleID;",
+    "  name: string;",
+    "  permissions: string[];",
+    "}",
+    "",
+    "export interface Customer {",
+    "  id: CustomerID;",
+    "  name: string;",
+    "  ownerId: UserID;",
+    "  status: \"LEAD\" | \"ACTIVE\" | \"AT_RISK\";",
+    "  annualValue: number;",
+    "  createdAt: string;",
+    "}",
+    "",
+    "export interface ReportMetric {",
+    "  id: ReportID;",
+    "  label: string;",
+    "  value: number;",
+    "  trend: \"UP\" | \"DOWN\" | \"FLAT\";",
+    "}",
+    "",
+    "export interface DashboardSummary {",
+    "  customers: Customer[];",
+    "  users: User[];",
+    "  roles: Role[];",
+    "  reports: ReportMetric[];",
+    "}",
+  ].join("\n");
+
+  if (existingContent.includes(marker)) return existingContent;
+  return `${existingContent.trim()}\n\n${generated}\n`;
+}
+
+function updateContractHashFile() {
+  const sharedDir = path.join(targetDir, "packages/shared-types/src");
+  const contractPath = path.join(targetDir, "packages/shared-types/contract.version.json");
+  if (!fs.existsSync(sharedDir) || !fs.existsSync(contractPath)) return;
+
+  const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const fullPath = path.join(dir, entry.name);
+    return entry.isDirectory() ? walk(fullPath) : (entry.name.endsWith(".ts") ? [fullPath] : []);
+  });
+
+  const hash = crypto.createHash("sha256");
+  for (const filePath of walk(sharedDir).sort()) {
+    hash.update(path.relative(targetDir, filePath));
+    hash.update("\0");
+    hash.update(fs.readFileSync(filePath));
+    hash.update("\0");
+  }
+
+  const contract = JSON.parse(fs.readFileSync(contractPath, "utf8"));
+  contract.contract_hash = hash.digest("hex");
+  contract.last_updated = new Date().toISOString();
+  fs.writeFileSync(contractPath, JSON.stringify(contract, null, 2));
+}
+
+function createBackendFiles(spec) {
+  writeJsonFile(path.join(targetDir, "apps/backend/package.json"), {
+    name: "@agent-enderun/backend",
+    version: "0.1.0",
+    private: true,
+    type: "module",
+    scripts: {
+      dev: "tsx src/server.ts",
+      build: "tsc -p tsconfig.json",
+      start: "node dist/server.js",
+      test: "vitest run",
+    },
+    dependencies: {
+      "@fastify/cors": "^11.0.0",
+      fastify: "^5.0.0",
+      zod: "^3.24.2",
+    },
+    devDependencies: {
+      "@types/node": "^22.13.4",
+      tsx: "^4.19.4",
+      typescript: "^5.9.3",
+      vitest: "^3.0.5",
+    },
+  });
+
+  writeJsonFile(path.join(targetDir, "apps/backend/tsconfig.json"), {
+    extends: "../../tsconfig.json",
+    compilerOptions: {
+      outDir: "dist",
+      rootDir: "src",
+      module: "NodeNext",
+      moduleResolution: "NodeNext",
+      target: "ES2022",
+      strict: true,
+      skipLibCheck: true,
+    },
+    include: ["src/**/*.ts"],
+  });
+
+  writeTextFile(path.join(targetDir, "apps/backend/src/data.ts"), [
+    'import type { Customer, DashboardSummary, ReportMetric, Role, User } from "../../../packages/shared-types/src/index.js";',
+    "",
+    'const now = new Date().toISOString();',
+    "",
+    "export const roles: Role[] = [",
+    '  { id: "role_admin" as Role["id"], name: "Admin", permissions: ["users:manage", "reports:view", "customers:manage"] },',
+    '  { id: "role_manager" as Role["id"], name: "Manager", permissions: ["reports:view", "customers:manage"] },',
+    '  { id: "role_viewer" as Role["id"], name: "Viewer", permissions: ["reports:view"] },',
+    "];",
+    "",
+    "export const users: User[] = [",
+    '  { id: "user_1" as User["id"], email: "admin@example.com", fullName: "Admin User", role: "ADMIN", createdAt: now },',
+    '  { id: "user_2" as User["id"], email: "manager@example.com", fullName: "Sales Manager", role: "DEVELOPER", createdAt: now },',
+    "];",
+    "",
+    "export const customers: Customer[] = [",
+    '  { id: "customer_1" as Customer["id"], name: "Northwind", ownerId: users[1].id, status: "ACTIVE", annualValue: 125000, createdAt: now },',
+    '  { id: "customer_2" as Customer["id"], name: "Acme Corp", ownerId: users[1].id, status: "LEAD", annualValue: 82000, createdAt: now },',
+    '  { id: "customer_3" as Customer["id"], name: "Globex", ownerId: users[0].id, status: "AT_RISK", annualValue: 54000, createdAt: now },',
+    "];",
+    "",
+    "export const reports: ReportMetric[] = [",
+    '  { id: "report_pipeline" as ReportMetric["id"], label: "Pipeline", value: 261000, trend: "UP" },',
+    '  { id: "report_active_customers" as ReportMetric["id"], label: "Active Customers", value: 1, trend: "FLAT" },',
+    '  { id: "report_risk" as ReportMetric["id"], label: "At Risk", value: 1, trend: "DOWN" },',
+    "];",
+    "",
+    "export function getDashboardSummary(): DashboardSummary {",
+    "  return { customers, users, roles, reports };",
+    "}",
+  ].join("\n"));
+
+  writeTextFile(path.join(targetDir, "apps/backend/src/server.ts"), [
+    'import Fastify from "fastify";',
+    'import cors from "@fastify/cors";',
+    'import { z } from "zod";',
+    'import { customers, getDashboardSummary, reports, roles, users } from "./data.js";',
+    "",
+    "const app = Fastify({ logger: true });",
+    "await app.register(cors, { origin: true });",
+    "",
+    'app.get("/health", async () => ({ ok: true, service: "agent-enderun-backend" }));',
+    'app.get("/api/v1/dashboard", async () => ({ data: getDashboardSummary() }));',
+    'app.get("/api/v1/users", async () => ({ data: users }));',
+    'app.get("/api/v1/roles", async () => ({ data: roles }));',
+    'app.get("/api/v1/customers", async () => ({ data: customers }));',
+    'app.get("/api/v1/reports", async () => ({ data: reports }));',
+    "",
+    'app.post("/api/v1/auth/login", async (request, reply) => {',
+    "  const body = z.object({ email: z.string().email(), password: z.string().min(1) }).safeParse(request.body);",
+    "  if (!body.success) return reply.code(400).send({ error: { code: \"VALIDATION_ERROR\", message: \"Invalid login payload\" } });",
+    "",
+    "  const user = users.find((item) => item.email === body.data.email) || users[0];",
+    "  return { data: { user, token: \"demo-token\", expiresAt: new Date(Date.now() + 3600000).toISOString() } };",
+    "});",
+    "",
+    "const port = Number(process.env.PORT || 4000);",
+    "await app.listen({ port, host: \"0.0.0.0\" });",
+  ].join("\n"));
+
+  writeTextFile(path.join(targetDir, "apps/backend/README.md"), [
+    `# ${spec.title} Backend`,
+    "",
+    "Fastify API generated by Agent Enderun.",
+    "",
+    "## Commands",
+    "",
+    "- `npm run dev`",
+    "- `npm run build`",
+    "- `npm run test`",
+  ].join("\n"));
+}
+
+function createWebFiles(spec) {
+  writeJsonFile(path.join(targetDir, "apps/web/package.json"), {
+    name: "@agent-enderun/web",
+    version: "0.1.0",
+    private: true,
+    type: "module",
+    scripts: {
+      dev: "vite --host 0.0.0.0",
+      build: "tsc -p tsconfig.json && vite build",
+      preview: "vite preview",
+      test: "vitest run",
+    },
+    dependencies: {
+      "@vitejs/plugin-react": "^5.0.0",
+      vite: "^7.0.0",
+      react: "^19.0.0",
+      "react-dom": "^19.0.0",
+      "lucide-react": "^0.468.0",
+    },
+    devDependencies: {
+      "@types/react": "^19.0.0",
+      "@types/react-dom": "^19.0.0",
+      typescript: "^5.9.3",
+      vitest: "^3.0.5",
+    },
+  });
+
+  writeJsonFile(path.join(targetDir, "apps/web/tsconfig.json"), {
+    extends: "../../tsconfig.json",
+    compilerOptions: {
+      jsx: "react-jsx",
+      module: "NodeNext",
+      moduleResolution: "NodeNext",
+      target: "ES2022",
+      strict: true,
+      skipLibCheck: true,
+    },
+    include: ["src/**/*.ts", "src/**/*.tsx"],
+  });
+
+  writeTextFile(path.join(targetDir, "apps/web/index.html"), [
+    '<div id="root"></div>',
+    '<script type="module" src="/src/main.tsx"></script>',
+  ].join("\n"));
+
+  writeTextFile(path.join(targetDir, "apps/web/src/main.tsx"), [
+    'import React from "react";',
+    'import { createRoot } from "react-dom/client";',
+    'import { App } from "./App.js";',
+    'import "./styles.css";',
+    "",
+    'createRoot(document.getElementById("root") as HTMLElement).render(',
+    "  <React.StrictMode>",
+    "    <App />",
+    "  </React.StrictMode>,",
+    ");",
+  ].join("\n"));
+
+  writeTextFile(path.join(targetDir, "apps/web/src/App.tsx"), [
+    'import { BarChart3, ShieldCheck, UsersRound } from "lucide-react";',
+    "",
+    "const metrics = [",
+    '  { label: "Pipeline", value: "$261K", tone: "green" },',
+    '  { label: "Active customers", value: "18", tone: "blue" },',
+    '  { label: "At risk", value: "3", tone: "red" },',
+    "];",
+    "",
+    "const customers = [",
+    '  { name: "Northwind", status: "Active", owner: "Sales Manager", value: "$125K" },',
+    '  { name: "Acme Corp", status: "Lead", owner: "Sales Manager", value: "$82K" },',
+    '  { name: "Globex", status: "At risk", owner: "Admin User", value: "$54K" },',
+    "];",
+    "",
+    "export function App() {",
+    "  return (",
+    '    <main className="shell">',
+    '      <aside className="sidebar" aria-label="Primary navigation">',
+    '        <div className="brand">AE</div>',
+    '        <nav>',
+    '          <a className="active" href="#dashboard"><BarChart3 size={18} /> Dashboard</a>',
+    '          <a href="#users"><UsersRound size={18} /> Users</a>',
+    '          <a href="#roles"><ShieldCheck size={18} /> Roles</a>',
+    "        </nav>",
+    "      </aside>",
+    "",
+    '      <section className="workspace">',
+    '        <header className="topbar">',
+    "          <div>",
+    `            <p>${spec.domain}</p>`,
+    `            <h1>${spec.title}</h1>`,
+    "          </div>",
+    '          <button type="button">New customer</button>',
+    "        </header>",
+    "",
+    '        <section className="metrics" aria-label="Report metrics">',
+    "          {metrics.map((metric) => (",
+    '            <article className={`metric ${metric.tone}`} key={metric.label}>',
+    "              <span>{metric.label}</span>",
+    "              <strong>{metric.value}</strong>",
+    "            </article>",
+    "          ))}",
+    "        </section>",
+    "",
+    '        <section className="panel">',
+    "          <div>",
+    "            <h2>Customers</h2>",
+    "            <p>Ownership, value and status at a glance.</p>",
+    "          </div>",
+    '          <div className="table">',
+    "            {customers.map((customer) => (",
+    '              <div className="row" key={customer.name}>',
+    "                <strong>{customer.name}</strong>",
+    "                <span>{customer.status}</span>",
+    "                <span>{customer.owner}</span>",
+    "                <b>{customer.value}</b>",
+    "              </div>",
+    "            ))}",
+    "          </div>",
+    "        </section>",
+    "      </section>",
+    "    </main>",
+    "  );",
+    "}",
+  ].join("\n"));
+
+  writeTextFile(path.join(targetDir, "apps/web/src/styles.css"), [
+    ":root {",
+    "  color: #172026;",
+    "  background: #f4f7f6;",
+    "  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;",
+    "}",
+    "",
+    "* { box-sizing: border-box; }",
+    "body { margin: 0; }",
+    "button { font: inherit; }",
+    "",
+    ".shell {",
+    "  min-height: 100vh;",
+    "  display: grid;",
+    "  grid-template-columns: 240px 1fr;",
+    "}",
+    "",
+    ".sidebar {",
+    "  background: #102022;",
+    "  color: #eef6f2;",
+    "  padding: 24px;",
+    "}",
+    "",
+    ".brand {",
+    "  width: 40px;",
+    "  height: 40px;",
+    "  display: grid;",
+    "  place-items: center;",
+    "  background: #d8f36a;",
+    "  color: #102022;",
+    "  font-weight: 800;",
+    "  border-radius: 8px;",
+    "  margin-bottom: 32px;",
+    "}",
+    "",
+    "nav { display: grid; gap: 8px; }",
+    "nav a {",
+    "  color: inherit;",
+    "  text-decoration: none;",
+    "  display: flex;",
+    "  gap: 10px;",
+    "  align-items: center;",
+    "  padding: 10px 12px;",
+    "  border-radius: 8px;",
+    "}",
+    "nav a.active, nav a:hover { background: rgba(255,255,255,0.12); }",
+    "",
+    ".workspace { padding: 32px; }",
+    ".topbar {",
+    "  display: flex;",
+    "  justify-content: space-between;",
+    "  align-items: center;",
+    "  gap: 24px;",
+    "  margin-bottom: 24px;",
+    "}",
+    ".topbar p { margin: 0 0 4px; color: #58666a; font-size: 14px; }",
+    ".topbar h1 { margin: 0; font-size: 32px; letter-spacing: 0; }",
+    ".topbar button {",
+    "  border: 0;",
+    "  border-radius: 8px;",
+    "  background: #176b5d;",
+    "  color: white;",
+    "  padding: 10px 14px;",
+    "}",
+    "",
+    ".metrics {",
+    "  display: grid;",
+    "  grid-template-columns: repeat(3, minmax(0, 1fr));",
+    "  gap: 16px;",
+    "  margin-bottom: 24px;",
+    "}",
+    ".metric, .panel {",
+    "  background: white;",
+    "  border: 1px solid #d9e3e0;",
+    "  border-radius: 8px;",
+    "}",
+    ".metric { padding: 18px; }",
+    ".metric span { display: block; color: #58666a; margin-bottom: 8px; }",
+    ".metric strong { font-size: 28px; }",
+    ".metric.green { border-top: 4px solid #49a078; }",
+    ".metric.blue { border-top: 4px solid #3f7cac; }",
+    ".metric.red { border-top: 4px solid #d95d39; }",
+    "",
+    ".panel { padding: 20px; }",
+    ".panel h2 { margin: 0 0 4px; font-size: 20px; }",
+    ".panel p { margin: 0 0 18px; color: #58666a; }",
+    ".table { display: grid; gap: 8px; }",
+    ".row {",
+    "  display: grid;",
+    "  grid-template-columns: 1.4fr 0.8fr 1fr 0.6fr;",
+    "  gap: 16px;",
+    "  align-items: center;",
+    "  padding: 12px;",
+    "  border-radius: 8px;",
+    "  background: #f7faf9;",
+    "}",
+    "",
+    "@media (max-width: 760px) {",
+    "  .shell { grid-template-columns: 1fr; }",
+    "  .sidebar { position: static; }",
+    "  .metrics { grid-template-columns: 1fr; }",
+    "  .topbar { align-items: flex-start; flex-direction: column; }",
+    "  .row { grid-template-columns: 1fr; }",
+    "}",
+  ].join("\n"));
+
+  writeTextFile(path.join(targetDir, "apps/web/README.md"), [
+    `# ${spec.title} Web`,
+    "",
+    "React dashboard generated by Agent Enderun.",
+    "",
+    "## Commands",
+    "",
+    "- `npm run dev`",
+    "- `npm run build`",
+    "- `npm run test`",
+  ].join("\n"));
+}
+
+function updateProjectDocs(spec) {
+  const frameworkDir = getFrameworkDir();
+  const docsDir = path.join(targetDir, frameworkDir, "docs");
+  const apiDir = path.join(docsDir, "api");
+  ensureDir(apiDir);
+
+  writeTextFile(path.join(docsDir, "project-docs.md"), [
+    `# ${spec.title} Requirements`,
+    "",
+    "## Request",
+    "",
+    spec.rawDescription,
+    "",
+    "## Generated Scope",
+    "",
+    `- Domain: ${spec.domain}`,
+    `- Auth: ${spec.modules.auth ? "yes" : "no"}`,
+    `- Users: ${spec.modules.users ? "yes" : "no"}`,
+    `- Roles: ${spec.modules.roles ? "yes" : "no"}`,
+    `- Reports: ${spec.modules.reports ? "yes" : "no"}`,
+    "",
+    "## Architecture",
+    "",
+    "- `apps/backend`: Fastify API",
+    "- `apps/web`: React dashboard",
+    "- `packages/shared-types`: Contract-first shared TypeScript types",
+  ].join("\n"));
+
+  writeTextFile(path.join(apiDir, "README.md"), [
+    "# API Registry",
+    "",
+    "- `POST /api/v1/auth/login`",
+    "- `GET /api/v1/dashboard`",
+    "- `GET /api/v1/users`",
+    "- `GET /api/v1/roles`",
+    "- `GET /api/v1/customers`",
+    "- `GET /api/v1/reports`",
+  ].join("\n"));
+}
+
+function updateMemoryForGeneratedApp(spec, traceId) {
+  const memoryPath = getMemoryPath();
+  if (!fs.existsSync(memoryPath)) return;
+
+  const today = new Date().toISOString().split("T")[0];
+  const history = [
+    `### ${today} — Generated ${spec.title}`,
+    "",
+    "- **Agent:** @manager",
+    `- **Trace ID:** ${traceId}`,
+    "- **Action:** Created full-stack starter from natural language request.",
+    "- **Files:** apps/backend, apps/web, shared-types, project docs",
+  ].join("\n");
+
+  updateProjectMemoryCommand("HISTORY", history);
+}
+
+async function collectCreateAppDescription(args) {
+  const initial = args.join(" ").trim();
+  if (initial) return initial;
+
+  const readline = await import("readline/promises");
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    const idea = await rl.question("What do you want to build? ");
+    const platform = await rl.question("Platform? (full-stack/web/backend) ");
+    const auth = await rl.question("Auth and roles? (yes/no) ");
+    const reports = await rl.question("Reports/dashboard? (yes/no) ");
+    return [idea, platform, auth.includes("y") ? "with auth and roles" : "", reports.includes("y") ? "with reports dashboard" : ""].filter(Boolean).join(" ");
+  } finally {
+    rl.close();
+  }
+}
+
+async function createAppCommand(args) {
+  const description = await collectCreateAppDescription(args);
+  const spec = inferAppSpec(description);
+  const traceId = generateULID();
+
+  ensureDir(path.join(targetDir, "apps/backend"));
+  ensureDir(path.join(targetDir, "apps/web"));
+
+  createBackendFiles(spec);
+  createWebFiles(spec);
+  updateProjectDocs(spec);
+
+  const sharedTypesPath = path.join(targetDir, "packages/shared-types/src/index.ts");
+  if (fs.existsSync(sharedTypesPath)) {
+    const existing = fs.readFileSync(sharedTypesPath, "utf8");
+    fs.writeFileSync(sharedTypesPath, buildSharedTypesContent(existing));
+    updateContractHashFile();
+  }
+
+  const activeTraceId = traceNewCommand(`Generate ${spec.title} from natural language request`, "manager", "P1") || traceId;
+  updateMemoryForGeneratedApp(spec, activeTraceId);
+
+  console.log(`\n✅ Created ${spec.title}`);
+  console.log("📁 Generated apps/backend and apps/web");
+  console.log("📜 Updated project docs and shared-types contract");
+  console.log("\nNext commands:");
+  console.log("  npm install");
+  console.log("  npm run enderun:build");
+  console.log("  agent-enderun frontend:dev\n");
+}
+
 // --- MAIN DISPATCHER ---
 
 async function main() {
@@ -1122,6 +1734,12 @@ async function main() {
       } else {
         traceNewCommand(args[0], args[1], args[2]);
       }
+      break;
+    case "create-app":
+    case "new":
+    case "start":
+    case "build-app":
+      await createAppCommand(args);
       break;
     case "verify-contract":
       verifyContractCommand();
@@ -1254,11 +1872,16 @@ async function main() {
       console.log(`v${FRAMEWORK_VERSION}`);
       break;
     default:
+      if (command && (command.includes(" ") || args.length > 0)) {
+        await createAppCommand([command, ...args]);
+        break;
+      }
       console.log(`
 🤖 Agent Enderun CLI (v${FRAMEWORK_VERSION})
 
 Available Commands:
   init [adapter]      Initialize the framework (gemini, claude, cursor, codex)
+  create-app <idea>   Generate a full-stack starter from natural language
   check               Full health check
   check:security      Run security audit scan
   check:compliance    Run constitution compliance check
@@ -1273,6 +1896,7 @@ Available Commands:
 
 Example:
   agent-enderun trace:new "Auth module design" backend P1
+  agent-enderun create-app "CRM dashboard with auth, users, roles, reports"
       `);
       break;
   }

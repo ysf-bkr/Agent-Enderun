@@ -1,10 +1,10 @@
 import path from "path";
 import fs from "fs";
 
-export const FRAMEWORK_VERSION = "0.5.1";
+export const FRAMEWORK_VERSION = "0.5.2";
 
 export function getFrameworkDir(projectRoot: string): string {
-    const adapters = [".gemini", ".claude", ".cursor", ".codex", ".enderun"];
+    const adapters = [".gemini", ".claude", ".cursor", ".enderun", ".codex"];
     for (const adp of adapters) {
         const fullPath = path.join(projectRoot, adp);
         if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory()) {

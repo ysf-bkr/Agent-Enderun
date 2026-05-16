@@ -1,5 +1,11 @@
 {
   "name": "Agent Enderun",
   "description": "Enterprise-grade AI orchestration framework for software teams.",
-  "instructions": "{{FRAMEWORK_DIR}}/ENDERUN.md"
+  "instructions": ".gemini/ENDERUN.md",
+  "mcpServers": {
+    "agent-enderun": {
+      "command": "node",
+      "args": ["packages/framework-mcp/dist/index.js"]
+    }
+  }
 }

@@ -58,13 +58,19 @@ interface Message {
     read: boolean;
 }
 
+function normalizeAgentName(agent: string): string | null {
+    const normalized = agent.replace(/^@/, "").trim();
+    return /^[a-z0-9_-]+$/i.test(normalized) ? normalized : null;
+}
+
 export const messageHandlers = {
     send_agent_message: async (args: unknown, projectRoot: string) => {
         const parsed = SEND_AGENT_MESSAGE_ARGS_SCHEMA.safeParse(args ?? {});
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid message arguments." }] };
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
-            const recipient = parsed.data.to.replace(/^@/, "");
+            const recipient = normalizeAgentName(parsed.data.to);
+            if (!recipient) return { content: [{ type: "text", text: "Invalid recipient agent name." }] };
             const messagesDir = path.join(projectRoot, frameworkDir, "messages");
             if (!fs.existsSync(messagesDir)) fs.mkdirSync(messagesDir, { recursive: true });
             const messagePath = path.join(messagesDir, `${recipient}.json`);
@@ -73,8 +79,8 @@ export const messageHandlers = {
                 timestamp: new Date().toISOString(), 
                 from: "manager", 
                 traceId: parsed.data.traceId, 
-                category: parsed.data.category as any,
-                priority: parsed.data.priority as any,
+                category: parsed.data.category,
+                priority: parsed.data.priority,
                 content: parsed.data.message, 
                 read: false 
             });
@@ -89,14 +95,16 @@ export const messageHandlers = {
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid agent name." }] };
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
-            const agentName = parsed.data.agent.replace(/^@/, "");
+            const agentName = normalizeAgentName(parsed.data.agent);
+            if (!agentName) return { content: [{ type: "text", text: "Invalid agent name." }] };
             const messagePath = path.join(projectRoot, frameworkDir, "messages", `${agentName}.json`);
             if (!fs.existsSync(messagePath)) return { content: [{ type: "text", text: "No messages found." }] };
             const messages = JSON.parse(fs.readFileSync(messagePath, "utf-8")) as Message[];
-            const unread = messages.filter((m) => !m.read);
+            const unread = messages.filter((m) => !m.read && (!parsed.data.traceId || m.traceId === parsed.data.traceId));
             
-            // Mark as read
-            fs.writeFileSync(messagePath, JSON.stringify(messages.map((m) => ({ ...m, read: true })), null, 2));
+            fs.writeFileSync(messagePath, JSON.stringify(messages.map((m) => (
+                !m.read && (!parsed.data.traceId || m.traceId === parsed.data.traceId) ? { ...m, read: true } : m
+            )), null, 2));
             
             if (unread.length === 0) return { content: [{ type: "text", text: "No new messages." }] };
             
@@ -114,7 +122,8 @@ export const messageHandlers = {
         if (!parsed.success) return { content: [{ type: "text", text: "Invalid agent name." }] };
         try {
             const frameworkDir = getFrameworkDir(projectRoot);
-            const agentName = parsed.data.agent.replace(/^@/, "");
+            const agentName = normalizeAgentName(parsed.data.agent);
+            if (!agentName) return { content: [{ type: "text", text: "Invalid agent name." }] };
             const messagePath = path.join(projectRoot, frameworkDir, "messages", `${agentName}.json`);
             if (!fs.existsSync(messagePath)) return { content: [{ type: "text", text: "Inbox empty." }] };
             const messages = JSON.parse(fs.readFileSync(messagePath, "utf-8")) as Message[];

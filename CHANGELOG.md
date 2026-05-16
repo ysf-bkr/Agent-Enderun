@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.2] - 2026-05-16
+
+### Added
+- **Auto-Wiring:** CLI now automatically patches `gemini-extension.json` with MCP server configuration.
+- **MCP Build Automation:** Integrated framework build into the `init` process.
+- **Zero-Config Onboarding:** Complete automated setup for Gemini and Cursor adapters.
+- **Directory Logic Fix:** Restored and clarified root `/docs` for user project documentation.
+
 ## [0.5.1] - 2026-05-15
 
 ### Added

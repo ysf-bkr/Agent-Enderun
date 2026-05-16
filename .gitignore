@@ -22,3 +22,5 @@ pnpm-debug.log*
 .codex/*.lock
 .enderun/*.lock
 .env
+.gemini/logs/*.json
+.gemini/*.lock

@@ -34,5 +34,5 @@ The project uses a modular Model Context Protocol (MCP) server for agent tooling
 ├── packages/           # Shared libraries
 │   ├── shared-types/   # Single source of truth for types
 │   └── framework-mcp/  # Core MCP tools and logic
-└── .enderun/           # Governance, memory, and logs
+└── {{FRAMEWORK_DIR}}/  # Governance, memory, and logs
 ```

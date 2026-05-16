@@ -1,4 +1,4 @@
-# 🏛️ Agent Enderun (v0.5.1) — The Supreme AI Governance Framework
+# 🏛️ Agent Enderun (v0.5.2) — The Supreme AI Governance Framework
 
 **The Supreme AI Governance & Orchestration Framework for Enterprise Development**
 
@@ -11,6 +11,11 @@
 ## Executive Summary
 
 Agent Enderun, yazılım ekipleri için tasarlanmış, **Anayasal Yönetişim (Constitutional Governance)** ve **Çoklu Ajan Orkestrasyonu (Multi-Agent Orchestration)** sağlayan kurumsal düzeyde bir framework'tür. 
+
+### 🚀 v0.5.2: Zero-Config & Auto-Wiring
+- **Auto-Wiring:** CLI automatically configures `gemini-extension.json` for MCP.
+- **Automated Build:** Framework now compiles itself during initialization.
+- **Smart Directory Logic:** Enhanced separation between framework and project docs.
 
 ### 🚀 v0.5.1: The Academy & Hermes Upgrade
 
@@ -74,6 +79,22 @@ Expected output:
 ✅ Agent logs initialized
 ✅ PROJECT_MEMORY.md found
 ```
+
+---
+
+## 🤖 Adapter Automation Levels
+
+Choose your AI adapter when running `init`. Each has a different automation level:
+
+| Adapter | Command | Automation | Notes |
+| :--- | :--- | :---: | :--- |
+| **Gemini** | `init gemini` | ✅ Full | MCP auto-wired into `gemini-extension.json`. One command, done. |
+| **Cursor** | `init cursor` | ✅ Full | `cursor.md` auto-synced to `.cursorrules`. One command, done. |
+| **Codex** | `init codex` | ✅ Full | Framework files placed in `.enderun/`. One command, done. |
+| **Claude** | `init claude` | ⚠️ Semi | After init, run one extra command shown in the terminal to register MCP tools. |
+
+> **Claude Note:** Claude Code requires explicit user approval for MCP tools due to its security model.
+> After `init claude`, copy and run the `claude config add ...` command shown in the terminal output.
 
 ---
 
@@ -496,6 +517,22 @@ agent{{FRAMEWORK_DIR}} trace:new "Kullanıcı Doğrulama Uygulaması" backend P1
 ```bash
 agent{{FRAMEWORK_DIR}} verify-contract
 ```
+
+---
+
+## 🤖 Adaptör Otomasyon Seviyeleri
+
+`init` komutunu çalıştırırken adaptörünüzü seçin. Her adaptörün otomasyon seviyesi farklıdır:
+
+| Adaptör | Komut | Otomasyon | Not |
+| :--- | :--- | :---: | :--- |
+| **Gemini** | `init gemini` | ✅ Tam | MCP `gemini-extension.json`'a otomatik yazılır. Tek komut, bitti. |
+| **Cursor** | `init cursor` | ✅ Tam | `cursor.md` otomatik olarak `.cursorrules`'a kopyalanır. Tek komut, bitti. |
+| **Codex** | `init codex` | ✅ Tam | Framework dosyaları `.enderun/` dizinine yerleştirilir. Tek komut, bitti. |
+| **Claude** | `init claude` | ⚠️ Yarı | Init sonrası terminalde gösterilen `claude config add ...` komutunu çalıştırmanız gerekir. |
+
+> **Claude Notu:** Claude Code, güvenlik modeli gereği MCP araçlarının kullanıcı tarafından açıkça onaylanmasını zorunlu kılar.
+> `init claude` sonrası terminal çıktısındaki `claude config add ...` komutunu kopyalayıp çalıştırın.
 
 ---
 

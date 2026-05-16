@@ -8,3 +8,5 @@
 | @frontend | IDLE | - | - |
 | @explorer | IDLE | - | - |
 | @git | IDLE | - | - |
+| @mobile | INACTIVE | Full Profile only | - |
+| @native | INACTIVE | Full Profile only | - |

@@ -1,6 +1,6 @@
 {
   "name": "@ai-enderun/shared-types",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Shared TypeScript types for AI-Enderun Framework. Ensures Contract-First synchronization between agents.",
   "author": "Yusuf BEKAR",
   "license": "MIT",
@@ -23,9 +23,9 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npx tsc -p tsconfig.json",
-    "build:watch": "npx tsc -p tsconfig.json --watch",
-    "typecheck": "npx tsc -p tsconfig.json --noEmit"
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "license": "MIT",
   "devDependencies": {

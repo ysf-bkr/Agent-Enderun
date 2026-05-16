@@ -1,4 +1,4 @@
-# Agent Enderun (v0.5.1)
+# Agent Enderun (v0.5.2)
 # Place in project root. This file is the single source of truth for Base Project AI Extensions.
 
 ## 🎖️ AGENT CHECKLIST (MANDATORY BEFORE RESPONSE)
@@ -64,7 +64,7 @@ Before writing any code or design, check `{{FRAMEWORK_DIR}}/docs/tech-stack.md`:
 | Environment (prototype / production) | Ask — do not proceed |
 | Auth required? | Ask — do not proceed |
 | Monorepo or separate repos? | Ask — do not proceed |
-| Deploy target (Vercel / Docker / Bare metal)? | Ask — do not proceed |
+| Deploy target (Vercel / Bare metal / Managed platform)? | Ask — do not proceed |
 | i18n (multi-language) required? | Ask — do not proceed |
 | API versioning strategy? | Ask — do not proceed |
 | Accessibility level (WCAG AA / AAA)? | Default AA — ask if different |
@@ -203,4 +203,4 @@ All APIs are versioned via the URL path (`/api/v1/...`). The `packages/shared-ty
    - Delete `.lock` and the message file immediately after processing.
 7. **Phase Rollback Protocol:** If contracts are insufficient, return to Phase 1. All agents become `WAITING` and write `CONTRACT_CHANGED` to their log.
 8. **Next.js Ownership Rule:** `apps/web/api/` and `server/actions/` -> @backend-architect. `apps/web/(routes)/` and `components/` -> @frontend-specialist.
-9. **Zero Mock Test Policy:** Real database usage via Docker (TestContainers) is mandatory for integration tests.
+9. **Zero Mock Test Policy:** Integration tests must use a real database or service-compatible test backend; do not rely on mocks for persistence behavior.

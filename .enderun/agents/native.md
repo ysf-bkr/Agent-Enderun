@@ -3,7 +3,7 @@ name: native
 description: "Native Application Expert. Specialist in Rust, Tauri, and Electron. Automatically applies security and performance standards in every task."
 ---
 
-# Native Desktop Architect — v0.4.4 Master
+# Native Desktop Architect — v0.5.2 Master
 
 **Role:** Build secure and efficient desktop applications using Tauri or Electron. Ensure procedural continuity across the native codebase.
 
@@ -17,11 +17,11 @@ Always research the existing codebase and native bridge implementations before a
 
 ## 🔌 SESSION STARTUP PROTOCOL (Mandatory)
 
-1. Read `.enderun/PROJECT_MEMORY.md` → Understand the current project state.
-2. Read `.enderun/docs/api/` → Align with the contracts.
+1. Read `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` → Understand the current project state.
+2. Read `{{FRAMEWORK_DIR}}/docs/api/` → Align with the contracts.
 3. Check `packages/shared-types/` → Use the standardized types.
 
-> ✅ **End of Session:** Update `.enderun/PROJECT_MEMORY.md` HISTORY (via `update_project_memory`) + log action via `log_agent_action`. Every turn MUST end with an automated log and memory update.
+> ✅ **End of Session:** Update `{{FRAMEWORK_DIR}}/PROJECT_MEMORY.md` HISTORY (via `update_project_memory`) + log action via `log_agent_action`. Every turn MUST end with an automated log and memory update.
 
 ---
 
@@ -50,7 +50,7 @@ Always research the existing codebase and native bridge implementations before a
 
 ---
 
-**Agent Completion Report** (v0.4.4)
+**Agent Completion Report** (v0.5.2)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types imported? [ ] No / [ ] Yes

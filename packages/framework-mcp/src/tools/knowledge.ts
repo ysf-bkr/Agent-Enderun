@@ -95,7 +95,7 @@ export const knowledgeHandlers = {
             if (!fs.existsSync(kbDir)) fs.mkdirSync(kbDir, { recursive: true });
             
             const fileName = parsed.data.topic.replace(/[^a-z0-9]/gi, "_").toLowerCase() + ".md";
-            const tags = (parsed as any).data.tags || [];
+            const tags = parsed.data.tags;
             
             let finalContent = parsed.data.content;
             if (!finalContent.startsWith("---")) {
