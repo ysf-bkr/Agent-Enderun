@@ -53,7 +53,7 @@ git clone https://github.com/ybekar/agent-enderun.git
 cd agent-enderun
 
 # Option B: Or use as npm package (when published)
-npx agent{{FRAMEWORK_DIR}} init gemini
+npx agent-enderun init gemini
 ```
 
 #### Step 2: Install Dependencies
@@ -68,12 +68,12 @@ npm run enderun:build
 
 #### Step 4: Verify Setup
 ```bash
-agent{{FRAMEWORK_DIR}} check
+agent-enderun check
 ```
 
 Expected output:
 ```
-✅ Framework active (v0.2.0)
+✅ Framework active (v0.5.2)
 ✅ MCP Server ready
 ✅ Shared types compiled
 ✅ Agent logs initialized
@@ -103,37 +103,37 @@ Choose your AI adapter when running `init`. Each has a different automation leve
 ### Initialize Your Project
 ```bash
 # Creates {{FRAMEWORK_DIR}}/ directory with governance files
-npx agent{{FRAMEWORK_DIR}} init gemini
+npx agent-enderun init gemini
 ```
 
 ### Check Project Health
 ```bash
 # Runs security audit, compliance check, and dependency analysis
-agent{{FRAMEWORK_DIR}} check
+agent-enderun check
 
 # Just security
-agent{{FRAMEWORK_DIR}} check:security
+agent-enderun check:security
 
 # Just compliance
-agent{{FRAMEWORK_DIR}} check:compliance
+agent-enderun check:compliance
 ```
 
 ### View Project Status
 ```bash
 # Shows current phase, active agents, and blockers
-agent{{FRAMEWORK_DIR}} status
+agent-enderun status
 ```
 
 ### Create a New Task
 ```bash
 # Creates a ULID-based trace for a new feature
-agent{{FRAMEWORK_DIR}} trace:new "Implement User Authentication" backend P1
+agent-enderun trace:new "Implement User Authentication" backend P1
 ```
 
 ### Verify API Contracts
 ```bash
 # Ensures shared-types and API docs are synchronized
-agent{{FRAMEWORK_DIR}} verify-contract
+agent-enderun verify-contract
 ```
 
 ---
@@ -269,8 +269,8 @@ Agents use the `search_knowledge_base` tool to find answers to common questions.
 - [ ] **npm 9+** installed (`npm --version`)
 - [ ] **Git** initialized (`git init`)
 - [ ] **Framework installed** (`npm install && npm run enderun:build`)
-- [ ] **Health check passed** (`agent{{FRAMEWORK_DIR}} check` shows ✅)
-- [ ] **First task created** (`agent{{FRAMEWORK_DIR}} trace:new "Your task" backend P1`)
+- [ ] **Health check passed** (`agent-enderun check` shows ✅)
+- [ ] **First task created** (`agent-enderun trace:new "Your task" backend P1`)
 - [ ] **Docs created** (add files to `docs/` for agents to read)
 - [ ] **MCP connected** (agents can now use tools)
 
@@ -291,7 +291,7 @@ Implement JWT-based authentication with refresh tokens.
 " > docs/requirements.md
 
 # Step 2: Create a task
-agent{{FRAMEWORK_DIR}} trace:new "Implement Auth Module" backend P1
+agent-enderun trace:new "Implement Auth Module" backend P1
 
 # Step 3: Agents read requirements and build
 # (They will automatically read docs/requirements.md)
@@ -302,7 +302,7 @@ agent{{FRAMEWORK_DIR}} trace:new "Implement Auth Module" backend P1
 ## 📁 Project Structure
 
 ```
-agent{{FRAMEWORK_DIR}}/
+agent-enderun/
 ├── README.md                          ← This file
 ├── package.json                       ← Root npm config
 ├── bin/
@@ -460,7 +460,7 @@ git clone https://github.com/ybekar/agent-enderun.git
 cd agent-enderun
 
 # Seçenek B: veya npm paketi olarak kullan
-npx agent{{FRAMEWORK_DIR}} init gemini
+npx agent-enderun init gemini
 ```
 
 #### Adım 2: Bağımlılıkları Yükle
@@ -475,12 +475,12 @@ npm run enderun:build
 
 #### Adım 4: Kurulumu Doğrula
 ```bash
-agent{{FRAMEWORK_DIR}} check
+agent-enderun check
 ```
 
 Beklenen çıktı:
 ```
-✅ Framework aktif (v0.2.0)
+✅ Framework aktif (v0.5.2)
 ✅ MCP Sunucu hazır
 ✅ Paylaşılan türler derlenmiş
 ✅ Agent logları başlatılmış
@@ -493,29 +493,29 @@ Beklenen çıktı:
 
 ### Projeyi Başlat
 ```bash
-npx agent{{FRAMEWORK_DIR}} init gemini
+npx agent-enderun init gemini
 ```
 
 ### Sağlık Durumunu Kontrol Et
 ```bash
-agent{{FRAMEWORK_DIR}} check                 # Tam kontrol
-agent{{FRAMEWORK_DIR}} check:security        # Sadece güvenlik
-agent{{FRAMEWORK_DIR}} check:compliance      # Sadece uyum
+agent-enderun check                 # Tam kontrol
+agent-enderun check:security        # Sadece güvenlik
+agent-enderun check:compliance      # Sadece uyum
 ```
 
 ### Proje Durumunu Görüntüle
 ```bash
-agent{{FRAMEWORK_DIR}} status
+agent-enderun status
 ```
 
 ### Yeni Görev Oluştur
 ```bash
-agent{{FRAMEWORK_DIR}} trace:new "Kullanıcı Doğrulama Uygulaması" backend P1
+agent-enderun trace:new "Kullanıcı Doğrulama Uygulaması" backend P1
 ```
 
 ### API Kontratlarını Doğrula
 ```bash
-agent{{FRAMEWORK_DIR}} verify-contract
+agent-enderun verify-contract
 ```
 
 ---
@@ -585,8 +585,8 @@ Agent Enderun **4 entegre katmandan** oluşur:
 - [ ] **npm 9+** yüklü (`npm --version`)
 - [ ] **Git** başlatılmış (`git init`)
 - [ ] **Framework yüklü** (`npm install && npm run enderun:build`)
-- [ ] **Sağlık kontrolü geçti** (`agent{{FRAMEWORK_DIR}} check` ✅ gösteriyor)
-- [ ] **İlk görev oluşturuldu** (`agent{{FRAMEWORK_DIR}} trace:new "Görev" backend P1`)
+- [ ] **Sağlık kontrolü geçti** (`agent-enderun check` ✅ gösteriyor)
+- [ ] **İlk görev oluşturuldu** (`agent-enderun trace:new "Görev" backend P1`)
 - [ ] **Doklar oluşturuldu** (`docs/` klasörüne dosya ekledim)
 - [ ] **MCP bağlandı** (ajanlar araçları kullanabiliyor)
 
@@ -607,7 +607,7 @@ JWT tabanlı kimlik doğrulama sistemi kurun.
 " > docs/requirements.md
 
 # Adım 2: Görev oluşturun
-agent{{FRAMEWORK_DIR}} trace:new "Auth Modülü Uygula" backend P1
+agent-enderun trace:new "Auth Modülü Uygula" backend P1
 
 # Adım 3: Ajanlar sizin için çalışır
 # (Otomatik olarak docs/requirements.md okurlar)
@@ -618,7 +618,7 @@ agent{{FRAMEWORK_DIR}} trace:new "Auth Modülü Uygula" backend P1
 ## 📁 Proje Yapısı
 
 ```
-agent{{FRAMEWORK_DIR}}/
+agent-enderun/
 ├── docs/                 ← Ajanların okuyacağı dokümantasyon
 ├── packages/
 │   ├── shared-types/     ← Paylaşılan türler (sözleşme)
@@ -687,19 +687,19 @@ Net adımlarla ve versiyon numarası ile sorun bildir.
 ### Lisans
 MIT © 2026 Yusuf BEKAR
 ```bash
-agent{{FRAMEWORK_DIR}} status
+agent-enderun status
 ```
 
 ### 4. Advanced Intelligence Commands
 ```bash
 # Run Security Audit
-agent{{FRAMEWORK_DIR}} check:security
+agent-enderun check:security
 
 # Generate Dependency Graph
-agent{{FRAMEWORK_DIR}} explorer:graph
+agent-enderun explorer:graph
 
 # Get Commit Suggestion
-agent{{FRAMEWORK_DIR}} git:commit [TRACE-ID]
+agent-enderun git:commit [TRACE-ID]
 ```
 
 ---
