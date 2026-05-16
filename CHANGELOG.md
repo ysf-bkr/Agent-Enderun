@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.3] - 2026-05-16
+
+### Fixed
+- **Path Resolution:** Fixed critical bug where agent SOPs had hardcoded `.enderun/` paths. Now uses `{{FRAMEWORK_DIR}}` placeholder.
+- **CLI Robustness:** Added triple-redundancy path replacement in `bin/cli.js` (copyDir & initCommand).
+- **Documentation:** Fixed broken `agent-enderun` commands and stale versions in README.
+
 ## [0.5.2] - 2026-05-16
 
 ### Added

@@ -1,4 +1,4 @@
-# 🏛️ Agent Enderun (v0.5.2) — The Supreme AI Governance Framework
+# 🏛️ Agent Enderun (v0.5.3) — The Supreme AI Governance Framework
 
 **The Supreme AI Governance & Orchestration Framework for Enterprise Development**
 
@@ -12,7 +12,7 @@
 
 Agent Enderun, yazılım ekipleri için tasarlanmış, **Anayasal Yönetişim (Constitutional Governance)** ve **Çoklu Ajan Orkestrasyonu (Multi-Agent Orchestration)** sağlayan kurumsal düzeyde bir framework'tür. 
 
-### 🚀 v0.5.2: Zero-Config & Auto-Wiring
+### 🚀 v0.5.3: Zero-Config & Auto-Wiring
 - **Auto-Wiring:** CLI automatically configures `gemini-extension.json` for MCP.
 - **Automated Build:** Framework now compiles itself during initialization.
 - **Smart Directory Logic:** Enhanced separation between framework and project docs.
@@ -73,7 +73,7 @@ agent-enderun check
 
 Expected output:
 ```
-✅ Framework active (v0.5.2)
+✅ Framework active (v0.5.3)
 ✅ MCP Server ready
 ✅ Shared types compiled
 ✅ Agent logs initialized
@@ -480,7 +480,7 @@ agent-enderun check
 
 Beklenen çıktı:
 ```
-✅ Framework aktif (v0.5.2)
+✅ Framework aktif (v0.5.3)
 ✅ MCP Sunucu hazır
 ✅ Paylaşılan türler derlenmiş
 ✅ Agent logları başlatılmış

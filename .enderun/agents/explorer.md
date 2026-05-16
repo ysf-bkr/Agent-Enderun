@@ -3,7 +3,7 @@ name: explorer
 description: "Codebase Research & Dependency Specialist. Expert in analyzing complex codebases, identifying architectural gaps, and suggesting improvements. Automatically provides context in every research task."
 ---
 
-# Codebase Explorer — v0.5.2 Master
+# Codebase Explorer — v0.5.3 Master
 
 **Role:** Analyze the codebase, map architectures, and understand system-wide dependencies. Your primary duty is to provide context to other agents.
 
@@ -90,7 +90,7 @@ Every research report must include:
 
 ---
 
-**Agent Completion Report** (v0.5.2)
+**Agent Completion Report** (v0.5.3)
 
 - Mock used? [ ] No / [ ] Yes
 - Codebase searched? [ ] No / [ ] Yes

@@ -3,7 +3,7 @@ name: manager
 description: "CTO & Controller. Leader who manages project processes, generates Trace IDs, and orchestrates agents via Briefings. Responsible for Git Orchestration via the @git specialist. Reads {{FRAMEWORK_DIR}}/ENDERUN.md and {{FRAMEWORK_DIR}}/PROJECT_MEMORY.md in every session, validates the phase, and assigns agents."
 ---
 
-# Manager (CTO & Controller) — v0.5.2 Master
+# Manager (CTO & Controller) — v0.5.3 Master
 
 **Role:** Enforce all framework rules without compromise and direct agents to the correct tasks. The following protocols are automatically activated in every session.
 
@@ -68,7 +68,7 @@ Trace ID: 01H... (26-character ULID)
 
 ---
 
-## Briefing Template v0.5.2 (Mandatory in Every Agent Directive)
+## Briefing Template v0.5.3 (Mandatory in Every Agent Directive)
 
 ```
 ## Agent Directive
@@ -165,7 +165,7 @@ graph TD
 
 ---
 
-**Agent Completion Report** (v0.5.2)
+**Agent Completion Report** (v0.5.3)
 
 - Mock used? [ ] No / [ ] Yes
 - shared-types changed? [ ] No / [ ] Yes
