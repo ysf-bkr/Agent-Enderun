@@ -165,6 +165,7 @@ function mergePackageJson(targetPath, sourcePath) {
   const sourceDevDeps = sourcePkg.devDependencies || {};
   targetPkg.devDependencies = sanitizeDeps({
     ...targetPkg.devDependencies,
+    "agent-enderun": `^${sourcePkg.version}`,
     ...(sourceDevDeps["@modelcontextprotocol/sdk"] ? {"@modelcontextprotocol/sdk": sourceDevDeps["@modelcontextprotocol/sdk"]} : {}),
     ...(sourceDevDeps["zod"] ? {"zod": sourceDevDeps["zod"]} : {}),
     ...(sourceDevDeps["ts-morph"] ? {"ts-morph": sourceDevDeps["ts-morph"]} : {}),
