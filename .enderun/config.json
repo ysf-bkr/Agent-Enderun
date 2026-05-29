@@ -1,0 +1,12 @@
+{
+  "logLevel": "info",
+  "outputFormat": "text",
+  "defaultProfile": "Lightweight",
+  "version": "0.9.1",
+  "paths": {
+    "backend": "apps/backend",
+    "frontend": "apps/web",
+    "docs": "docs",
+    "tests": "tests"
+  }
+}

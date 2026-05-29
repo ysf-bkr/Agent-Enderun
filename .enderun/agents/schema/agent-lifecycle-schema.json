@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Lifecycle State Machine",
+  "description": "Defines the valid states and transitions for every agent in the Enderun Army. All agents MUST respect these transitions.",
+  "version": "1.0.0",
+  "states": {
+    "IDLE": {
+      "description": "Agent is available and waiting for a briefing.",
+      "allowedTransitions": [
+        "BRIEFED"
+      ]
+    },
+    "BRIEFED": {
+      "description": "Agent has received a formal briefing from @manager or @orchestrator and is preparing to execute.",
+      "allowedTransitions": [
+        "EXECUTING",
+        "WAITING",
+        "BLOCKED"
+      ]
+    },
+    "EXECUTING": {
+      "description": "Agent is actively working on its assigned task.",
+      "allowedTransitions": [
+        "DONE",
+        "BLOCKED",
+        "ERROR",
+        "WAITING"
+      ]
+    },
+    "WAITING": {
+      "description": "Agent is blocked by a dependency (e.g., waiting for @backend to define a contract before @frontend can proceed).",
+      "allowedTransitions": [
+        "EXECUTING",
+        "BLOCKED"
+      ],
+      "metadata": {
+        "blockedByField": "The agent ID that this agent is waiting on, e.g. '@backend'",
+        "estimatedUnblockAt": "ISO-8601 timestamp, optional"
+      }
+    },
+    "BLOCKED": {
+      "description": "Agent cannot proceed and requires @manager escalation. Differs from WAITING: WAITING is expected, BLOCKED is a problem.",
+      "allowedTransitions": [
+        "BRIEFED",
+        "IDLE"
+      ],
+      "metadata": {
+        "escalationRequired": true,
+        "blockReason": "Mandatory field — must describe why the agent is blocked"
+      }
+    },
+    "DONE": {
+      "description": "Agent has completed its task successfully. Audit log must be written before entering this state.",
+      "allowedTransitions": [
+        "IDLE"
+      ],
+      "metadata": {
+        "auditLogRequired": true,
+        "memoryUpdateRequired": true
+      }
+    },
+    "ERROR": {
+      "description": "Agent encountered an unrecoverable error. Requires @manager intervention.",
+      "allowedTransitions": [
+        "IDLE"
+      ],
+      "metadata": {
+        "escalationRequired": true,
+        "errorReportRequired": true
+      }
+    }
+  },
+  "rules": [
+    "An agent MUST NOT skip states (e.g., cannot go from IDLE directly to EXECUTING).",
+    "An agent in BLOCKED state MUST write a blockReason to STATUS.md before transitioning.",
+    "An agent in DONE state MUST write an audit log entry via log_agent_action before transitioning to IDLE.",
+    "WAITING agents are automatically checked every 30 seconds by @orchestrator for dependency resolution.",
+    "ERROR state always triggers a @manager notification via Hermes channel."
+  ],
+  "timeouts": {
+    "BRIEFED": "5m",
+    "EXECUTING": "30m",
+    "WAITING": "60m",
+    "BLOCKED": "escalate_immediately"
+  }
+}

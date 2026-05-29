@@ -1,0 +1,133 @@
+{
+  "version": "1.0.0",
+  "description": "Agent Enderun Army Memory Graph. Tracks all agent interactions, delegations, and communication edges across the entire army.",
+  "generatedAt": "2026-05-25T17:00:00Z",
+  "updatedAt": "2026-05-25T17:00:00Z",
+  "nodes": [
+    {
+      "id": "@manager",
+      "state": "IDLE",
+      "lastAction": "Framework initialized",
+      "activeTrace": null,
+      "healthScore": 9.5,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@orchestrator",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9.8,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@backend",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9.2,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@frontend",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@security",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9.3,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@qa",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9.1,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@devops",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@analyst",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9.6,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@explorer",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9.4,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@git",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 9.1,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@mobile",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 8.8,
+      "totalActionsThisSession": 0
+    },
+    {
+      "id": "@native",
+      "state": "IDLE",
+      "lastAction": null,
+      "activeTrace": null,
+      "healthScore": 8.9,
+      "totalActionsThisSession": 0
+    }
+  ],
+  "edges": [],
+  "schema": {
+    "nodeFields": [
+      "id",
+      "state",
+      "lastAction",
+      "activeTrace",
+      "healthScore",
+      "totalActionsThisSession"
+    ],
+    "edgeFields": [
+      "id",
+      "from",
+      "to",
+      "type",
+      "traceId",
+      "timestamp",
+      "metadata"
+    ],
+    "edgeTypes": [
+      "DELEGATED",
+      "ESCALATED",
+      "BLOCKED_BY",
+      "UNBLOCKED_BY",
+      "BROADCAST",
+      "COLLABORATED",
+      "REVIEWED"
+    ]
+  }
+}

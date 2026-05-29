@@ -1,0 +1,88 @@
+{
+  "name": "agent-enderun",
+  "version": "0.9.1",
+  "description": "The Supreme AI Governance & Orchestration Framework for Enterprise Development",
+  "author": "Yusuf BEKAR",
+  "license": "MIT",
+  "readme": "README.md",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ysf-bkr/Agent-Enderun.git"
+  },
+  "homepage": "https://github.com/ysf-bkr/Agent-Enderun#readme",
+  "bugs": {
+    "url": "https://github.com/ysf-bkr/Agent-Enderun/issues"
+  },
+  "keywords": [
+    "ai",
+    "governance",
+    "orchestration",
+    "agents",
+    "mcp",
+    "typescript",
+    "framework"
+  ],
+  "workspaces": [
+    "apps/*",
+    "framework-mcp"
+  ],
+  "bin": {
+    "agent-enderun": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "dist",
+    "framework-mcp/dist",
+    "framework-mcp/package.json",
+    ".enderun",
+    "ENDERUN.md",
+    "README.md",
+    "LICENSE",
+    "mcp.json",
+    "tsconfig.json",
+    "eslint.config.js",
+    "panda.config.ts",
+    "gemini.md",
+    "claude.md",
+    "grok.md",
+    "agent.md",
+    "docs"
+  ],
+  "scripts": {
+    "enderun:build": "npm run build --prefix framework-mcp",
+    "enderun:test": "vitest run",
+    "enderun:test:watch": "vitest",
+    "enderun:status": "agent-enderun status",
+    "enderun:trace": "agent-enderun trace:new",
+    "enderun:verify": "agent-enderun verify-contract",
+    "enderun:check": "agent-enderun check",
+    "enderun:lint": "eslint .",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run enderun:build",
+    "clean": "rm -rf node_modules apps/*/node_modules framework-mcp/node_modules apps/*/dist framework-mcp/dist"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@pandacss/dev": "^1.11.1",
+    "@types/node": "^25.9.1",
+    "concurrently": "^9.2.1",
+    "eslint": "^10.4.0",
+    "globals": "^17.6.0",
+    "ts-morph": "^28.0.0",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.0",
+    "vitest": "^4.1.7",
+    "zod": "^3.24.2"
+  },
+  "enderun": {
+    "version": "0.9.0",
+    "initializedAt": "2026-05-29T13:21:18.516Z"
+  }
+}

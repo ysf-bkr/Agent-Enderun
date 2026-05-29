@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "agent-enderun": {
+      "command": "node",
+      "args": ["framework-mcp/dist/index.js"],
+      "env": {}
+    }
+  }
+}

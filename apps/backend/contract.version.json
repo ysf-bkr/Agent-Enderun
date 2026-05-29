@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-05-29T21:03:50.554Z",
+  "contract_hash": "d87720b686ac9cb1574fc695b343af865155f22cb98a73ba98ba24c641dbaa96",
+  "breaking_changes": [
+    {
+      "version": "1.0.0",
+      "description": "Initial stable release"
+    }
+  ],
+  "deprecated_versions": []
+}

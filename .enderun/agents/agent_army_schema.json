@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Enderun Army Schema",
+  "description": "Strongly-typed schema for all specialist agents in the Enderun Army. Every agent.json must validate against this. v1.0: Removed enum lock on agent names to allow new specialist agents.",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "name",
+    "capability",
+    "role",
+    "specialization",
+    "rules",
+    "permittedDirectories",
+    "hermesChannels"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^@[a-z][a-z0-9_-]*$",
+      "minLength": 2,
+      "maxLength": 32,
+      "description": "Agent identifier. Must start with @ followed by lowercase letters/numbers/hyphens. e.g. @manager, @backend, @security"
+    },
+    "capability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Numeric capability score (0-10). Used by @orchestrator to assign tasks optimally."
+    },
+    "role": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short human-readable role title. e.g. 'Orchestration & Governance (Team-Lead)'"
+    },
+    "specialization": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Detailed description of the agent's area of expertise."
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Mandatory behavioral rules the agent must never violate."
+    },
+    "permittedDirectories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Directories this agent is authorized to read/write. Any access outside these requires @manager approval."
+    },
+    "hermesChannels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^@[a-z][a-z0-9_-]*->(@[a-z][a-z0-9_-]*|\\*)$",
+        "description": "Format: '@sender->@receiver' or '@sender->*' for broadcasts"
+      },
+      "description": "Authorized inter-agent communication channels for this agent."
+    },
+    "promptFile": {
+      "type": "string",
+      "description": "Relative path to the detailed prompt/instructions file inside the agent folder. Default: 'prompt.md'"
+    },
+    "checklists": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "description": "Named checklists the agent must execute. e.g. 'beforeEveryResponse', 'beforeDelegating'"
+    },
+    "stateMachine": {
+      "type": "object",
+      "description": "Reference to the lifecycle schema. See agents/schema/agent-lifecycle-schema.json",
+      "properties": {
+        "schemaRef": {
+          "type": "string",
+          "default": "../schema/agent-lifecycle-schema.json"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "core",
+          "specialist",
+          "infrastructure",
+          "governance",
+          "quality",
+          "security",
+          "orchestration"
+        ]
+      },
+      "description": "Classification tags for filtering and grouping agents."
+    }
+  },
+  "additionalProperties": false
+}
