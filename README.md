@@ -1,6 +1,6 @@
 # 🏛️ Agent Enderun — Enterprise AI Governance & Autonomous Orchestration Framework
 
-> **Stable Release:** v0.9.1  
+> **Stable Release:** v0.9.2  
 > **Author:** Yusuf BEKAR  
 > **Trace ID:** `01HGT8J5E2N0W0W0W0W0W0W0W4`  
 > **System Status:** 🟢 All Systems Operational | Build Compile: Clean | Type-Safety: 100% Verified

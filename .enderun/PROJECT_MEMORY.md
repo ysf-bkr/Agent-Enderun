@@ -38,5 +38,7 @@
 - **DYNAMIC PATH RESOLUTION ALIGNMENT:** Eliminated all hardcoded framework and application directories, introducing configuration-driven dynamic path mapping via `paths` inside `config.json`.
 - **COMPILER & TYPE SAFETY REMEDIATION:** Fixed type-safety signature mismatches in `fs.ts` and const reassignment issues in `log.ts`, ensuring perfect TypeScript compiler build verification with zero errors.
 - **ESLINT RUNTIME ALIGNMENT:** Patched ESLint to completely ignore hidden framework files, preventing EPERM scan crashes under sandboxed runtime restrictions.
+- **VERSION BUMP:** Framework version updated to v0.9.2.
+- **PACKAGING BUG FIX:** Included entire `framework-mcp` folder inside npm packaging files configuration, resolving compiler input errors during downstream workspace installations.
 
 

@@ -1,6 +1,6 @@
 {
   "name": "agent-enderun",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "The Supreme AI Governance & Orchestration Framework for Enterprise Development",
   "author": "Yusuf BEKAR",
   "license": "MIT",
@@ -34,8 +34,7 @@
     "bin",
     "src",
     "dist",
-    "framework-mcp/dist",
-    "framework-mcp/package.json",
+    "framework-mcp",
     ".enderun",
     "ENDERUN.md",
     "README.md",
