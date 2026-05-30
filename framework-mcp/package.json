@@ -1,6 +1,6 @@
 {
   "name": "@agent-enderun/mcp",
-  "version": "0.9.0",
+  "version": "0.9.3",
   "description": "Agent Enderun Model Context Protocol (MCP) Server",
   "type": "module",
   "scripts": {

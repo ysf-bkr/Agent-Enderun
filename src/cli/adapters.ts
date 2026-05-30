@@ -59,6 +59,8 @@ export const ADAPTERS: Record<AdapterId, AdapterConfig> = {
  * and internal standards for Antigravity (.gemini/antigravity/).
  */
 export const FRAMEWORK_DIR_CANDIDATES = [
+    ".gemini/antigravity",
+    ".gemini/antigravity-cli",
     ".gemini",
     ".claude",
     ".agent",

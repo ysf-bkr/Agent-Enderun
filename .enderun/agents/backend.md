@@ -205,6 +205,7 @@ Every "mutation" (CREATE, UPDATE, DELETE) MUST trigger an audit log entry.
 - **Traceability:** Link every audit log to the active **Trace ID**.
 - **State Capture:** For updates, capture both `previousState` and `newState`.
 - **User Context:** Identify the `UserID` performing the action.
+- **Audit Scan Compliance:** Mutation handlers are audited via AST scans or code analysis by @quality to ensure they contain an active `AuditService.log()` invocation. Any mutation handler missing this call will fail the verification gate.
 
 ---
 

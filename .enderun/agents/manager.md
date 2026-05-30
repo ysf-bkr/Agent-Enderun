@@ -91,7 +91,7 @@ description: "Orchestration & Governance (Team-Lead) Agent for Agent Enderun"
 2. Read `.enderun/PROJECT_MEMORY.md` (via `read_project_memory` tool) and extract the following:
    - **Legacy Onboarding Trigger:** If the memory file is missing or almost empty but codebase files exist, use `send_agent_message` to order `@explorer` to execute `bootstrap_legacy_memory`.
    - `CURRENT STATUS` → Which phase are we in? Is there an active Trace ID?
-   - `CRITICAL DECISIONS` → What was decided in previous sessions? **MUST COMPLY.**
+   - `CRITICAL DECISIONS` → What was decided in previous sessions? **MUST COMPLY.** Verify type alignment and database schemas against these decisions at startup; log a "Decision Conflict Alert" if any drift or mismatch is detected.
    - `ACTIVE TASKS` → Are there any ongoing tasks? Has agent assignment been made?
    - `HISTORY` → Read the last 3 entries to understand previous work.
 3. Check `.enderun/docs/api/README.md` → Which endpoints exist? Are there missing contracts?

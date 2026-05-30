@@ -185,7 +185,8 @@ const { data, loading, error, update, remove, refetch } = useDetailPage<User>({
 **Agent Rule:** 
 - Never perform direct fetch on detail pages. Always use `useDetailPage`.
 - Loading + error states must be managed for update and delete operations.
-- If optimistic updates are used, a rollback mechanism must be added on error.
+- **Rollback Discipline:** If optimistic updates are utilized, a strict rollback mechanism must be integrated. Save the previous state to a local reference before modifying UI state, and restore this exact state inside the `catch` block of the async operation, providing immediate visual feedback to the user on failure.
+
 
 #### 3. useFormPage (For Form Pages)
 Standard hook for form pages and modal forms.

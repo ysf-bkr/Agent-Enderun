@@ -43,3 +43,43 @@ export function verifyApiContractCommand() {
         process.exit(1);
     }
 }
+
+/**
+ * Update and synchronize type safety between backend and frontend contracts.
+ */
+export function updateApiContractCommand() {
+    const projectRoot = process.cwd();
+    const pathsMap = getConfiguredPaths();
+    const sharedDir = path.join(projectRoot, pathsMap.backend, "src/types");
+    const contractPath = path.join(projectRoot, pathsMap.backend, "contract.version.json");
+
+    if (!fs.existsSync(sharedDir)) {
+        console.error("❌ Error: API types directory missing.");
+        return;
+    }
+
+    const walk = (d: string): string[] => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => {
+        const fullPath = path.join(d, e.name);
+        return e.isDirectory() ? walk(fullPath) : (e.name.endsWith(".ts") ? [fullPath] : []);
+    });
+
+    const hash = crypto.createHash("sha256");
+    for (const filePath of walk(sharedDir).sort()) {
+        hash.update(path.relative(projectRoot, filePath));
+        hash.update("\0");
+        hash.update(fs.readFileSync(filePath));
+        hash.update("\0");
+    }
+
+    const currentHash = hash.digest("hex");
+    
+    const contractData = {
+        contract_hash: currentHash,
+        last_updated: new Date().toISOString()
+    };
+    
+    fs.mkdirSync(path.dirname(contractPath), { recursive: true });
+    fs.writeFileSync(contractPath, JSON.stringify(contractData, null, 2));
+    console.warn(`✅ Contract successfully synchronized. New hash: ${currentHash}`);
+}
+

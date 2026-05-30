@@ -11,7 +11,7 @@ import { execSync } from "child_process";
 const server = new Server(
     {
         name: "agent-enderun-mcp",
-        version: "0.9.0",
+        version: "0.9.3",
     },
     {
         capabilities: {
@@ -107,6 +107,27 @@ const TOOLS: any[] = [
             required: ["to", "category", "content", "traceId"],
         },
     },
+    {
+        name: "log_agent_action",
+        description: "Log an agent action to the framework logs.",
+        inputSchema: {
+            type: "object",
+            properties: {
+                agent: { type: "string", description: "The agent name (e.g., @manager, @backend)" },
+                action: { type: "string", description: "Action type or name" },
+                traceId: { type: "string", description: "The active Trace ID" },
+                status: { type: "string", enum: ["SUCCESS", "FAILURE"], description: "The status of the action" },
+                summary: { type: "string", description: "Brief description of the action taken" },
+                findings: { type: "array", items: { type: "string" }, description: "Optional findings or details" }
+            },
+            required: ["agent", "action", "traceId", "status", "summary"]
+        }
+    },
+    {
+        name: "update_contract_hash",
+        description: "Re-generate and synchronize the backend contract SHA-256 hash.",
+        inputSchema: { type: "object", properties: {} }
+    }
 ];
 
 server.onRequest(ListToolsRequestSchema, async () => {
@@ -206,6 +227,57 @@ server.onRequest(CallToolRequestSchema, async (request: any) => {
             fs.appendFileSync(messagePath, JSON.stringify(message) + "\n");
         
             return { content: [{ type: "text", text: `✅ Message sent to ${to}` }] };
+        }
+
+        case "log_agent_action": {
+            interface LogAgentActionArgs {
+                agent: string;
+                action: string;
+                traceId: string;
+                status: "SUCCESS" | "FAILURE";
+                summary: string;
+                findings?: string[];
+            }
+            const { agent, action, traceId, status, summary, findings } = args as any as LogAgentActionArgs;
+            
+            const candidates = [
+                ".gemini/antigravity",
+                ".gemini/antigravity-cli",
+                ".gemini",
+                ".claude",
+                ".agent",
+                ".enderun",
+            ];
+            let frameworkDir = ".enderun";
+            for (const c of candidates) {
+                if (fs.existsSync(path.join(projectRoot, c))) {
+                    frameworkDir = c;
+                    break;
+                }
+            }
+            
+            const agentName = agent.replace("@", "");
+            const logPath = path.join(projectRoot, frameworkDir, "logs", `${agentName}.json`);
+            
+            const logEntry = {
+                timestamp: new Date().toISOString(),
+                agent,
+                action,
+                requestId: traceId,
+                status,
+                summary,
+                findings: findings || []
+            };
+            
+            fs.mkdirSync(path.dirname(logPath), { recursive: true });
+            fs.appendFileSync(logPath, JSON.stringify(logEntry) + "\n");
+            
+            return { content: [{ type: "text", text: `✅ Action logged for ${agent} to ${path.join(frameworkDir, "logs", `${agentName}.json`)}` }] };
+        }
+
+        case "update_contract_hash": {
+            const output = execSync("npx agent-enderun update-contract").toString();
+            return { content: [{ type: "text", text: output }] };
         }
 
         default:

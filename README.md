@@ -1,6 +1,6 @@
 # 🏛️ Agent Enderun — Enterprise AI Governance & Autonomous Orchestration Framework
 
-> **Stable Release:** v0.9.2  
+> **Stable Release:** v0.9.3  
 > **Author:** Yusuf BEKAR  
 > **Trace ID:** `01HGT8J5E2N0W0W0W0W0W0W0W4`  
 > **System Status:** 🟢 All Systems Operational | Build Compile: Clean | Type-Safety: 100% Verified
@@ -11,37 +11,31 @@
 
 **Agent Enderun**, sıradan bir kod şablon üreteci veya basit bir AI asistanı değildir; karmaşık, ölçeklenebilir ve kurumsal (enterprise) düzeydeki yazılım projeleri için özel olarak tasarlanmış bir **Yapay Zeka Yönetişimi ve Otonom Ordu Komuta Sistemidir**.
 
-Sürüm **v0.9.1** itibarıyla sistem; kendi hafızasını yönetebilen, monorepo proje yollarını dinamik olarak haritalayan ve farklı yapay zeka ekosistemlerini anayasal bir disiplin altında birleştiren **"Yaşayan Bir Mühendislik Organizması"** haline getirilmiştir.
+Sürüm **v0.9.2** itibarıyla sistem; kendi hafızasını yönetebilen, monorepo proje yollarını dinamik olarak haritalayan, tüm ajan seanslarını güvenli şekilde günlükleyen ve farklı yapay zeka ekosistemlerini anayasal bir disiplin altında birleştiren **"Yaşayan Bir Mühendislik Organizması"** haline getirilmiştir.
 
 ---
 
-### 🚀 Sürüm v0.9.1 İle Gelen Devrimsel Yenilikler
+### 🚀 Sürüm v0.9.2 İle Gelen Devrimsel Yenilikler
 
-1. **Dinamik Framework Klasör Keşfi (Multi-Adapter Engine):**
-   * Artık `.enderun` klasörü sistemde katı olarak kodlanmış (hardcoded) tek dizin değildir.
-   * CLI aracı; çalışma anında projede aktif olan framework klasörünü `[.gemini, .claude, .agent, .enderun]` adayları arasından otomatik olarak keşfeder. Bu sayede her IDE veya yapay zeka ajanı (Claude Code, Gemini CLI, Grok) kendi izole klasöründe çakışma yaşamadan çalışabilir.
+1. **`log_agent_action` (Otonom Telemetri ve Seans Günlüğü):**
+   * Tüm uzman ajanların anayasaya göre seans sonunda çalıştırmak zorunda olduğu `log_agent_action` MCP aracı sisteme entegre edildi.
+   * Ajan faaliyetlerini otomatik olarak `.enderun/logs/{agent}.json` veya `.gemini/antigravity-cli/logs/{agent}.json` altında güvenle kayıt altına alan merkezi kilit sistemli telemetri altyapısı kuruldu.
 
-2. **Yapılandırılabilir Klasör Haritalaması (Dynamic Paths Map):**
-   * Projede kullanılan `backend`, `frontend`, `docs` ve `tests` dizin yolları artık dinamik olarak yönetilir.
-   * Keşfedilen aktif framework klasöründeki `config.json` içerisinde yer alan `paths` bloğu projenin Single Source of Truth (SSOT) yol haritasıdır:
-     ```json
-     "paths": {
-       "backend": "apps/backend",
-       "frontend": "apps/web",
-       "docs": "docs",
-       "tests": "tests"
-     }
-     ```
-   * Tüm sözleşme doğrulama (`verify-contract`), sistem bütünlük denetimi (`check`) ve kod üreticileri bu yapılandırmayı tüketir.
+2. **`update-contract` (Sözleşme Senkronizasyon Otomasyonu):**
+   * Backend tipleri değiştiğinde SHA-256 hash'ini otomatik hesaplayıp `apps/backend/contract.version.json` dosyasına yazan `update-contract` CLI komutu ve `update_contract_hash` MCP aracı eklendi.
+   * Bu sayede frontend/backend arasındaki tip uyuşmazlığı tespiti ve senkronizasyonu otonom olarak yapılabilir hale getirildi.
 
-3. **Hermes Otonom Orkestrasyon Döngüsü (`orchestrate` / `loop`):**
-   * Yapay zeka ajanlarının asenkron olay tabanlı (event-driven) haberleşme kanalı olan **Hermes Message Broker** devreye alındı.
-   * `agent-enderun orchestrate` komutu, kuyruktaki asenkron delege görevleri tarar, hedef ajanın durumunu ordu paneli üzerinde (`STATUS.md`) anlık olarak `EXECUTING` yapar ve görevi otonom olarak yönlendirir.
+3. **İleri Seviye Klasör Keşfi (Antigravity Entegrasyonu):**
+   * Dizin tespit mekanizmasındaki aday listesine `.gemini/antigravity` ve `.gemini/antigravity-cli` gibi iç içe geçmiş (nested) yollar eklenerek Antigravity (IDE & CLI) çalışma ortamları için 100% hatasız bir entegrasyon sağlandı.
 
-4. **Mükemmel Tip Güvenliği & Linter Uyumluluğu:**
-   * Tüm CLI ve yardımcı betikler (`update-contract.js`, `init-check.js`) dinamik yol mimarisine entegre edildi.
-   * `npx tsc --noEmit` tip kontrolü sıfır hata ile %100 temiz çalışır.
-   * `eslint.config.js` kuralları, izole edilmiş çalışma anı ortamlarında (sandbox) oluşabilecek EPERM (erişim engellendi) hatalarını önlemek amacıyla gizli framework dizinlerini tamamen yoksayacak şekilde kusursuzlaştırıldı.
+4. **Dinamik Framework Klasör Keşfi (Multi-Adapter Engine):**
+   * CLI aracı; çalışma anında projede aktif olan framework klasörünü `[.gemini/antigravity, .gemini/antigravity-cli, .gemini, .claude, .agent, .enderun]` adayları arasından otomatik olarak keşfeder.
+
+5. **Yapılandırılabilir Klasör Haritalaması (Dynamic Paths Map):**
+   * Projede kullanılan `backend`, `frontend`, `docs` ve `tests` dizin yolları artık dinamik olarak yönetilir. Bilgiler `config.json` içerisindeki `paths` bloğundan okunur.
+
+6. **Hermes Otonom Orkestrasyon Döngüsü (`orchestrate` / `loop`):**
+   * Yapay zeka ajanlarının asenkron olay tabanlı (event-driven) haberleşme kanalı olan **Hermes Message Broker** devreye alındı. `agent-enderun orchestrate` komutu asenkron delege görevleri otonom olarak yönlendirir.
 
 ---
 
@@ -62,10 +56,10 @@ Tüm operasyonlar, uzmanlık alanlarına göre ayrılmış ve Hermes protokolüy
 | Ajan | Uzmanlık Rolü | Temel Sorumluluğu |
 | :--- | :--- | :--- |
 | **`@manager`** | Komuta & Strateji | Görev dağılımı (DAG), hafıza yönetimi (`PROJECT_MEMORY.md`), anayasa koruyuculuğu. |
-| **`@quality`** | Kalite, Güvenlik & Analiz | AST zafiyet taramaları, anayasal uyum denetimi, kod inceleme checklistleri, test standartları kapısı. |
+| **`@quality`** | Kalite, Güvenlik & Analiz | AST zafiyet taramaları, anayasal uyum denetimi, kod inceleme checklistleri, test standartları kapısı, CI/CD kapsam denetimi. |
 | **`@database`** | Veritabanı Mimarisi | Veritabanı şemaları, migration kuralları, index optimizasyonları ve veri tohumlama (seeding). |
-| **`@backend`** | İş Mantığı (Domain Logic) | API tasarımı, branded types, katmanlı mimari (Route -> Controller -> Service -> Repository). |
-| **`@frontend`** | Akıcı Responsive UI | Panda CSS tasarımı, responsive-first (mobil-öncelikli) arayüzler, custom React kancaları. |
+| **`@backend`** | İş Mantığı (Domain Logic) | API tasarımı, branded types, katmanlı mimari (Route -> Controller -> Service -> Repository), audit günlüğü kontrolü. |
+| **`@frontend`** | Akıcı Responsive UI | Panda CSS tasarımı, responsive-first arayüzler, custom React kancaları, rollback disiplini yönetimi. |
 | **`@devops`** | Altyapı & Canlı Dağıtım | Native Node.js deploymentları, rollback planları, telemetri ve izleme (monitoring) kurulumları. |
 | **`@explorer`** | Kod Analizi & Keşif | Kod tabanı analizi, bağımlılık grafikleri, legacy onboarding stratejileri. |
 | **`@git`** | Sürüm Kontrolü | Trace ID uyumlu commit yönetimi, sürüm etiketleme ve dal (branch) hijyeni. |
@@ -88,12 +82,13 @@ Tüm operasyonlar, uzmanlık alanlarına göre ayrılmış ve Hermes protokolüy
 
 | Komut | Yetkili Ajan | Açıklama |
 | :--- | :--- | :--- |
-| `init [adapter]` | `@manager` | Seçilen IDE/Agent adaptörünü (`gemini`, `claude`, `grok`, `antigravity`) yerel projenize kurar. |
+| `init [adapter]` | `@manager` | Seçilen IDE/Agent adaptörünü (`gemini`, `claude`, `grok`, `antigravity-cli`) yerel projenize kurar. |
 | `status` | `@manager` | Aktif aşamayı, aktif Trace ID'yi ve ajanların anlık ordu durumlarını listeler. |
 | `check` | `@quality` | Anayasal sağlık kontrolü, dosya bütünlüğü ve dizin doğrulaması yapar. |
 | `trace:new [desc]` | `@manager` | Yeni bir Trace ID başlatarak görev zincirini ve izlenebilirliği tetikler. |
 | `orchestrate` / `loop` | `@manager` | Canlı Hermes mesaj yönlendirici döngüsünü başlatarak asenkron ajan görevlerini yönlendirir. |
-| `verify-contract` | `@backend` | Backend ile frontend arasındaki tip uyumluluğunu kilitler ve doğrular. |
+| `verify-contract` | `@backend` | Backend ile frontend arasındaki tip uyumluluğunu doğrular ve denetler. |
+| `update-contract` | `@backend` | backend tip değişikliklerine göre güncel SHA-256 hash sözleşmesini otomatik üretir. |
 | `create-app [idea]` | `@manager` | Doğal dildeki talep ve gereksinimlerden kurumsal monorepo uygulaması oluşturur. |
 
 ---
@@ -102,7 +97,7 @@ Tüm operasyonlar, uzmanlık alanlarına göre ayrılmış ve Hermes protokolüy
 
 Agent Enderun, npmjs üzerinde paketlenmeye kusursuz şekilde hazırdır:
 * **Hazır Derleme Otomasyonu (`prepublishOnly`):** Paket yayına gönderilmeden önce `"prepublishOnly"` kancası tetiklenir ve `framework-mcp` (MCP Server) en güncel haliyle derlenerek dağıtıma hazır hale getirilir.
-* **CLI Kaynak Bütünlüğü:** Tüm TypeScript derleme kaynakları (`src/`) paket içeriğine dahil edilmiştir, böylece son kullanıcı yüklemelerinde çalışma anı çalışma çökmeleri önlenmiştir.
+* **CLI Kaynak Bütünlüğü:** Tüm TypeScript derleme kaynakları (`src/`) paket içeriğine dahil edilmiştir.
 
 Yerel projenizi test etmek veya npm link üzerinden kurmak için:
 ```bash
@@ -129,37 +124,31 @@ npx agent-enderun init gemini
 
 **Agent Enderun** is not just a boilerplate code generator or a simple AI assistant; it is a state-of-the-art **AI Governance and Autonomous Army Command System** designed for highly complex, scalable, and fully auditable enterprise software projects.
 
-As of **v0.9.1**, the system operates as a **"Living Engineering Organism"** capable of managing its own memory, dynamically mapping monorepo project subfolders, and uniting disparate AI ecosystems under a single constitutional discipline.
+As of **v0.9.2**, the system operates as a **"Living Engineering Organism"** capable of managing its own memory, dynamically mapping monorepo project subfolders, secure-logging all agent sessions, and uniting disparate AI ecosystems under a single constitutional discipline.
 
 ---
 
-### 🚀 Key Improvements in Version v0.9.1
+### 🚀 Key Improvements in Version v0.9.2
 
-1. **Dynamic Framework Directory Discovery (Multi-Adapter Engine):**
-   * The `.enderun` folder is no longer hardcoded as the sole runtime path.
-   * The CLI dynamically discovers the active framework folder from a candidate list `[.gemini, .claude, .agent, .enderun]`. This allows different AI agents or adapters (Claude Code, Gemini CLI, Grok) to operate in isolated workspaces without folder conflicts.
+1. **`log_agent_action` (Autonomous Telemetry Log):**
+   * Formally integrated the `log_agent_action` MCP tool, which all expert agents are constitutionally required to call at the end of their sessions.
+   * Established a secure, file-locked logging mechanism to automatically append agent telemetry to `.enderun/logs/{agent}.json` or `.gemini/antigravity-cli/logs/{agent}.json`.
 
-2. **Configurable Path Mapping (Dynamic Paths Map):**
-   * Directories for `backend`, `frontend`, `docs`, and `tests` are fully dynamic and configurable.
-   * Path settings are read from the `paths` block inside the active framework's `config.json` as the Single Source of Truth (SSOT):
-     ```json
-     "paths": {
-       "backend": "apps/backend",
-       "frontend": "apps/web",
-       "docs": "docs",
-       "tests": "tests"
-     }
-     ```
-   * All validations (`verify-contract`), integrity checks (`check`), and scaffolding engines utilize this mapping.
+2. **`update-contract` (Contract Sync Automation):**
+   * Added the `update-contract` CLI command and `update_contract_hash` MCP tool to automatically calculate the SHA-256 hash of backend types and write it to `apps/backend/contract.version.json`.
+   * This enables autonomous drift detection and seamless type synchronization between frontend and backend.
 
-3. **Hermes Autonomous Orchestration Loop (`orchestrate` / `loop`):**
+3. **Advanced Path Discovery (Antigravity Integration):**
+   * Added nested framework directory candidates like `.gemini/antigravity` and `.gemini/antigravity-cli` to the path resolution engine, ensuring 100% error-free integration within Antigravity IDE and CLI runtime environments.
+
+4. **Dynamic Framework Directory Discovery (Multi-Adapter Engine):**
+   * The CLI dynamically discovers the active framework folder from an prioritized candidate list `[.gemini/antigravity, .gemini/antigravity-cli, .gemini, .claude, .agent, .enderun]`.
+
+5. **Configurable Path Mapping (Dynamic Paths Map):**
+   * Directories for `backend`, `frontend`, `docs`, and `tests` are fully dynamic and configurable via the `paths` block inside `config.json`.
+
+6. **Hermes Autonomous Orchestration Loop (`orchestrate` / `loop`):**
    * Enabled the **Hermes Message Broker**—an event-driven asynchronous communication channel between expert AI agents.
-   * The `agent-enderun orchestrate` command scans pending message queues, dynamically locks the target agent's state to `EXECUTING` on the dashboard (`STATUS.md`), and routes tasks autonomously.
-
-4. **Flawless Type-Safety & Linter Optimization:**
-   * All CLI commands and auxiliary binaries (`update-contract.js`, `init-check.js`) have been migrated to the dynamic paths registry.
-   * The type-checking command `npx tsc --noEmit` runs with **zero errors**.
-   * Upgraded `eslint.config.js` to completely ignore hidden framework files, preventing potential OS-level permission conflicts (`EPERM`) in sandboxed terminal environments.
 
 ---
 
@@ -180,10 +169,10 @@ All workspace operations are divided among 10 specialized expert agents connecte
 | Agent | Specialization Role | Core Responsibility |
 | :--- | :--- | :--- |
 | **`@manager`** | Command & Strategy | Task dependency graphs (DAG), memory pruning (`PROJECT_MEMORY.md`), constitution compliance. |
-| **`@quality`** | Quality, Security & Analysis | AST vulnerability scanning, constitutional audits, code review checklists, test standard gates. |
+| **`@quality`** | Quality, Security & Analysis | AST vulnerability scanning, constitutional audits, code review checklists, test standard gates, CI/CD coverage verification. |
 | **`@database`** | Database Architecture | Database schemas, migration workflows, query optimization, and contract-aware seeding. |
-| **`@backend`** | Domain Logic Specialist | API route design, branded types, layered architecture (Route -> Controller -> Service -> Repository). |
-| **`@frontend`** | Fluid Responsive UI | Panda CSS design, responsive-first interfaces, customized React hooks. |
+| **`@backend`** | Domain Logic Specialist | API route design, branded types, layered architecture (Route -> Controller -> Service -> Repository), audit logging scan. |
+| **`@frontend`** | Fluid Responsive UI | Panda CSS design, responsive-first interfaces, customized React hooks, rollback discipline management. |
 | **`@devops`** | Infrastructure Specialist | Native Node.js deployments, rollback plans, monitoring & logging setups. |
 | **`@explorer`** | Codebase Intelligence | Project analysis, dependency graph generation, legacy conversion strategies. |
 | **`@git`** | Version Control | Semantic Trace-ID-aligned commits, release tagging, branch hygiene. |
@@ -206,12 +195,13 @@ All workspace operations are divided among 10 specialized expert agents connecte
 
 | Command | Authoritative Agent | Description |
 | :--- | :--- | :--- |
-| `init [adapter]` | `@manager` | Initialize the framework for a selected adapter (`gemini`, `claude`, `grok`, `antigravity`). |
+| `init [adapter]` | `@manager` | Initialize the framework for a selected adapter (`gemini`, `claude`, `grok`, `antigravity-cli`). |
 | `status` | `@manager` | Display active phase, Trace ID, and agent health scores. |
 | `check` | `@quality` | Perform a constitutional health check, folder structure, and file integrity scan. |
 | `trace:new [desc]` | `@manager` | Start a new task chain with a unique Trace ID. |
 | `orchestrate` / `loop` | `@manager` | Spin up the live Hermes message-broker loop to route asynchronous agent actions. |
 | `verify-contract` | `@backend` | Verify and seal type alignment between backend and frontend contracts. |
+| `update-contract` | `@backend` | Automatically calculate and synchronize the backend contract SHA-256 hash. |
 | `create-app [idea]` | `@manager` | Generate a corporate monorepo application from natural language requirements. |
 
 ---
@@ -220,7 +210,7 @@ All workspace operations are divided among 10 specialized expert agents connecte
 
 Agent Enderun is fully optimized for immediate publication to npmjs:
 * **Prepublish Build Automation Hook (`prepublishOnly`):** Triggers `npm run enderun:build` before publishing, ensuring compiled Model Context Protocol (MCP) server binaries are always built and up-to-date.
-* **CLI Source Bundle Inclusion:** Bundles the `"src"` folder in the published package, preventing downstream execution crashes on typescript-enabled runtime environments.
+* **CLI Source Bundle Inclusion:** Bundles the `"src"` folder in the published package.
 
 To test the package locally via npm link:
 ```bash
@@ -242,4 +232,4 @@ npx agent-enderun init gemini
 
 ---
 
-Developed with absolute discipline | Developer **Yusuf BEKAR** | Framework Version **v0.9.1**
+Developed with absolute discipline | Developer **Yusuf BEKAR** | Framework Version **v0.9.3**

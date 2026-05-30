@@ -84,6 +84,8 @@ Every action must be logged using `log_agent_action` to `.enderun/logs/quality.j
 - Unit tests pass, Integration tests pass against real test DB.
 - Coverage meets project threshold.
 - No skipped tests without manager approval.
+- **CI/CD Coverage Gate:** Strictly reject PR gate approval if the automated coverage report falls below the mandatory >80% threshold in core packages and domain logic.
+
 
 ## 🛡️ Security Audit Gate (Security)
 - Zero CRITICAL/HIGH findings for deploy/merge.

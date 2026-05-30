@@ -7,7 +7,7 @@ import { statusCommand } from "./commands/status.js";
 import { traceNewCommand } from "./commands/trace.js";
 import { updateProjectMemoryCommand } from "./commands/memory.js";
 import { createAppCommand } from "./commands/app.js";
-import { verifyApiContractCommand } from "./commands/contract.js";
+import { verifyApiContractCommand, updateApiContractCommand } from "./commands/contract.js";
 import { orchestrateCommand } from "./commands/orchestrate.js";
 
 /**
@@ -62,6 +62,10 @@ async function main() {
         verifyApiContractCommand();
         break;
 
+    case "update-contract":
+        updateApiContractCommand();
+        break;
+
     case "version":
     case "-v":
     case "--version":
@@ -86,6 +90,7 @@ Commands:
   create-app <idea>   Generate a new full-stack app from natural language
   orchestrate         Start the dynamic Hermes agent orchestration loop
   verify-contract     Validate type alignment between backend and frontend
+  update-contract     Generate and synchronize a new contract hash
   version             Show version information
 
 Supported adapters (one init per IDE — separate folder each):
