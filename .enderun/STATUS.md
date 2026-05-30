@@ -1,5 +1,5 @@
 # 🏛️ AGENT ENDERUN — ARMY COMMAND DASHBOARD
-> v0.9.2 | State Machine Active | Memory Graph: Online
+> v0.9.4 | State Machine Active | Memory Graph: Online
 
 ---
 
@@ -24,7 +24,7 @@
 
 | Metric | Value |
 | :--- | :--- |
-| **Framework Version** | v0.9.2 |
+| **Framework Version** | v0.9.4 |
 | **System Health** | 🟢 GREEN |
 | **Major Governance Audit** | COMPLETED |
 | **Active Tasks** | 1 |

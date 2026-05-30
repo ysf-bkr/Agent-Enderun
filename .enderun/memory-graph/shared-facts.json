@@ -41,6 +41,6 @@
     "Hermes Messaging Protocol — mandatory for inter-agent traffic",
     "Audit Log Mandatory — every agent action must be logged"
   ],
-  "frameworkVersion": "0.9.0",
+  "frameworkVersion": "0.9.4",
   "constitutionFile": "ENDERUN.md"
 }
