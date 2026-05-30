@@ -1,41 +1,43 @@
 # 🏛️ Agent Enderun — Enterprise AI Governance & Autonomous Orchestration Framework
 
-> **Stable Release:** v0.9.3  
+> **Stable Release:** v0.9.4  
 > **Author:** Yusuf BEKAR  
-> **Trace ID:** `01HGT8J5E2N0W0W0W0W0W0W0W4`  
+> **Trace ID:** `01HGT8J5E2N0W0W0W0W0W0W0W5`  
 > **System Status:** 🟢 All Systems Operational | Build Compile: Clean | Type-Safety: 100% Verified
 
 ---
 
-## 🇹🇷 TÜRKÇE — Proje Tanıtımı & Dokümantasyonu
+## 🇹🇷 TÜRKÇE — Proje Tanıtımı & Detaylı Kullanım Kılavuzu
 
 **Agent Enderun**, sıradan bir kod şablon üreteci veya basit bir AI asistanı değildir; karmaşık, ölçeklenebilir ve kurumsal (enterprise) düzeydeki yazılım projeleri için özel olarak tasarlanmış bir **Yapay Zeka Yönetişimi ve Otonom Ordu Komuta Sistemidir**.
 
-Sürüm **v0.9.2** itibarıyla sistem; kendi hafızasını yönetebilen, monorepo proje yollarını dinamik olarak haritalayan, tüm ajan seanslarını güvenli şekilde günlükleyen ve farklı yapay zeka ekosistemlerini anayasal bir disiplin altında birleştiren **"Yaşayan Bir Mühendislik Organizması"** haline getirilmiştir.
+Sürüm **v0.9.4** itibarıyla sistem; kendi hafızasını yönetebilen, monorepo proje yollarını dinamik olarak haritalayan, tüm ajan seanslarını güvenli şekilde günlükleyen, farklı yapay zeka ekosistemlerini anayasal bir disiplin altında birleştiren ve **Claude Code / Desktop Sandbox kurallarına tam uyum sağlayan** yaşayan bir mühendislik organizmasıdır.
 
 ---
 
-### 🚀 Sürüm v0.9.2 İle Gelen Devrimsel Yenilikler
+### ❓ Neden Agent Enderun?
 
-1. **`log_agent_action` (Otonom Telemetri ve Seans Günlüğü):**
-   * Tüm uzman ajanların anayasaya göre seans sonunda çalıştırmak zorunda olduğu `log_agent_action` MCP aracı sisteme entegre edildi.
-   * Ajan faaliyetlerini otomatik olarak `.enderun/logs/{agent}.json` veya `.gemini/antigravity-cli/logs/{agent}.json` altında güvenle kayıt altına alan merkezi kilit sistemli telemetri altyapısı kuruldu.
+Yapay zeka kodlama yardımcıları (Claude Code, Gemini CLI, Grok Build vb.) geliştikçe, kurumsal projelerde kontrolü kaybetmek çok daha kolay hale gelmiştir. Agent Enderun, aşağıdaki kritik **kurumsal problemleri çözmek** amacıyla doğmuştur:
 
-2. **`update-contract` (Sözleşme Senkronizasyon Otomasyonu):**
-   * Backend tipleri değiştiğinde SHA-256 hash'ini otomatik hesaplayıp `apps/backend/contract.version.json` dosyasına yazan `update-contract` CLI komutu ve `update_contract_hash` MCP aracı eklendi.
-   * Bu sayede frontend/backend arasındaki tip uyuşmazlığı tespiti ve senkronizasyonu otonom olarak yapılabilir hale getirildi.
+1. **Kontrolsüz ve Hatalı Değişiklikler (Rogue AI):** Ajanların tüm kod dosyasını baştan yazmasını engelleyerek **milyonlarca satırlık kodları cerrahi hassasiyetle (`replace_text` / `patch_file` üzerinden)** değiştirmeye zorlar. Token tüketimini ve hata oranını %90 azaltır.
+2. **Kayıp Hafıza ve Bağlam Drifti:** Ajanlar oturum değiştirdikçe projenin geçmişini ve mimari kararlarını unutur. Enderun, **`PROJECT_MEMORY.md`** dosyasını projenin değişmez tek doğruluk kaynağı (SSOT) haline getirerek, seanslar arası bağlam kaybını tamamen engeller.
+3. **Frontend-Backend Tip Uyuşmazlığı:** Backend tip tanımlamalarında en ufak bir kayma olduğunda, otonom SHA-256 hash hesaplama ve kontrat denetleme motoru (`update-contract` / `verify-contract`) sayesinde arayüz kodları yazılmadan önce hatalar yakalanır.
+4. **Çoklu Ajan Kaosu:** 10 farklı uzman yapay zeka ajanı, olay tabanlı asenkron bir haberleşme protokolü olan **Hermes Message Broker** üzerinden koordine edilir. Ajanlar birbirine rastgele müdahale edemez; tüm görevler bir İş Dağılım Grafiği (DAG) üzerinden komuta edilir.
+5. **Sandbox ve Güvenlik Sınırlamaları:** Claude Code gibi modern araçların kernel düzeyindeki güvenlik yalıtımlarını (bubblewrap/seatbelt) ihlal etmemek adına, tüm bellek, kuyruk ve günlük mekanizmaları **proje kök klasöründeki lokal adaptör yollarında saklanır**; `/tmp` veya dış dizinleri kullanmayarak sıfır hata ile çalışır.
 
-3. **İleri Seviye Klasör Keşfi (Antigravity Entegrasyonu):**
-   * Dizin tespit mekanizmasındaki aday listesine `.gemini/antigravity` ve `.gemini/antigravity-cli` gibi iç içe geçmiş (nested) yollar eklenerek Antigravity (IDE & CLI) çalışma ortamları için 100% hatasız bir entegrasyon sağlandı.
+---
 
-4. **Dinamik Framework Klasör Keşfi (Multi-Adapter Engine):**
-   * CLI aracı; çalışma anında projede aktif olan framework klasörünü `[.gemini/antigravity, .gemini/antigravity-cli, .gemini, .claude, .agent, .enderun]` adayları arasından otomatik olarak keşfeder.
+### 🚀 Sürüm v0.9.4 İle Gelen Devrimsel Yenilikler
 
-5. **Yapılandırılabilir Klasör Haritalaması (Dynamic Paths Map):**
-   * Projede kullanılan `backend`, `frontend`, `docs` ve `tests` dizin yolları artık dinamik olarak yönetilir. Bilgiler `config.json` içerisindeki `paths` bloğundan okunur.
-
-6. **Hermes Otonom Orkestrasyon Döngüsü (`orchestrate` / `loop`):**
-   * Yapay zeka ajanlarının asenkron olay tabanlı (event-driven) haberleşme kanalı olan **Hermes Message Broker** devreye alındı. `agent-enderun orchestrate` komutu asenkron delege görevleri otonom olarak yönlendirir.
+1. **🔒 Claude Code & Desktop Sandbox Uyumlu MCP Mimarisi:**
+   * Claude Desktop ve Claude Code CLI'ın güvenlik yalıtımlarına (sandbox) uyum sağlamak amacıyla, MCP sunucusunun otonom çalışacağı aktif proje dizinini dinamik çözümleyen `ENDERUN_PROJECT_ROOT` ortam değişkeni altyapısı sisteme entegre edildi.
+   * `claude` adaptörü kurulurken, Claude Code CLI'ın projeyi otomatik keşfetmesini sağlayan proje-seviyesi **`.mcp.json`** dosyası otomatik oluşturulur.
+2. **📂 Claude Desktop & CLI Yapılandırma Düzeltmeleri:**
+   * Kod tabanında eskiden aranan yanlış `config.json` yolları temizlendi; yerine macOS ve Windows'taki gerçek Claude Desktop ayar dosyası olan **`claude_desktop_config.json`** ve küresel Claude Code CLI ayar dosyası olan **`~/.claude.json`** entegrasyonları getirildi.
+3. **🛸 Grok Entegrasyonunun Sektör Standartlarına Uyumlanması:**
+   * Grok adaptörünün kullandığı varsayılan çalışma dizini jenerik `.agent` yerine, resmi ve topluluk standardı olan **`.grok/`** ve **`grok.md`** olarak güncellendi. Geriye dönük uyumluluk korunarak `.agent` aday dizin listesinde tutuldu.
+4. **🧹 Kod Tekrarlarının Arındırılması ve SSOT Standardı:**
+   * `src/cli/utils/app.ts` içerisindeki mükerrer `getFrameworkDir` ve `getMemoryPath` fonksiyonları arındırılarak, `./memory.js` üzerindeki tekil doğruluk kaynağı ile birleştirildi.
 
 ---
 
@@ -45,7 +47,7 @@ Agent Enderun, sektörün öncüsü olan yapay zeka ekosistemlerini bir araya ge
 * **🚀 Claude Code (Operasyonel Cerrahi):** **Saha Mühendisi**. Kod tabanındaki otonom ve milimetrik cerrahi düzenlemeleri (Surgical Edits) gerçekleştirir.
 * **♊ Gemini & Vertex AI (Komuta İstihbaratı):** **Stratejik Karar Merkezi**. Proje geçmişini, mimari kararları analiz eder ve yüksek seviyeli stratejik yönlendirmeler yapar.
 * **🛸 Antigravity (İç Disiplin & Akademi):** **Askeri Akademi**. İç standartları, anayasal uyumu korumak amacıyla izole edilmiş, yüksek disiplinli geliştirme ve test ortamı sağlar.
-* **🤖 Grok / X.ai (Otonom Keşif Kanadı):** **Deneysel Keşif**. Gelecek vizyonlu otonom protokolleri test eder ve yapay zeka güdümlü geliştirme sınırlarını zorlar.
+* **🤖 Grok / X.ai (Otonom Keşif Kanadı):** **Deneysel Keşif**. Gelecek vizyonlu otonom protokolleri test eder ve yapay zeka gügümlü geliştirme sınırlarını zorlar.
 
 ---
 
@@ -68,87 +70,136 @@ Tüm operasyonlar, uzmanlık alanlarına göre ayrılmış ve Hermes protokolüy
 
 ---
 
-### 🛡️ Enderun Disiplininin 5 Temel Direği
+### 🛠️ Kurulum & Adaptör Entegrasyon Kılavuzu
 
-1. **Mutlak İzlenebilirlik (Trace ID):** Her karar, işlem ve commit, denetlenebilir olması adına 26 karakterli benzersiz bir ULID (Trace ID) ile mühürlenir.
-2. **Önce Kontrat (Contract-First):** Backend ve frontend arasındaki veri kontratları ve tipler, herhangi bir arayüz kodu yazılmadan önce kesin olarak kilitlenir.
-3. **Cerrahi Düzenleme Standardı:** Tüm dosyayı baştan yazmak yasaktır. Sadece değişmesi gereken satırlar `replace_text` / `patch_file` araçlarıyla milimetrik olarak değiştirilir.
-4. **Otonom Bellek Arşivleme:** `PROJECT_MEMORY.md` kendi kendini temizleyen ve en güncel durumu koruyan bir SSOT (Single Source of Truth) olarak çalışır.
-5. **Anayasal Otorite:** Tüm ajanlar `.enderun/ENDERUN.md` içinde tanımlanan Supreme Law (Yüce Yasa) kurallarına kayıtsız şartsız uymak zorundadır.
-
----
-
-### 🛠️ CLI Komut Referansı
-
-| Komut | Yetkili Ajan | Açıklama |
-| :--- | :--- | :--- |
-| `init [adapter]` | `@manager` | Seçilen IDE/Agent adaptörünü (`gemini`, `claude`, `grok`, `antigravity-cli`) yerel projenize kurar. |
-| `status` | `@manager` | Aktif aşamayı, aktif Trace ID'yi ve ajanların anlık ordu durumlarını listeler. |
-| `check` | `@quality` | Anayasal sağlık kontrolü, dosya bütünlüğü ve dizin doğrulaması yapar. |
-| `trace:new [desc]` | `@manager` | Yeni bir Trace ID başlatarak görev zincirini ve izlenebilirliği tetikler. |
-| `orchestrate` / `loop` | `@manager` | Canlı Hermes mesaj yönlendirici döngüsünü başlatarak asenkron ajan görevlerini yönlendirir. |
-| `verify-contract` | `@backend` | Backend ile frontend arasındaki tip uyumluluğunu doğrular ve denetler. |
-| `update-contract` | `@backend` | backend tip değişikliklerine göre güncel SHA-256 hash sözleşmesini otomatik üretir. |
-| `create-app [idea]` | `@manager` | Doğal dildeki talep ve gereksinimlerden kurumsal monorepo uygulaması oluşturur. |
-
----
-
-### 📦 npmjs Yayınlama & Prepublish Otomasyonu
-
-Agent Enderun, npmjs üzerinde paketlenmeye kusursuz şekilde hazırdır:
-* **Hazır Derleme Otomasyonu (`prepublishOnly`):** Paket yayına gönderilmeden önce `"prepublishOnly"` kancası tetiklenir ve `framework-mcp` (MCP Server) en güncel haliyle derlenerek dağıtıma hazır hale getirilir.
-* **CLI Kaynak Bütünlüğü:** Tüm TypeScript derleme kaynakları (`src/`) paket içeriğine dahil edilmiştir.
-
-Yerel projenizi test etmek veya npm link üzerinden kurmak için:
+#### 1. Gemini Adaptörü Kurulumu
+Gemini CLI veya Vertex AI entegrasyonu için proje dizininizde aşağıdaki komutu çalıştırın:
 ```bash
-# Bağımlılıkları kurun ve MCP sunucusunu derleyin
+npx agent-enderun init gemini
+```
+*   **Oluşturulan Yapı:** Proje kökünde `.gemini/` dizini ve `gemini.md` (SSOT şim dosyası) oluşturulur.
+*   **Aktivasyon:** Gemini CLI'a `.gemini/mcp_config.json` dosyasını tanıtın.
+
+#### 2. Claude Adaptörü Kurulumu (Claude Code & Desktop)
+Claude Desktop uygulamasında ve Claude Code CLI aracında otonom orduyu aktif etmek için:
+```bash
+npx agent-enderun init claude
+```
+*   **Oluşturulan Yapı:** Proje kökünde `.claude/` dizini, `claude.md` ve en önemlisi proje-seviyesinde **`.mcp.json`** dosyası oluşturulur.
+*   **Küresel Kayıt:** Komut, sisteminizde kurulu olan Claude Desktop yapılandırmasını (`claude_desktop_config.json`) ve Claude Code küresel yapılandırmasını (`~/.claude.json`) tarayarak MCP sunucusunu otomatik olarak kaydeder.
+
+#### 3. Grok Adaptörü Kurulumu
+xAI Grok Build veya topluluk CLI araçları için:
+```bash
+npx agent-enderun init grok
+```
+*   **Oluşturulan Yapı:** Proje kökünde **`.grok/`** dizini ve **`grok.md`** şim dosyası oluşturulur.
+
+#### 4. Antigravity Adaptörü Kurulumu
+Antigravity IDE ve CLI entegrasyonlarını etkinleştirmek için:
+```bash
+npx agent-enderun init antigravity
+```
+*   **Oluşturulan Yapı:** `.gemini/antigravity/` veya `.gemini/antigravity-cli/` dizinleri altında yüksek disiplinli izole çalışma ortamları oluşturulur.
+
+---
+
+### 🕹️ CLI Komut Referansı ve Parametreleri
+
+Enderun CLI, `agent-enderun` (veya `npx agent-enderun`) komutu ile yönetilir.
+
+#### `init [adapter]`
+Seçilen yapay zeka/IDE adaptörünü projeye kurar.
+*   **Kullanım:** `npx agent-enderun init [gemini | claude | grok | antigravity]`
+*   **Örnek:** `npx agent-enderun init claude`
+
+#### `status`
+Projenin aktif fazını (Phase 0 - 4), aktif Trace ID'sini ve uzman ajanların durum puanlarını listeler.
+*   **Kullanım:** `npx agent-enderun status`
+
+#### `check`
+Anayasal uyumluluk denetimlerini, kritik dosya bütünlüklerini ve dizin doğrulamalarını gerçekleştirir.
+*   **Kullanım:** `npx agent-enderun check`
+
+#### `trace:new [description]`
+Belirli bir geliştirme zinciri için yeni bir Trace ID (ULID) tetikler.
+*   **Kullanım:** `npx agent-enderun trace:new "Giriş modülü tasarımı" [agent-name] [priority]`
+*   **Örnek:** `npx agent-enderun trace:new "Auth module design" backend P1`
+
+#### `orchestrate` / `loop`
+Hermes Message Broker asenkron event-driven ajanlar arası iletişim döngüsünü canlı olarak başlatır.
+*   **Kullanım:** `npx agent-enderun orchestrate`
+
+#### `verify-contract`
+Frontend ve backend katmanları arasındaki tip bütünlüğünü ve `contract.version.json` uygunluğunu kontrol eder.
+*   **Kullanım:** `npx agent-enderun verify-contract`
+
+#### `update-contract`
+Backend tiplerinde yapılan değişiklikleri tarayarak `contract.version.json` üzerindeki SHA-256 hash imzalarını otonom olarak günceller.
+*   **Kullanım:** `npx agent-enderun update-contract`
+
+#### `create-app [idea]`
+Doğal dildeki açıklamalardan, kurumsal standartlarda kontrat-tabanlı monorepo uygulaması üretir.
+*   **Kullanım:** `npx agent-enderun create-app "Müşteri CRM Paneli"`
+
+---
+
+### 📦 Geliştirici & npm Link Test Altyapısı
+
+Paketi npm'de yayınlamadan önce yerelinizde derlemek ve test etmek için:
+```bash
+# Proje bağımlılıklarını yükleyin
 npm install
+
+# framework-mcp (MCP Sunucusu) ve CLI derlemelerini tetikleyin
 npm run enderun:build
 
-# Paketi yerel NPM havuzunuza linkleyin
+# Paketi global NPM havuzunuza bağlayın
 npm link
 
-# Test etmek istediğiniz boş bir klasöre gidin ve aracı bağlayın
-mkdir test-projem && cd test-projem
+# Boş bir test dizini açıp aracı bağlayın
+mkdir enderun-test && cd enderun-test
 npm init -y
 npm link agent-enderun
 
-# Adaptörü başlatın
+# Herhangi bir adaptör kurulumunu başlatın
 npx agent-enderun init gemini
 ```
 
 ---
 ---
 
-## 🇺🇸 ENGLISH — Project Showcase & Documentation
+## 🇺🇸 ENGLISH — Detailed Product Guide & Documentation
 
-**Agent Enderun** is not just a boilerplate code generator or a simple AI assistant; it is a state-of-the-art **AI Governance and Autonomous Army Command System** designed for highly complex, scalable, and fully auditable enterprise software projects.
+**Agent Enderun** is not a generic boilerplate generator or a simple AI wrapper; it is an elite, state-of-the-art **AI Governance and Autonomous Army Command System** designed for complex, scalable, and highly auditable enterprise software projects.
 
-As of **v0.9.2**, the system operates as a **"Living Engineering Organism"** capable of managing its own memory, dynamically mapping monorepo project subfolders, secure-logging all agent sessions, and uniting disparate AI ecosystems under a single constitutional discipline.
+As of **v0.9.4**, the system operates as a **"Living Engineering Organism"** capable of managing its own persistent memory, dynamically mapping project directory scopes, secure-logging expert agent activities, and **fully complying with Claude Code & Desktop Sandbox standards**.
 
 ---
 
-### 🚀 Key Improvements in Version v0.9.2
+### ❓ Why Agent Enderun?
 
-1. **`log_agent_action` (Autonomous Telemetry Log):**
-   * Formally integrated the `log_agent_action` MCP tool, which all expert agents are constitutionally required to call at the end of their sessions.
-   * Established a secure, file-locked logging mechanism to automatically append agent telemetry to `.enderun/logs/{agent}.json` or `.gemini/antigravity-cli/logs/{agent}.json`.
+As AI coding assistants (Claude Code, Gemini CLI, Grok Build, etc.) become increasingly powerful, software projects are prone to rapid architectural drift and token wastage. Agent Enderun solves these critical **enterprise AI challenges**:
 
-2. **`update-contract` (Contract Sync Automation):**
-   * Added the `update-contract` CLI command and `update_contract_hash` MCP tool to automatically calculate the SHA-256 hash of backend types and write it to `apps/backend/contract.version.json`.
-   * This enables autonomous drift detection and seamless type synchronization between frontend and backend.
+1. **Rogue AI Prevention (Surgical Edits):** It strictly prohibits agents from rewriting entire files. Instead, it forces them to execute micro-targeted changes via **`replace_text` / `patch_file` tools**, reducing API token consumption by up to 90%.
+2. **Context Loss Prevention (SSOT Memory):** AI agents naturally lose project history across chats. Enderun seals all project milestones, decisions, and tasks into a self-pruning **`PROJECT_MEMORY.md`** file, ensuring absolute context continuity.
+3. **Contract-First Safety (Frontend-Backend Drift):** Before any user interface code is written, API models and branded types are sealed. The otonomous contract verification engine checks SHA-256 type definitions to prevent integration drifts.
+4. **Symmetric Orchestration (Hermes Protocol):** 10 specialized expert agents communicate via an asynchronous, event-driven message broker (**Hermes**), preventing chaotic, uncoordinated AI behavior.
+5. **Sandbox & Security Compliance:** Modern CLI agents (like Claude Code) restrict filesystem access. By keeping all configurations, task logs, and queues local (inside `.gemini/`, `.claude/`, `.grok/`, etc.) in the project workspace, Enderun runs with **zero sandbox violations**.
 
-3. **Advanced Path Discovery (Antigravity Integration):**
-   * Added nested framework directory candidates like `.gemini/antigravity` and `.gemini/antigravity-cli` to the path resolution engine, ensuring 100% error-free integration within Antigravity IDE and CLI runtime environments.
+---
 
-4. **Dynamic Framework Directory Discovery (Multi-Adapter Engine):**
-   * The CLI dynamically discovers the active framework folder from an prioritized candidate list `[.gemini/antigravity, .gemini/antigravity-cli, .gemini, .claude, .agent, .enderun]`.
+### 🚀 Key Improvements in Version v0.9.4
 
-5. **Configurable Path Mapping (Dynamic Paths Map):**
-   * Directories for `backend`, `frontend`, `docs`, and `tests` are fully dynamic and configurable via the `paths` block inside `config.json`.
-
-6. **Hermes Autonomous Orchestration Loop (`orchestrate` / `loop`):**
-   * Enabled the **Hermes Message Broker**—an event-driven asynchronous communication channel between expert AI agents.
+1. **🔒 Claude Sandbox-Compliant MCP Architecture:**
+   * Integrated the `ENDERUN_PROJECT_ROOT` environment variable mapping, allowing the Model Context Protocol (MCP) server to dynamically resolve the target workspace root even when globally spawned by Claude Desktop.
+   * Added auto-generation of project-level **`.mcp.json`** files during Claude adapter initialization, enabling seamless project discovery for the Claude Code CLI.
+2. **📂 Robust Claude Config Resolution:**
+   * Patched path resolution to look for macOS/Windows **`claude_desktop_config.json`** (instead of standard `config.json`) and Claude Code CLI global configuration **`~/.claude.json`**.
+3. **🛸 Official Grok/xAI Directory Alignment:**
+   * Aligned Grok's default `frameworkDir` from the generic `.agent` directory to the standard **`.grok/`** folder and **`grok.md`** shim file.
+4. **🧹 Refactoring and Code Compaction:**
+   * Removed duplicated local `getFrameworkDir` and `getMemoryPath` helpers in `src/cli/utils/app.ts`, merging them directly into `./memory.js` to respect the Single Source of Truth rule.
 
 ---
 
@@ -158,7 +209,7 @@ Agent Enderun coordinates industry-leading AI environments by assigning each a s
 * **🚀 Claude Code (Operational Surgery):** The **Field Engineer**. Excels in executing precise, surgical, and autonomous codebase edits.
 * **♊ Gemini & Vertex AI (Command Intelligence):** The **Command Center**. Analyzes project history, memory logs, and executes high-level strategic decisions.
 * **🛸 Antigravity (Internal Discipline):** The **Military Academy**. Provides an isolated, high-discipline sandbox to preserve internal framework coding standards.
-* **🤖 Grok / X.ai (Exploration Wing):** The **Autonomous Scouting**. Testing futuristic agent behaviors and pushing AI-driven developer limits.
+* **🤖 Grok / X.ai (Scouting Wing):** The **Scouting Specialist**. Explores futuristic agent behaviors and tests experimental protocols.
 
 ---
 
@@ -175,61 +226,82 @@ All workspace operations are divided among 10 specialized expert agents connecte
 | **`@frontend`** | Fluid Responsive UI | Panda CSS design, responsive-first interfaces, customized React hooks, rollback discipline management. |
 | **`@devops`** | Infrastructure Specialist | Native Node.js deployments, rollback plans, monitoring & logging setups. |
 | **`@explorer`** | Codebase Intelligence | Project analysis, dependency graph generation, legacy conversion strategies. |
-| **`@git`** | Version Control | Semantic Trace-ID-aligned commits, release tagging, branch hygiene. |
+| **`@git`** | Version Control | Semantic Trace-ID-aligned commits, branch hygiene. |
 | **`@mobile`** | Mobile Development | React Native / Expo UI automation and native builds. |
 | **`@native`** | Desktop Engineering | Tauri and Electron desktop app integrations. |
 
 ---
 
-### 🛡️ Five Pillars of Enderun Discipline
+### 🛠️ Adapter Scaffolding & Setup Guide
 
-1. **Absolute Traceability (Trace ID):** Every single decision is stamped with a unique 26-character ULID (Trace ID) for thorough auditing.
-2. **Contract-First:** Backend-frontend data contracts are defined and sealed before any user interface code is written.
-3. **Surgical Edit Standard:** Rewriting entire files is strictly prohibited. Only modified lines are changed using `replace_text` / `patch_file`.
-4. **Autonomous Memory Archiving:** `PROJECT_MEMORY.md` functions as a self-pruning Single Source of Truth (SSOT).
-5. **Constitutional SSOT:** All agents must adhere to the supreme constitutional law defined in `.enderun/ENDERUN.md`.
-
----
-
-### 🛠️ CLI Command Map
-
-| Command | Authoritative Agent | Description |
-| :--- | :--- | :--- |
-| `init [adapter]` | `@manager` | Initialize the framework for a selected adapter (`gemini`, `claude`, `grok`, `antigravity-cli`). |
-| `status` | `@manager` | Display active phase, Trace ID, and agent health scores. |
-| `check` | `@quality` | Perform a constitutional health check, folder structure, and file integrity scan. |
-| `trace:new [desc]` | `@manager` | Start a new task chain with a unique Trace ID. |
-| `orchestrate` / `loop` | `@manager` | Spin up the live Hermes message-broker loop to route asynchronous agent actions. |
-| `verify-contract` | `@backend` | Verify and seal type alignment between backend and frontend contracts. |
-| `update-contract` | `@backend` | Automatically calculate and synchronize the backend contract SHA-256 hash. |
-| `create-app [idea]` | `@manager` | Generate a corporate monorepo application from natural language requirements. |
-
----
-
-### 📦 npmjs Publication & Prepublish Automation
-
-Agent Enderun is fully optimized for immediate publication to npmjs:
-* **Prepublish Build Automation Hook (`prepublishOnly`):** Triggers `npm run enderun:build` before publishing, ensuring compiled Model Context Protocol (MCP) server binaries are always built and up-to-date.
-* **CLI Source Bundle Inclusion:** Bundles the `"src"` folder in the published package.
-
-To test the package locally via npm link:
+#### 1. Gemini Adapter
+Initialize the Gemini CLI / Vertex AI environment:
 ```bash
-# Install root dependencies and build MCP
+npx agent-enderun init gemini
+```
+*   **Created Files:** `.gemini/` runtime folder, `gemini.md` (SSOT entrance), and `.gemini/mcp_config.json`.
+
+#### 2. Claude Adapter (Claude Code CLI & Desktop App)
+Bootstrap the framework for Anthropic's Claude:
+```bash
+npx agent-enderun init claude
+```
+*   **Created Files:** `.claude/` folder, `claude.md` shim, and project-level **`.mcp.json`** for Claude Code.
+*   **Global Registration:** Automatically discovers and registers the MCP server in Claude Desktop's `claude_desktop_config.json` and Claude Code's `~/.claude.json`.
+
+#### 3. Grok Adapter
+Scaffold for xAI Grok Build:
+```bash
+npx agent-enderun init grok
+```
+*   **Created Files:** **`.grok/`** folder and **`grok.md`** shim file.
+
+#### 4. Antigravity Adapter
+Bootstrap the high-discipline sandbox for Antigravity IDE and CLI runtimes:
+```bash
+npx agent-enderun init antigravity
+```
+*   **Created Files:** `.gemini/antigravity/` or `.gemini/antigravity-cli/` isolated paths.
+
+---
+
+### 🕹️ CLI Command Reference
+
+Execute commands via `agent-enderun` (or `npx agent-enderun`):
+
+*   **`init [adapter]`**: Scaffold framework directories and register local/global MCP server instances.
+*   **`status`**: Output active Phase (0-4), current active Trace ID, and agent capability logs.
+*   **`check`**: Run a thorough framework integrity, folder alignment, and constitutional compliance check.
+*   **`trace:new [desc] [agent] [priority]`**: Launch a new traceable task chain stamped with a unique ULID.
+*   **`orchestrate` / `loop`**: Launch the Hermes live event-driven message-routing loop for asynchronous agent synchronization.
+*   **`verify-contract`**: Perform a contract audit to ensure frontend types match backend schemas.
+*   **`update-contract`**: Re-calculate type definitions and update `contract.version.json` with a new SHA-256 hash.
+*   **`create-app [idea]`**: Autonomously generate a full-stack monorepo project starter based on natural language inputs.
+
+---
+
+### 📦 Local Package Testing & Development
+
+To compile and link the package locally for development:
+```bash
+# Install package dependencies
 npm install
+
+# Compile the Model Context Protocol (MCP) server and build assets
 npm run enderun:build
 
-# Create a global npm link
+# Globally link package on your system
 npm link
 
-# Create a test folder and link package
-mkdir test-project && cd test-project
+# Create a test folder and mount package
+mkdir enderun-test && cd enderun-test
 npm init -y
 npm link agent-enderun
 
-# Boot the adapter scaffolding
+# Bootstrap scaffolding
 npx agent-enderun init gemini
 ```
 
 ---
 
-Developed with absolute discipline | Developer **Yusuf BEKAR** | Framework Version **v0.9.3**
+Developed with absolute discipline | Developer **Yusuf BEKAR** | Framework Version **v0.9.4**

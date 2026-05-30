@@ -18,6 +18,22 @@
 
 ## HISTORY
 
+### 2026-05-30 — Framework Promotion to Stable v0.9.4
+
+- **Agent:** @manager
+- **Trace ID:** 01HGT8J5E2N0W0W0W0W0W0W0W5
+- **Action:** Surgically aligned all directory conventions and MCP settings, then promoted the Agent Enderun framework to Stable Release v0.9.4 with comprehensive, high-quality documentation.
+
+### 2026-05-30 — Aligned Agent Directories & Integrations
+
+- **Agent:** @manager
+- **Trace ID:** 01HGT8J5E2N0W0W0W0W0W0W0W5
+- **Action:** Surgically updated framework initialization and resolution logic to adhere to official directory standards.
+  - Aligned Grok's directory from generic `.agent` to the standard `.grok` directory.
+  - Fixed macOS/Windows Claude Desktop configuration path to target `claude_desktop_config.json`.
+  - Added global Claude Code CLI (`~/.claude.json`) and project-local `.mcp.json` support.
+  - Cleaned up duplicated candidate directories and unified frameworkDir resolution logic.
+
 ### 2026-05-30 — Framework Promotion to Stable v0.9.3
 
 - **Agent:** @manager

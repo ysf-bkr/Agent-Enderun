@@ -5,7 +5,15 @@ import path from "path";
 
 const targetDir = process.cwd();
 
-const candidates = [".gemini", ".claude", ".agent", ".enderun"];
+const candidates = [
+    ".gemini/antigravity",
+    ".gemini/antigravity-cli",
+    ".gemini",
+    ".claude",
+    ".grok",
+    ".agent",
+    ".enderun",
+];
 let frameworkDir = ".enderun";
 for (const dir of candidates) {
     if (fs.existsSync(path.join(targetDir, dir))) {

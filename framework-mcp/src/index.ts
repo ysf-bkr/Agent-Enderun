@@ -11,7 +11,7 @@ import { execSync } from "child_process";
 const server = new Server(
     {
         name: "agent-enderun-mcp",
-        version: "0.9.3",
+        version: "0.9.4",
     },
     {
         capabilities: {
@@ -210,7 +210,22 @@ server.onRequest(CallToolRequestSchema, async (request: any) => {
                 traceId: string;
             }
             const { to, category, content, traceId } = args as any as SendAgentMessageArgs;
-            const frameworkDir = fs.existsSync(path.join(projectRoot, ".enderun")) ? ".enderun" : ".gemini";
+            const candidates = [
+                ".gemini/antigravity",
+                ".gemini/antigravity-cli",
+                ".gemini",
+                ".claude",
+                ".grok",
+                ".agent",
+                ".enderun",
+            ];
+            let frameworkDir = ".gemini";
+            for (const c of candidates) {
+                if (fs.existsSync(path.join(projectRoot, c))) {
+                    frameworkDir = c;
+                    break;
+                }
+            }
             const messagePath = path.join(projectRoot, frameworkDir, "messages", `${to.replace("@", "")}.json`);
         
             const message = {
@@ -245,6 +260,7 @@ server.onRequest(CallToolRequestSchema, async (request: any) => {
                 ".gemini/antigravity-cli",
                 ".gemini",
                 ".claude",
+                ".grok",
                 ".agent",
                 ".enderun",
             ];

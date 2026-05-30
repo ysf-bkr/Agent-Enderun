@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { ensureDir, writeTextFile, writeJsonFile } from "../utils/fs.js";
 import { updateProjectMemoryCommand } from "../commands/memory.js"; 
 import { slugifyName, titleCase } from "../utils/string.js";
-import { getConfiguredPaths } from "./memory.js";
+import { getConfiguredPaths, getFrameworkDir, getMemoryPath } from "./memory.js";
 
 
 const targetDir = process.cwd(); // Assuming targetDir is process.cwd() in the CLI context
@@ -752,13 +752,4 @@ export async function collectCreateAppDescription(args: string[]) {
     }
 }
 
-function getFrameworkDir(): string {
-    for (const dir of [".gemini", ".claude", ".agent", ".enderun"]) {
-        if (fs.existsSync(path.join(process.cwd(), dir))) return dir;
-    }
-    return ".gemini";
-}
 
-function getMemoryPath(): string {
-    return path.join(process.cwd(), getFrameworkDir(), "PROJECT_MEMORY.md");
-}

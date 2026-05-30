@@ -3,7 +3,15 @@
 import fs from "fs";
 import path from "path";
 
-const FRAMEWORK_CANDIDATES = [".gemini", ".claude", ".agent", ".enderun"];
+const FRAMEWORK_CANDIDATES = [
+    ".gemini/antigravity",
+    ".gemini/antigravity-cli",
+    ".gemini",
+    ".claude",
+    ".grok",
+    ".agent",
+    ".enderun",
+];
 
 function detectFrameworkDir() {
     for (const dir of FRAMEWORK_CANDIDATES) {

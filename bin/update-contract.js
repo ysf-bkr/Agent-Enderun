@@ -9,7 +9,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.join(__dirname, "..");
 
-const candidates = [".gemini", ".claude", ".agent", ".enderun"];
+const candidates = [
+    ".gemini/antigravity",
+    ".gemini/antigravity-cli",
+    ".gemini",
+    ".claude",
+    ".grok",
+    ".agent",
+    ".enderun",
+];
 let frameworkDir = ".enderun";
 for (const dir of candidates) {
     if (fs.existsSync(path.join(projectRoot, dir))) {

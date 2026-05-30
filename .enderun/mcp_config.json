@@ -2,8 +2,10 @@
   "mcpServers": {
     "agent-enderun": {
       "command": "node",
-      "args": ["framework-mcp/dist/index.js"],
-      "env": {}
+      "args": ["/Users/ybekar/Desktop/Projeler/agent-enderun/framework-mcp/dist/index.js"],
+      "env": {
+        "ENDERUN_PROJECT_ROOT": "/Users/ybekar/Desktop/Projeler/agent-enderun"
+      }
     }
   }
 }

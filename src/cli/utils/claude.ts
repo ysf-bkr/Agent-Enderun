@@ -9,11 +9,16 @@ export function findClaudeConfigPath(): string | null {
     if (!home) return null;
 
     const possiblePaths = [
+        // Claude Desktop
+        path.join(home, "Library", "Application Support", "Claude", "claude_desktop_config.json"), // macOS Claude Desktop
+        path.join(home, "AppData", "Roaming", "Claude", "claude_desktop_config.json"), // Windows Claude Desktop
+        // Claude Code CLI
+        path.join(home, ".claude.json"), // Global Claude Code CLI MCP config
+        // Legacy or system-specific paths
         path.join(home, ".config", "claude", "config.json"),
         path.join(home, ".claude", "config.json"),
-        path.join(home, "Library", "Application Support", "Claude", "config.json"), // macOS Claude Desktop
-        path.join(home, "Library", "Application Support", "Claude Code", "config.json"), // macOS Claude Code
-        path.join(home, ".config", "Claude", "config.json"), // some Linux setups
+        path.join(home, "Library", "Application Support", "Claude Code", "config.json"),
+        path.join(home, ".config", "Claude", "config.json"),
     ];
 
     for (const p of possiblePaths) {

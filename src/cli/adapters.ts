@@ -35,7 +35,7 @@ export const ADAPTERS: Record<AdapterId, AdapterConfig> = {
     },
     grok: {
         id: "grok",
-        frameworkDir: ".agent", // Future-proof agent-centric directory for Grok/X.ai
+        frameworkDir: ".grok", // Standard config directory for Grok/X.ai agent
         shimFile: "grok.md",
         templateDir: ".enderun",
     },
@@ -63,6 +63,7 @@ export const FRAMEWORK_DIR_CANDIDATES = [
     ".gemini/antigravity-cli",
     ".gemini",
     ".claude",
+    ".grok",
     ".agent",
     ".enderun",
 ] as const;
@@ -196,6 +197,8 @@ export function runAdapterPostInit(adapter: AdapterConfig, projectRoot: string):
             console.warn("⚠️  Claude config not found. Add MCP manually (see README).");
         }
         writeJsonFile(path.join(projectRoot, adapter.frameworkDir, "mcp_config.json"), mcpBlock);
+        writeJsonFile(path.join(projectRoot, ".mcp.json"), mcpBlock);
+        console.warn("✅ Claude Code Project MCP → .mcp.json");
         break;
     }
     default:
